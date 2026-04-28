@@ -1882,7 +1882,7 @@
           </div>
           <div id="pg-files">
             <div id="files-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
-            <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_addFileEntry()">＋ Adicionar arquivo</button>
+            <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_showAddFileForm()">＋ Adicionar arquivo</button>
           </div>
 
           <div class="prop-group-header" onclick="togglePropGroup(this,'pg-environment')">
@@ -2421,18 +2421,18 @@ function onCanvasDrop(event) {
 
 const activityMeta = {
   /* ── Entrada / Saída ── */
-  OPEN_INPUT:    { icon:'📂', label:'OPEN INPUT',    color:'green',  fields:['OPEN INPUT [arquivo]'] },
-  OPEN_OUTPUT:   { icon:'📂', label:'OPEN OUTPUT',   color:'green',  fields:['OPEN OUTPUT [arquivo]'] },
-  OPEN_IO:       { icon:'📂', label:'OPEN I-O',      color:'green',  fields:['OPEN I-O [arquivo]'] },
-  OPEN_EXTEND:   { icon:'📂', label:'OPEN EXTEND',   color:'green',  fields:['OPEN EXTEND [arquivo]'] },
-  VSAM_OPEN_INPUT: { icon:'🗂️', label:'VSAM OPEN INPUT',  color:'green', fields:['OPEN INPUT [vsam-arquivo]'] },
-  VSAM_OPEN_IO:    { icon:'🗂️', label:'VSAM OPEN I-O',    color:'green', fields:['OPEN I-O [vsam-arquivo]'] },
-  VSAM_OPEN_OUTPUT:{ icon:'🗂️', label:'VSAM OPEN OUTPUT', color:'green', fields:['OPEN OUTPUT [vsam-arquivo]'] },
-  CLOSE_FILE:    { icon:'📁', label:'CLOSE',         color:'green',  fields:['CLOSE [arquivo]'] },
-  READ:          { icon:'📖', label:'READ',          color:'green',  fields:['READ [arquivo]','  AT END MOVE "S" TO WS-FIM'] },
-  READ_NEXT:     { icon:'⏩', label:'READ NEXT',      color:'green',  fields:['READ [arquivo] NEXT RECORD','  AT END MOVE "S" TO WS-FIM','  NOT AT END','    CONTINUE','END-READ'] },
-  WRITE:         { icon:'✍️', label:'WRITE',         color:'purple', fields:['WRITE [registro] FROM WS-REG'] },
-  REWRITE:       { icon:'🔄', label:'REWRITE',        color:'purple', fields:['REWRITE [registro] FROM WS-REG','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-REWRITE'] },
+  OPEN_INPUT:    { icon:'📂', label:'OPEN INPUT',    color:'green',  fields:['OPEN INPUT [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  OPEN_OUTPUT:   { icon:'📂', label:'OPEN OUTPUT',   color:'green',  fields:['OPEN OUTPUT [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  OPEN_IO:       { icon:'📂', label:'OPEN I-O',      color:'green',  fields:['OPEN I-O [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  OPEN_EXTEND:   { icon:'📂', label:'OPEN EXTEND',   color:'green',  fields:['OPEN EXTEND [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  VSAM_OPEN_INPUT: { icon:'🗂️', label:'VSAM OPEN INPUT',  color:'green', fields:['OPEN INPUT [vsam-arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [vsam-arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [vsam-arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  VSAM_OPEN_IO:    { icon:'🗂️', label:'VSAM OPEN I-O',    color:'green', fields:['OPEN I-O [vsam-arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [vsam-arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [vsam-arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  VSAM_OPEN_OUTPUT:{ icon:'🗂️', label:'VSAM OPEN OUTPUT', color:'green', fields:['OPEN OUTPUT [vsam-arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [vsam-arquivo] ABERTO"','ELSE','    DISPLAY "ERRO ABERTURA [vsam-arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  CLOSE_FILE:    { icon:'📁', label:'CLOSE',         color:'green',  fields:['CLOSE [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] FECHADO"','ELSE','    DISPLAY "ERRO FECHAMENTO [arquivo]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  READ:          { icon:'📖', label:'READ',          color:'green',  fields:['READ [arquivo]','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] LIDO"','ELSE','    IF [WS-STATUS] = "10"','        DISPLAY "ARQUIVO VAZIO [arquivo]"','        DISPLAY " [WS-STATUS] = " [WS-STATUS]','    ELSE','        DISPLAY "ERRO LEITURA [arquivo]"','        DISPLAY " [WS-STATUS] = " [WS-STATUS]','        PERFORM 9999-ABEND','    END-IF','END-IF'] },
+  READ_NEXT:     { icon:'⏩', label:'READ NEXT',      color:'green',  fields:['READ [arquivo] NEXT RECORD','  AT END MOVE "S" TO WS-FIM','  NOT AT END','    CONTINUE','END-READ','IF [WS-STATUS] = ZEROS','    DISPLAY "ARQUIVO [arquivo] LIDO"','ELSE','    IF [WS-STATUS] = "10"','        DISPLAY "ARQUIVO VAZIO [arquivo]"','        DISPLAY " [WS-STATUS] = " [WS-STATUS]','    ELSE','        DISPLAY "ERRO LEITURA [arquivo]"','        DISPLAY " [WS-STATUS] = " [WS-STATUS]','        PERFORM 9999-ABEND','    END-IF','END-IF'] },
+  WRITE:         { icon:'✍️', label:'WRITE',         color:'purple', fields:['WRITE [registro] FROM WS-REG','IF [WS-STATUS] = ZEROS','    DISPLAY "REGISTRO GRAVADO [registro]"','ELSE','    DISPLAY "ERRO GRAVACAO [registro]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
+  REWRITE:       { icon:'🔄', label:'REWRITE',        color:'purple', fields:['REWRITE [registro] FROM WS-REG','IF [WS-STATUS] = ZEROS','    DISPLAY "REGISTRO REESCRITO [registro]"','ELSE','    DISPLAY "ERRO REESCRITA [registro]"','    DISPLAY " [WS-STATUS] = " [WS-STATUS]','    PERFORM 9999-ABEND','END-IF'] },
   DELETE_REC:    { icon:'🗑️', label:'DELETE Record',  color:'red',    fields:['DELETE [arquivo] RECORD','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-DELETE'] },
   START_KEY:     { icon:'🎯', label:'START',          color:'green',  fields:['MOVE [chave] TO [key-field]','START [arquivo] KEY IS EQUAL TO [key-field]','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-START'] },
   VSAM_ERRO:     { icon:'⚠️', label:'VSAM Erro RTN',  color:'yellow', fields:['VSAM-ERRO-RTN.','    DISPLAY "VSAM ERROR STATUS: " WS-STATUS','    PERFORM 9999-FIM'] },
@@ -2507,7 +2507,7 @@ function createNodeAt(type, x, y) {
   let fieldsHtml = meta.fields.map((f,i) => `
     <div class="node-field">
       <span class="node-field-drag" title="Arrastar para reordenar">&#8597;</span>
-      <input id="field-${uid}-${i}" value="${f}" />
+      <input id="field-${uid}-${i}" value="${f.replace(/"/g,'&quot;')}" />
       <span class="node-field-more" onclick="event.stopPropagation();fieldRowMenu(this)">···</span>
       <span class="node-field-help">?</span>
     </div>`).join('');
@@ -2556,6 +2556,8 @@ function createNodeAt(type, x, y) {
     div.querySelectorAll('.node-field input').forEach(inp => {
       inp.addEventListener('input', () => _styleNodeFields(div));
     });
+    // Substitui placeholders [arquivo]/[WS-STATUS] pelos arquivos já registrados
+    _programFiles.forEach(f => _updateNodeFieldsWithStatus(f.name, f.status));
   });
 
   // Auto-registra arquivo quando é um nó OPEN sequencial
@@ -3619,6 +3621,36 @@ function _cobolProcIndent(rawLines) {
   return out.join('\n');
 }
 
+/**
+ * Gera o bloco IF de teste de FILE STATUS após OPEN ou READ.
+ * Retorna string vazia se o nó não for do tipo OPEN/READ.
+ */
+function _genFileStatusCheck(fieldLines, nodeType) {
+  const OPEN_TYPES = ['OPEN_INPUT','OPEN_OUTPUT','OPEN_IO','OPEN_EXTEND',
+                      'VSAM_OPEN_INPUT','VSAM_OPEN_IO','VSAM_OPEN_OUTPUT'];
+  const READ_TYPES = ['READ','READ_NEXT'];
+  const isOpen = OPEN_TYPES.includes(nodeType);
+  const isRead = READ_TYPES.includes(nodeType);
+  if (!isOpen && !isRead) return '';
+  if (!fieldLines.length) return '';
+  // Extrai nome do arquivo da primeira linha de instrução
+  const first  = fieldLines[0].trim().replace(/[\[\]]/g, '').toUpperCase();
+  const tokens = first.split(/\s+/).filter(Boolean);
+  let fileName = isOpen ? tokens[tokens.length - 1] : tokens[1];
+  if (!fileName || fileName === '') return '';
+  // Busca variável de FILE STATUS em _programFiles
+  const fi        = _programFiles.find(f => f.name === fileName);
+  const statusVar = fi ? fi.status : ('WS-ST-' + fileName.substring(0, 6));
+  const rdCond    = isRead ? `\n           AND ${statusVar} NOT = "10"` : '';
+  const verb      = isOpen ? 'OPEN ABERTURA' : 'READ';
+  return `           IF ${statusVar} NOT = SPACES` +
+         `\n           AND ${statusVar} NOT = "00"` +
+         rdCond +
+         `\n               DISPLAY "ERRO ${verb} ${fileName}: " ${statusVar}` +
+         `\n               PERFORM 9999-ABEND` +
+         `\n           END-IF\n`;
+}
+
 function generateAllCode() {
   const pid = (document.getElementById('prop-program-id')?.value || 'MEUCOBOL').toUpperCase();
   const author = document.getElementById('prop-author')?.value || 'AUTOR';
@@ -3664,17 +3696,57 @@ function generateAllCode() {
   // Nós sem setas (não visitados) ficam no final, em ordem DOM
   allCardEls.forEach(n => { if (!visited.has(n.id)) ordered.push(n); });
 
+  const _OPEN_READ_TYPES = new Set(['OPEN_INPUT','OPEN_OUTPUT','OPEN_IO','OPEN_EXTEND',
+    'VSAM_OPEN_INPUT','VSAM_OPEN_IO','VSAM_OPEN_OUTPUT','READ','READ_NEXT','CLOSE_FILE','WRITE','REWRITE']);
+
   const nodes = ordered;
-  let procLines = '';
+  let procLines    = '';
+  let _hasOpenRead = false;
   nodes.forEach(n => {
-    const hdr   = n.querySelector('.node-card-header');
+    const hdr      = n.querySelector('.node-card-header');
     // Usa SEMPRE apenas o .node-label — nunca o textContent do header inteiro
-    const title = hdr?.querySelector('.node-label')?.textContent?.trim() || 'PARA';
-    const role  = n.dataset.codeRole || 'comment'; // 'paragraph' | 'comment' | 'inline'
+    const title    = hdr?.querySelector('.node-label')?.textContent?.trim() || 'PARA';
+    const role     = n.dataset.codeRole || 'comment'; // 'paragraph' | 'comment' | 'inline'
+    const nodeType = n.dataset.nodeType || '';
+    if (_OPEN_READ_TYPES.has(nodeType)) _hasOpenRead = true;
     const fieldLines = [];
     n.querySelectorAll('.node-field input').forEach(inp => {
       if (inp.value.trim()) fieldLines.push(inp.value.trim());
     });
+    // Substitui [WS-STATUS] pelo nome real da variável de FILE STATUS.
+    // Detecta via nodeType OU pelo conteúdo da primeira linha (para nós sem data-node-type).
+    if (fieldLines.length) {
+      const firstUp = fieldLines[0].trim().toUpperCase();
+      const firstTokens = firstUp.replace(/[\[\]]/g, '').split(/\s+/);
+      const looksLikeOpen  = /^OPEN\s+(INPUT|OUTPUT|I-O|EXTEND)\b/.test(firstUp);
+      const looksLikeRead  = /^READ\b/.test(firstUp);
+      const looksLikeWrite = /^(WRITE|REWRITE)\b/.test(firstUp);
+      const isOpenType  = _OPEN_READ_TYPES.has(nodeType) && !['READ','READ_NEXT','WRITE','REWRITE'].includes(nodeType);
+      const isReadType  = nodeType === 'READ' || nodeType === 'READ_NEXT';
+      const isWriteType = nodeType === 'WRITE' || nodeType === 'REWRITE';
+      const doOpen  = isOpenType  || (!nodeType && looksLikeOpen);
+      const doRead  = isReadType  || (!nodeType && looksLikeRead);
+      const doWrite = isWriteType || (!nodeType && looksLikeWrite);
+      if (doOpen || doRead || doWrite) {
+        _hasOpenRead = true;
+        let fi = null;
+        if (doWrite) {
+          // WRITE REG-X FROM ... → firstTokens[1] é o recName
+          const recToken = firstTokens[1];
+          fi = recToken ? _programFiles.find(f => f.recName === recToken) : null;
+        } else {
+          // OPEN INPUT ARQ → último token; READ ARQ → segundo token
+          const arqName = doRead ? firstTokens[1] : firstTokens[firstTokens.length - 1];
+          fi = arqName ? _programFiles.find(f => f.name === arqName) : null;
+        }
+        if (fi) {
+          for (let i = 0; i < fieldLines.length; i++) {
+            fieldLines[i] = fieldLines[i].replace(/\[WS-STATUS\]/g, fi.status);
+            if (doWrite) fieldLines[i] = fieldLines[i].replace(/\[registro\]/gi, fi.recName);
+          }
+        }
+      }
+    }
     if (role === 'comment') {
       // Só o nome do bloco vira comentário; as linhas saem como código normal
       procLines += `\n      *> ── ${title.toUpperCase()} ──\n`;
@@ -3696,6 +3768,13 @@ function generateAllCode() {
       }
     }
   });
+  // Parágrafo 9999-ABEND gerado automaticamente quando há OPEN/READ
+  const abendBlock = _hasOpenRead
+    ? `\n       9999-ABEND.\n` +
+      `           DISPLAY "** ABEND - ENCERRANDO PROGRAMA POR ERRO **"\n` +
+      `           MOVE 16 TO RETURN-CODE\n` +
+      `           STOP RUN.\n`
+    : '';
 
   // Se não há nós de procedimento, gera apenas o esqueleto de PROCEDURE DIVISION
   const hasNodes = nodes.length > 0;
@@ -3762,7 +3841,7 @@ ${fileStatusWS}${sqlcaBlock}${wsLines}`;
 ? `${preamble}
 
        PROCEDURE DIVISION.
-${procLines}${db2Block}`
+${procLines}${db2Block}${abendBlock}`
 : `       PROCEDURE DIVISION.\n`;
 
   const codeArea = document.getElementById('code-editor');
@@ -3780,45 +3859,302 @@ ${procLines}${db2Block}`
  */
 let _programFiles = [];
 
+/**
+ * Percorre todos os nós OPEN/READ do canvas e substitui [WS-STATUS]
+ * pelo nome real da variável de FILE STATUS do arquivo informado.
+ * @param {string} arqName   - Nome do arquivo (ex: ARQ-ENTRADA)
+ * @param {string} statusVar - Variável de FILE STATUS (ex: WS-ST-ENT)
+ */
+function _updateNodeFieldsWithStatus(arqName, statusVar) {
+  const IO_RE      = /^(OPEN\s+(INPUT|OUTPUT|I-O|EXTEND)|READ\b|CLOSE\b|WRITE\b|REWRITE\b)/i;
+  const onlyOneFile = _programFiles.length === 1;
+  const fi         = _programFiles.find(f => f.name === arqName);
+  const recName    = fi?.recName || null;
+
+  document.querySelectorAll('#canvas .node-card').forEach(card => {
+    const inputs = card.querySelectorAll('.node-field input');
+    if (!inputs.length) return;
+    const firstVal = inputs[0].value.trim().toUpperCase();
+    if (!IO_RE.test(firstVal)) return;
+
+    const isWriteNode = /^(WRITE|REWRITE)\b/i.test(firstVal);
+
+    if (isWriteNode) {
+      // Match por placeholder [registro] (arquivo único) ou pelo recName já preenchido
+      const hasRecPlaceholder = firstVal.includes('[REGISTRO]');
+      const hasRecName        = recName && firstVal.includes(recName.toUpperCase());
+      if (!hasRecName && !(hasRecPlaceholder && onlyOneFile)) return;
+      inputs.forEach(inp => {
+        let v = inp.value;
+        if (v.includes('[WS-STATUS]'))  v = v.replace(/\[WS-STATUS\]/g, statusVar);
+        if (recName && v.includes('[registro]')) v = v.replace(/\[registro\]/gi, recName);
+        inp.value = v;
+      });
+    } else {
+      // OPEN / READ / CLOSE — lógica original
+      const hasName        = firstVal.includes(arqName.toUpperCase());
+      const hasPlaceholder = firstVal.includes('[ARQUIVO]') || firstVal.includes('[VSAM-ARQUIVO]');
+      if (!hasName && !(hasPlaceholder && onlyOneFile)) return;
+      inputs.forEach(inp => {
+        let v = inp.value;
+        if (v.includes('[WS-STATUS]'))    v = v.replace(/\[WS-STATUS\]/g, statusVar);
+        if (v.includes('[arquivo]'))      v = v.replace(/\[arquivo\]/gi, arqName);
+        if (v.includes('[vsam-arquivo]')) v = v.replace(/\[vsam-arquivo\]/gi, arqName);
+        inp.value = v;
+      });
+    }
+  });
+}
+
 function _renderFilesList() {
   const list = document.getElementById('files-list');
   if (!list) return;
   list.innerHTML = '';
-  _programFiles.forEach((f, i) => {
-    const isVsam = f.org === 'INDEXED' || f.org === 'RELATIVE';
-    const icon   = isVsam ? '🗂️' : '📁';
-    const keyLine = isVsam && f.recKey
-      ? `<div style="color:#2563eb;">RECORD KEY: ${f.recKey}${f.altKey ? ' &nbsp;|&nbsp; ALT KEY: ' + f.altKey : ''}</div>`
-      : '';
-    const row = document.createElement('div');
-    row.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;padding:6px 8px;font-size:11px;position:relative;';
-    row.innerHTML = `
-      <div style="font-weight:700;color:#1a1a2e;margin-bottom:3px;">${icon} ${f.name} <span style="font-weight:400;color:#888;">(${f.org})</span></div>
-      <div style="color:#555;">ASSIGN TO ${f.assign} &nbsp;|&nbsp; ACCESS: ${f.access}</div>
+  _programFiles.forEach((f, i) => list.appendChild(_makeFileCard(f, i)));
+}
+
+function _makeFileCard(f, i) {
+  const isVsam = f.org === 'INDEXED' || f.org === 'RELATIVE';
+  const icon   = isVsam ? '🗂️' : '📁';
+  const esc    = v => (v || '').replace(/"/g, '&quot;');
+  const orgSel = ['SEQUENTIAL','INDEXED','RELATIVE'].map(o =>
+    `<option${f.org === o ? ' selected' : ''}>${o}</option>`).join('');
+  const accSel = ['SEQUENTIAL','RANDOM','DYNAMIC'].map(a =>
+    `<option${f.access === a ? ' selected' : ''}>${a}</option>`).join('');
+  const div = document.createElement('div');
+  div.id = `file-card-${i}`;
+  div.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;font-size:11px;overflow:hidden;';
+  div.innerHTML = `
+    <div id="file-info-${i}" style="padding:6px 8px;position:relative;">
+      <div style="font-weight:700;color:#1a1a2e;margin-bottom:2px;padding-right:46px;">${icon} ${f.name} <span style="font-weight:400;color:#888;">(${f.org})</span></div>
+      <div style="color:#555;">ASSIGN: ${f.assign} &nbsp;|&nbsp; ACCESS: ${f.access}</div>
       <div style="color:#555;">FD: ${f.recName} &nbsp;|&nbsp; ${f.recSize} chars &nbsp;|&nbsp; STATUS: ${f.status}</div>
-      ${keyLine}
-      <button onclick="_removeFileEntry(${i})" title="Remover arquivo"
-        style="position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;color:#dc2626;font-size:13px;">✕</button>`;
-    list.appendChild(row);
+      ${isVsam && f.recKey ? `<div style="color:#2563eb;">KEY: ${f.recKey}${f.altKey ? ' | ALT: ' + f.altKey : ''}</div>` : ''}
+      <div style="position:absolute;top:4px;right:6px;display:flex;gap:2px;">
+        <button onclick="_toggleFileForm(${i})" title="Editar"
+          style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;padding:2px;">&#9998;</button>
+        <button onclick="_removeFileEntry(${i})" title="Remover"
+          style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+      </div>
+    </div>
+    <div id="file-form-${i}" style="display:none;border-top:1px solid #e5e7eb;padding:8px;background:#f8fafc;">
+      <div style="display:grid;grid-template-columns:76px 1fr;gap:4px 6px;align-items:center;">
+        <span style="color:#555;font-size:10px;">Nome</span>
+        <input id="ff-name-${i}" value="${esc(f.name)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+        <span style="color:#555;font-size:10px;">ASSIGN</span>
+        <input id="ff-assign-${i}" value="${esc(f.assign)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+        <span style="color:#555;font-size:10px;">Org.</span>
+        <select id="ff-org-${i}" onchange="_toggleVsamFields(${i})"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;">${orgSel}</select>
+        <span style="color:#555;font-size:10px;">Access</span>
+        <select id="ff-access-${i}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;">${accSel}</select>
+        <span style="color:#555;font-size:10px;">Tam. Reg.</span>
+        <input id="ff-recsize-${i}" value="${esc(f.recSize)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:60px;"/>
+        <span style="color:#555;font-size:10px;">Nome FD</span>
+        <input id="ff-recname-${i}" value="${esc(f.recName)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+        <span style="color:#555;font-size:10px;">FILE STATUS</span>
+        <input id="ff-status-${i}" value="${esc(f.status)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      </div>
+      <div id="ff-vsam-${i}"
+        style="${isVsam ? '' : 'display:none;'}grid-template-columns:76px 1fr;gap:4px 6px;align-items:center;margin-top:4px;">
+        <span style="color:#2563eb;font-size:10px;">Record Key</span>
+        <input id="ff-reckey-${i}" value="${esc(f.recKey || '')}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+        <span style="color:#2563eb;font-size:10px;">Alt. Key</span>
+        <input id="ff-altkey-${i}" value="${esc(f.altKey || '')}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:8px;">
+        <button onclick="_saveFileEntryForm(${i})"
+          style="flex:1;background:#1e40af;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">✔ Salvar</button>
+        <button onclick="_toggleFileForm(${i})"
+          style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">✖ Cancelar</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function _toggleFileForm(i) {
+  const form = document.getElementById(`file-form-${i}`);
+  if (!form) return;
+  const opening = form.style.display === 'none';
+  form.style.display = opening ? 'block' : 'none';
+  if (opening) {
+    // Restaura valores atuais ao abrir
+    const f = _programFiles[i];
+    if (!f) return;
+    const g = id => document.getElementById(id);
+    if (g(`ff-name-${i}`))    g(`ff-name-${i}`).value    = f.name;
+    if (g(`ff-assign-${i}`))  g(`ff-assign-${i}`).value  = f.assign;
+    if (g(`ff-org-${i}`))     g(`ff-org-${i}`).value     = f.org;
+    if (g(`ff-access-${i}`))  g(`ff-access-${i}`).value  = f.access;
+    if (g(`ff-recsize-${i}`)) g(`ff-recsize-${i}`).value = f.recSize;
+    if (g(`ff-recname-${i}`)) g(`ff-recname-${i}`).value = f.recName;
+    if (g(`ff-status-${i}`))  g(`ff-status-${i}`).value  = f.status;
+    if (g(`ff-reckey-${i}`))  g(`ff-reckey-${i}`).value  = f.recKey || '';
+    if (g(`ff-altkey-${i}`))  g(`ff-altkey-${i}`).value  = f.altKey || '';
+    _toggleVsamFields(i);
+    g(`ff-name-${i}`)?.focus();
+  }
+}
+
+function _toggleVsamFields(i) {
+  const org  = document.getElementById(`ff-org-${i}`)?.value || '';
+  const vsam = document.getElementById(`ff-vsam-${i}`);
+  if (vsam) vsam.style.display = (org === 'INDEXED' || org === 'RELATIVE') ? 'grid' : 'none';
+}
+
+function _saveFileEntryForm(i) {
+  const f = _programFiles[i];
+  if (!f) return;
+  const oldName   = f.name;
+  const oldStatus = f.status;
+  const g = id => document.getElementById(id);
+  const name    = (g(`ff-name-${i}`)?.value    || '').trim().toUpperCase();
+  const assign  = (g(`ff-assign-${i}`)?.value  || '').trim().toUpperCase();
+  const org     =  g(`ff-org-${i}`)?.value     || 'SEQUENTIAL';
+  const access  =  g(`ff-access-${i}`)?.value  || 'SEQUENTIAL';
+  const recSize = (g(`ff-recsize-${i}`)?.value || '80').trim();
+  const recName = (g(`ff-recname-${i}`)?.value || '').trim().toUpperCase();
+  const status  = (g(`ff-status-${i}`)?.value  || '').trim().toUpperCase();
+  const recKey  = (g(`ff-reckey-${i}`)?.value  || '').trim().toUpperCase() || null;
+  const altKey  = (g(`ff-altkey-${i}`)?.value  || '').trim().toUpperCase() || null;
+  if (!name) { showToast('Nome é obrigatório.', 'error'); return; }
+  if (name !== oldName && _programFiles.some((x, j) => j !== i && x.name === name)) {
+    showToast(`"${name}" já está registrado.`, 'error'); return;
+  }
+  _programFiles[i] = { name, assign, org, access, recSize, recName, status, recKey, altKey };
+  if (oldName !== name || oldStatus !== status) {
+    const RE = /^(OPEN\s+(INPUT|OUTPUT|I-O|EXTEND)|READ\b|CLOSE\b)/i;
+    document.querySelectorAll('#canvas .node-card').forEach(card => {
+      const inputs = card.querySelectorAll('.node-field input');
+      if (!inputs.length || !RE.test(inputs[0].value.trim())) return;
+      if (!inputs[0].value.trim().toUpperCase().includes(oldName)) return;
+      inputs.forEach(inp => {
+        let v = inp.value;
+        if (oldName   !== name)   v = v.replace(new RegExp('\\b' + oldName   + '\\b', 'gi'), name);
+        if (oldStatus !== status) v = v.replace(new RegExp('\\b' + oldStatus + '\\b', 'gi'), status);
+        inp.value = v;
+      });
+    });
+  }
+  _renderFilesList();
+  generateAllCode();
+  showToast(`Arquivo "${name}" atualizado.`, 'success');
+}
+
+function _showAddFileForm() {
+  const list = document.getElementById('files-list');
+  if (!list) return;
+  if (document.getElementById('file-add-form')) {
+    document.getElementById('file-add-form').remove(); return;
+  }
+  const orgSel = ['SEQUENTIAL','INDEXED','RELATIVE'].map(o => `<option>${o}</option>`).join('');
+  const accSel = ['SEQUENTIAL','RANDOM','DYNAMIC'].map(a => `<option>${a}</option>`).join('');
+  const form = document.createElement('div');
+  form.id = 'file-add-form';
+  form.style.cssText = 'background:#f0f7ff;border:1px solid #93c5fd;border-radius:4px;padding:8px;font-size:11px;';
+  form.innerHTML = `
+    <div style="font-weight:700;color:#1e40af;margin-bottom:6px;font-size:11px;">📂 Novo Arquivo</div>
+    <div style="display:grid;grid-template-columns:76px 1fr;gap:4px 6px;align-items:center;">
+      <span style="color:#555;font-size:10px;">Nome</span>
+      <input id="ff-new-name" placeholder="ARQ-ENTRADA"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      <span style="color:#555;font-size:10px;">ASSIGN</span>
+      <input id="ff-new-assign" placeholder="ENTRADA"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      <span style="color:#555;font-size:10px;">Org.</span>
+      <select id="ff-new-org" onchange="_toggleVsamFieldsNew()"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;">${orgSel}</select>
+      <span style="color:#555;font-size:10px;">Access</span>
+      <select id="ff-new-access"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;">${accSel}</select>
+      <span style="color:#555;font-size:10px;">Tam. Reg.</span>
+      <input id="ff-new-recsize" value="80"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:60px;"/>
+      <span style="color:#555;font-size:10px;">Nome FD</span>
+      <input id="ff-new-recname" placeholder="REG-ENTRADA"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      <span style="color:#555;font-size:10px;">FILE STATUS</span>
+      <input id="ff-new-status" placeholder="WS-ST-ENT"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+    </div>
+    <div id="ff-new-vsam" style="display:none;grid-template-columns:76px 1fr;gap:4px 6px;align-items:center;margin-top:4px;">
+      <span style="color:#2563eb;font-size:10px;">Record Key</span>
+      <input id="ff-new-reckey" placeholder="WS-KEY"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+      <span style="color:#2563eb;font-size:10px;">Alt. Key</span>
+      <input id="ff-new-altkey" placeholder="(opcional)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;"/>
+    </div>
+    <div style="display:flex;gap:4px;margin-top:8px;">
+      <button onclick="_confirmAddFileForm()"
+        style="flex:1;background:#1e40af;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">✔ Adicionar</button>
+      <button onclick="document.getElementById('file-add-form').remove()"
+        style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">✖ Cancelar</button>
+    </div>`;
+  list.appendChild(form);
+  document.getElementById('ff-new-name')?.focus();
+  // Auto-preenche Nome FD e STATUS ao sair do campo Nome
+  document.getElementById('ff-new-name').addEventListener('blur', function() {
+    const n = this.value.trim().toUpperCase();
+    const short = n.replace(/^ARQ-/,'');
+    const rn = document.getElementById('ff-new-recname');
+    const st = document.getElementById('ff-new-status');
+    const as = document.getElementById('ff-new-assign');
+    if (rn && !rn.value) rn.value = 'REG-' + short.substring(0,10);
+    if (st && !st.value) st.value = 'WS-ST-' + short.substring(0,6);
+    if (as && !as.value) as.value = short;
   });
 }
 
-function _addFileEntry(defaults) {
-  const d = defaults || {};
-  const name    = (d.name    || prompt('Nome do arquivo COBOL (ex: ARQ-ENTRADA):', 'ARQ-') || '').trim().toUpperCase();
-  if (!name) return;
-  if (_programFiles.some(f => f.name === name)) { showToast(`"${name}" já está registrado.`, 'error'); return; }
-  const assign  = (d.assign  || prompt('ASSIGN TO (DDname/caminho):', name.replace('ARQ-','')) || name).trim().toUpperCase();
-  const orgOpts = ['SEQUENTIAL','INDEXED','RELATIVE'];
-  const org     = d.org || orgOpts[parseInt(prompt('Organização:\n0=SEQUENTIAL\n1=INDEXED\n2=RELATIVE','0')) || 0] || 'SEQUENTIAL';
-  const accOpts = ['SEQUENTIAL','RANDOM','DYNAMIC'];
-  const access  = d.access || accOpts[parseInt(prompt('Access mode:\n0=SEQUENTIAL\n1=RANDOM\n2=DYNAMIC','0')) || 0] || 'SEQUENTIAL';
-  const recSize = (d.recSize || prompt('Tamanho do registro (chars):', '80') || '80').trim();
-  const recName = (d.recName || prompt('Nome do 01-nível (registro):', 'REG-' + name.replace('ARQ-','')) || ('REG-' + name.replace('ARQ-',''))).trim().toUpperCase();
-  const status  = (d.status  || prompt('Variável FILE STATUS (ex: WS-STATUS-ENT):', 'WS-ST-' + name.replace('ARQ-','').substring(0,6)) || ('WS-ST-' + name.substring(0,6))).trim().toUpperCase();
+function _toggleVsamFieldsNew() {
+  const org  = document.getElementById('ff-new-org')?.value || '';
+  const vsam = document.getElementById('ff-new-vsam');
+  if (vsam) vsam.style.display = (org === 'INDEXED' || org === 'RELATIVE') ? 'grid' : 'none';
+}
 
+function _confirmAddFileForm() {
+  const g = id => document.getElementById(id);
+  const name    = (g('ff-new-name')?.value    || '').trim().toUpperCase();
+  const assign  = (g('ff-new-assign')?.value  || name).trim().toUpperCase();
+  const org     =  g('ff-new-org')?.value     || 'SEQUENTIAL';
+  const access  =  g('ff-new-access')?.value  || 'SEQUENTIAL';
+  const recSize = (g('ff-new-recsize')?.value || '80').trim();
+  const recName = (g('ff-new-recname')?.value || ('REG-' + name.replace(/^ARQ-/,'').substring(0,10))).trim().toUpperCase();
+  const status  = (g('ff-new-status')?.value  || ('WS-ST-' + name.replace(/^ARQ-/,'').substring(0,6))).trim().toUpperCase();
+  const recKey  = (g('ff-new-reckey')?.value  || '').trim().toUpperCase() || null;
+  const altKey  = (g('ff-new-altkey')?.value  || '').trim().toUpperCase() || null;
+  if (!name) { showToast('Nome é obrigatório.', 'error'); g('ff-new-name')?.focus(); return; }
+  if (_programFiles.some(f => f.name === name)) { showToast(`"${name}" já está registrado.`, 'error'); return; }
+  _programFiles.push({ name, assign, org, access, recSize, recName, status, recKey, altKey });
+  g('file-add-form')?.remove();
+  _renderFilesList();
+  _updateNodeFieldsWithStatus(name, status);
+  generateAllCode();
+  showToast(`Arquivo "${name}" registrado.`, 'success');
+}
+
+function _addFileEntry(defaults) {
+  if (!defaults || typeof defaults !== 'object') { _showAddFileForm(); return; }
+  const d = defaults;
+  const name    = (d.name    || '').trim().toUpperCase();  if (!name) return;
+  if (_programFiles.some(f => f.name === name)) return;
+  const assign  = (d.assign  || name).trim().toUpperCase();
+  const org     =  d.org     || 'SEQUENTIAL';
+  const access  =  d.access  || 'SEQUENTIAL';
+  const recSize = (d.recSize || '80').trim();
+  const recName = (d.recName || ('REG-' + name.replace(/^ARQ-/,'').substring(0,10))).trim().toUpperCase();
+  const status  = (d.status  || ('WS-ST-' + name.replace(/^ARQ-/,'').substring(0,6))).trim().toUpperCase();
   _programFiles.push({ name, assign, org, access, recSize, recName, status });
   _renderFilesList();
+  _updateNodeFieldsWithStatus(name, status);
   generateAllCode();
   showToast(`Arquivo "${name}" registrado.`, 'success');
 }
@@ -3850,6 +4186,7 @@ function _autoRegisterFileFromOpen(fieldValue) {
     recSize, recName, status, recKey: null, altKey: null
   });
   _renderFilesList();
+  _updateNodeFieldsWithStatus(name, status);
   generateAllCode();
   showToast(`Arquivo "${name}" adicionado ao FILE-CONTROL automaticamente.`, 'success');
 }
@@ -3872,6 +4209,7 @@ function _autoRegisterVsamOpen(fieldValue) {
     recKey, altKey: null
   });
   _renderFilesList();
+  _updateNodeFieldsWithStatus(name, status);
   generateAllCode();
   showToast(`Arquivo VSAM "${name}" adicionado ao FILE-CONTROL (INDEXED/DYNAMIC).`, 'success');
 }
