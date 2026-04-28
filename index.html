@@ -599,6 +599,19 @@
       margin-left: 2px;
     }
     .node-card-remove-btn:hover { background: #fecaca; border-color: #f87171; }
+    .node-move-btn {
+      padding: 2px 5px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 2px;
+      font-size: 11px;
+      cursor: pointer;
+      color: #475569;
+      user-select: none;
+      line-height: 1;
+      margin-left: 2px;
+    }
+    .node-move-btn:hover { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
     /* Feedback visual de role no header do card */
     .node-card-header.code-role-comment {
       background: repeating-linear-gradient(
@@ -1267,6 +1280,10 @@
             <span class="rbtn-icon">💾</span>
             <span class="rbtn-label">Salvar</span>
           </button>
+          <button class="rbtn large" onclick="saveProgramAs()" title="Salvar projeto JSON escolhendo a pasta">
+            <span class="rbtn-icon">📂</span>
+            <span class="rbtn-label">Salvar Como</span>
+          </button>
           <div class="rbtn-col">
             <button class="rbtn small" onclick="saveProject()" title="Salvar projeto JSON">
               <span class="rbtn-icon">📌</span>
@@ -1905,7 +1922,7 @@
             </div>
             <div class="prop-row">
               <label>Encode</label>
-              <select class="prop-val">
+              <select class="prop-val" id="prop-encode">
                 <option>EBCDIC</option>
                 <option>ASCII</option>
                 <option>UTF-8</option>
@@ -2495,6 +2512,7 @@ function createNodeAt(type, x, y) {
   const div = document.createElement('div');
   div.className = 'cf-node node-card';
   div.id = nodeId;
+  div.dataset.nodeType = type;
   div.style.left = Math.max(10,x) + 'px';
   div.style.top = Math.max(10,y) + 'px';
   div.setAttribute('onclick', `selectNode('dyn-${uid}','${meta.label} #${nodeSeqCounter[type]}')`);
@@ -2512,6 +2530,8 @@ function createNodeAt(type, x, y) {
   div.innerHTML = `
     <div ${headerColor}>
       <span>${meta.icon}</span> <span class="node-label">${meta.label}</span>
+      <span class="node-move-btn" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();_moveNodeInChain('${nodeId}',-1)" title="Mover para cima na sequência">▲</span>
+      <span class="node-move-btn" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();_moveNodeInChain('${nodeId}',1)" title="Mover para baixo na sequência">▼</span>
       <span class="node-connect-btn" onclick="event.stopPropagation();startConnect(event,'${nodeId}')" title="Conectar saída">→</span>
       <span class="node-card-remove-btn" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();_removeNodeCard(this)" title="Remover">✕</span>
     </div>
@@ -2634,6 +2654,64 @@ function _removeNodeCard(btn) {
 
 // Ao deletar uma linha que referencia outro card (ex: PERFORM INI-RTN-1),
 // remove também o card referenciado do canvas.
+
+/**
+ * Move um nó uma posição para cima (dir=-1) ou para baixo (dir=+1) na cadeia de setas.
+ * Estratégia: troca este nó de posição com o vizinho na cadeia.
+ *
+ * Cadeia antes (mover B para baixo):  ...A→B→C→D...
+ * Cadeia depois:                       ...A→C→B→D...
+ */
+function _moveNodeInChain(nodeId, dir) {
+  // Reconstrói nextMap e prevMap
+  const nextMap = {};
+  const prevMap = {};
+  connections.forEach(c => {
+    nextMap[c.from] = c.to;
+    prevMap[c.to]   = c.from;
+  });
+
+  if (dir === -1) {
+    // Mover para cima: troca com o nó anterior
+    const prev = prevMap[nodeId];          // A
+    if (!prev) return;                     // já é o primeiro
+    const prevPrev = prevMap[prev];        // ...
+    const next     = nextMap[nodeId];      // C
+
+    // Remove as conexões existentes entre esses três
+    connections = connections.filter(c =>
+      !(c.from === prev && c.to === nodeId) &&
+      !(c.from === nodeId && c.to === next) &&
+      !(c.from === prevPrev && c.to === prev)
+    );
+    // Reconecta na nova ordem: ...→nodeId→prev→C
+    if (prevPrev) connections.push({ from: prevPrev, to: nodeId });
+    connections.push({ from: nodeId, to: prev });
+    if (next)     connections.push({ from: prev, to: next });
+
+  } else {
+    // Mover para baixo: troca com o próximo
+    const next = nextMap[nodeId];          // C
+    if (!next) return;                     // já é o último
+    const prev     = prevMap[nodeId];      // A
+    const nextNext = nextMap[next];        // D
+
+    // Remove as conexões existentes
+    connections = connections.filter(c =>
+      !(c.from === nodeId && c.to === next) &&
+      !(c.from === prev    && c.to === nodeId) &&
+      !(c.from === next    && c.to === nextNext)
+    );
+    // Reconecta na nova ordem: A→next→nodeId→D
+    if (prev)     connections.push({ from: prev,   to: next });
+    connections.push({ from: next, to: nodeId });
+    if (nextNext) connections.push({ from: nodeId, to: nextNext });
+  }
+
+  drawArrows();
+  generateAllCode();
+  showToast('Ordem atualizada.', 'success');
+}
 function _cascadeDeleteReferencedCard(fieldValue) {
   if (!fieldValue) return;
   // Extrai o nome do parágrafo/seção referenciado
@@ -3767,7 +3845,7 @@ function generateAllCode() {
   });
   // Parágrafo 9999-ABEND gerado automaticamente quando há OPEN/READ
   const abendBlock = _hasOpenRead
-    ? `\n       9999-ABEND.\n` +
+    ? `\n       9999-ABEND SECTION.\n` +
       `           DISPLAY "** ABEND - ENCERRANDO PROGRAMA POR ERRO **"\n` +
       `           MOVE 16 TO RETURN-CODE\n` +
       `           STOP RUN.\n`
@@ -4236,6 +4314,36 @@ function saveProgram() {
   showToast('Código COBOL salvo!', 'success');
   setStatus('Arquivo .CBL salvo');
 }
+
+async function saveProgramAs() {
+  const project  = _buildProjectSnapshot();
+  const fileName = project.programId.toUpperCase() + '.cobol-project.json';
+  const json     = JSON.stringify(project, null, 2);
+
+  if (window.showSaveFilePicker) {
+    try {
+      const fh = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types: [{ description: 'Projeto COBOL', accept: { 'application/json': ['.json'] } }]
+      });
+      const writable = await fh.createWritable();
+      await writable.write(json);
+      await writable.close();
+      showToast(`Projeto salvo como ${fh.name}`, 'success');
+      setStatus(`Projeto salvo: ${fh.name}`);
+    } catch (e) {
+      if (e.name !== 'AbortError') showToast('Erro ao salvar: ' + e.message, 'error');
+    }
+  } else {
+    const blob = new Blob([json], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    a.click();
+    showToast('Projeto salvo! (escolha a pasta no diálogo do browser)', 'success');
+    setStatus('Projeto .json salvo');
+  }
+}
 function exportCode() { saveProgram(); }
 
 function _gerarEVerCodigo() {
@@ -4248,50 +4356,60 @@ function _gerarEVerCodigo() {
 }
 
 /* ── Salvar/Importar Projeto (JSON) ─────────────────────────── */
-function saveProject() {
+
+/** Monta o objeto de snapshot completo do projeto */
+function _buildProjectSnapshot() {
   const pid = document.getElementById('prop-program-id')?.value || 'MEUCOBOL';
+  const sel  = id => document.getElementById(id)?.value || '';
   const project = {
-    version: '1.0',
-    programId: pid,
-    author:   document.getElementById('prop-author')?.value || '',
-    date:     document.getElementById('prop-date')?.value || '',
-    remarks:  document.getElementById('prop-remarks')?.value || '',
-    dialect:  document.getElementById('prop-dialect')?.value || '',
+    version:    '2.0',
+    programId:  pid,
+    author:     sel('prop-author'),
+    date:       sel('prop-date'),
+    remarks:    sel('prop-remarks'),
+    dialect:    sel('prop-dialect'),
+    platform:   sel('prop-platform'),
+    encode:     sel('prop-encode'),
+    programFiles: JSON.parse(JSON.stringify(_programFiles)),
+    nodeSeqCounter: Object.assign({}, nodeSeqCounter),
     nodes: [],
-    connections: connections
+    connections: JSON.parse(JSON.stringify(connections))
   };
-  // Captura todos os nós do canvas
+
   document.querySelectorAll('#canvas .cf-node').forEach(n => {
     const isCircle = n.classList.contains('node-circle');
+    const hdr = n.querySelector('.node-card-header');
     const entry = {
-      id:    n.id,
-      x:     parseInt(n.style.left) || 0,
-      y:     parseInt(n.style.top)  || 0,
-      label: n.querySelector('.node-card-header')?.childNodes[1]?.textContent?.trim() ||
-             n.querySelector('.node-label')?.textContent?.trim() || '',
+      id:         n.id,
+      x:          parseInt(n.style.left) || 0,
+      y:          parseInt(n.style.top)  || 0,
+      label:      hdr?.querySelector('.node-label')?.textContent?.trim() ||
+                  hdr?.childNodes[1]?.textContent?.trim() || '',
       isCircle,
+      dynamicType: n.dataset.nodeType  || null,
+      codeRole:    n.dataset.codeRole  || null,
+      color:       n.dataset.nodeColor || null,
       fields: []
     };
-    n.querySelectorAll('.node-field input').forEach(inp => {
-      entry.fields.push(inp.value);
-    });
-    // Tipo dinâmico: extrai do data-type original ou do id
-    const drag = n.querySelector('[draggable]');
-    entry.dynamicType = n.dataset.nodeType || null;
+    n.querySelectorAll('.node-field input').forEach(inp => entry.fields.push(inp.value));
     project.nodes.push(entry);
   });
-  // Working-storage
+
   const wsRows = [];
   document.querySelectorAll('#args-tbody tr').forEach(r => {
-    const inputs = r.querySelectorAll('input');
-    wsRows.push(Array.from(inputs).map(i => i.value));
+    wsRows.push(Array.from(r.querySelectorAll('input')).map(i => i.value));
   });
   project.workingStorage = wsRows;
+  return project;
+}
 
+function saveProject() {
+  const project  = _buildProjectSnapshot();
+  const fileName = project.programId.toUpperCase() + '.cobol-project.json';
   const blob = new Blob([JSON.stringify(project, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = pid.toUpperCase() + '.cobol-project.json';
+  a.download = fileName;
   a.click();
   showToast('Projeto salvo como JSON!', 'success');
   setStatus('Projeto .json salvo');
@@ -4327,55 +4445,109 @@ function _importProjectJSON(text) {
 
   if (!confirm('Importar projeto "' + (project.programId||'?') + '"? O canvas atual será substituído.')) return;
 
-  // Propriedades
-  if (project.programId) document.getElementById('prop-program-id').value = project.programId;
-  if (project.author)    document.getElementById('prop-author').value    = project.author;
-  if (project.date)      document.getElementById('prop-date').value      = project.date;
-  if (project.remarks)   document.getElementById('prop-remarks').value   = project.remarks;
-  if (project.dialect)   document.getElementById('prop-dialect').value   = project.dialect;
+  // ── Propriedades ────────────────────────────────────────────────────
+  const setVal = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.value = v; };
+  setVal('prop-program-id', project.programId);
+  setVal('prop-author',     project.author);
+  setVal('prop-date',       project.date);
+  setVal('prop-remarks',    project.remarks);
+  setVal('prop-dialect',    project.dialect);
+  setVal('prop-platform',   project.platform);
+  setVal('prop-encode',     project.encode);
+  if (project.programId) updateProgramName(project.programId);
 
-  // Remove nós dinâmicos
+  // ── Arquivos registrados ─────────────────────────────────────────────
+  if (Array.isArray(project.programFiles)) {
+    _programFiles.length = 0;
+    project.programFiles.forEach(f => _programFiles.push(f));
+    _renderFilesList();
+  }
+
+  // ── Restaura nodeSeqCounter ───────────────────────────────────────────
+  if (project.nodeSeqCounter) {
+    Object.assign(nodeSeqCounter, project.nodeSeqCounter);
+  }
+
+  // ── Remove nós dinâmicos ─────────────────────────────────────────────
+  const staticIds = new Set(['node-start','node-main','node-read','node-proc','node-write','node-end-node']);
   document.querySelectorAll('#canvas .cf-node').forEach(n => {
-    if (!['node-start','node-main','node-read','node-proc','node-write','node-end-node'].includes(n.id))
-      n.remove();
+    if (!staticIds.has(n.id)) n.remove();
   });
 
-  // Reposiciona nós estáticos e preenche campos
-  const staticIds = ['node-start','node-main','node-read','node-proc','node-write','node-end-node'];
+  // ── Reposiciona / recria nós ─────────────────────────────────────────
   (project.nodes || []).forEach(nd => {
-    const el = document.getElementById(nd.id);
-    if (el) {
-      el.style.left = nd.x + 'px';
-      el.style.top  = nd.y + 'px';
-      const inputs = el.querySelectorAll('.node-field input');
-      (nd.fields || []).forEach((v, i) => { if (inputs[i]) inputs[i].value = v; });
-    } else if (!staticIds.includes(nd.id)) {
-      // Nó dinâmico: recria pelo type armazenado ou genérico
+    let el = document.getElementById(nd.id);
+
+    if (!el && !staticIds.has(nd.id)) {
+      // Nó dinâmico: cria pelo dynamicType
       const type = nd.dynamicType || 'MOVE';
       if (activityMeta[type]) {
+        // createNodeAt incrementa nodeSeqCounter internamente; lemos o valor ANTES
+        const seqBefore = nodeSeqCounter[type] || 0;
         createNodeAt(type, nd.x, nd.y);
-        // Preenche campos do último nó criado
-        const newEl = document.getElementById('node-dyn-' + type.toLowerCase().replace('_','-') + '-' + (nodeSeqCounter[type]||1));
-        if (newEl) {
-          newEl.id = nd.id; // restaura id original
-          const inputs = newEl.querySelectorAll('.node-field input');
-          (nd.fields || []).forEach((v, i) => { if (inputs[i]) inputs[i].value = v; });
+        const seqAfter = nodeSeqCounter[type] || 1;
+        const typeLow = type.toLowerCase().replace(/_/g, '-');
+        el = document.getElementById(`node-dyn-${typeLow}-${seqAfter}`);
+      }
+    }
+
+    if (!el) return;
+
+    // Reposiciona
+    el.style.left = nd.x + 'px';
+    el.style.top  = nd.y + 'px';
+
+    // Restaura atributos extras
+    if (nd.dynamicType) el.dataset.nodeType  = nd.dynamicType;
+    if (nd.codeRole)    el.dataset.codeRole  = nd.codeRole;
+    if (nd.color)       el.dataset.nodeColor = nd.color;
+
+    // Restaura id original (importante para conexões)
+    if (el.id !== nd.id) el.id = nd.id;
+
+    // Restaura label no cabeçalho (ex: "PERFORM INI/PRO/TER #1")
+    if (nd.label) {
+      const labelEl = el.querySelector('.node-label');
+      if (labelEl) labelEl.textContent = nd.label;
+    }
+
+    // Ajusta número de linhas para corresponder ao salvo
+    if (nd.fields && nd.fields.length > 0) {
+      const body = el.querySelector('.node-card-body');
+      if (body) {
+        // Remove linhas excedentes
+        const allRows = Array.from(body.querySelectorAll('.node-field'));
+        allRows.slice(nd.fields.length).forEach(r => r.remove());
+        // Adiciona linhas faltantes
+        const needed = nd.fields.length - body.querySelectorAll('.node-field').length;
+        for (let k = 0; k < needed; k++) {
+          const newRow = document.createElement('div');
+          newRow.className = 'node-field';
+          newRow.innerHTML = `<span class="node-field-drag" title="Arrastar para reordenar">&#8597;</span><input value="" /><span class="node-field-more" onclick="event.stopPropagation();fieldRowMenu(this)">···</span><span class="node-field-help">?</span>`;
+          body.appendChild(newRow);
         }
       }
     }
+
+    // Preenche campos
+    const inputs = el.querySelectorAll('.node-field input');
+    (nd.fields || []).forEach((v, i) => { if (inputs[i]) inputs[i].value = v; });
+
+    // Atualiza estilo visual dos campos
+    if (typeof _styleNodeFields === 'function') _styleNodeFields(el);
   });
 
-  // Restaura conexões
+  // ── Conexões ─────────────────────────────────────────────────────────
   connections = project.connections || [];
 
-  // Working-storage
+  // ── Working-storage ───────────────────────────────────────────────────
   const tbody = document.getElementById('args-tbody');
   if (tbody && project.workingStorage?.length) {
     tbody.innerHTML = '';
     project.workingStorage.forEach(row => {
       const tr = document.createElement('tr');
       tr.innerHTML = row.map(v =>
-        `<td><input type="text" value="${v.replace(/"/g,'&quot;')}" /></td>`
+        `<td><input type="text" value="${(v||'').replace(/"/g,'&quot;')}" /></td>`
       ).join('') +
       `<td><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:#dc2626">&#10005;</button></td>`;
       tbody.appendChild(tr);
@@ -4383,10 +4555,10 @@ function _importProjectJSON(text) {
   }
 
   updateNodeCount();
-  // Aguarda DOM estabilizar antes de redesenhar as setas
   requestAnimationFrame(() => {
     drawArrows();
     generateAllCode();
+    refreshProjectTree?.();
     showToast('Projeto importado com sucesso!', 'success');
     setStatus('Projeto importado — flowchart atualizado');
   });
