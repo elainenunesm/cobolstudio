@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>CB · COBOL Dev Studio</title>
+  <title>CB · COBOL Dev Studio 2.0</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%234ade80'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='14' font-weight='700' fill='%231a1a2e' text-anchor='middle'%3ECB%3C/text%3E%3C/svg%3E" />
   <!-- Design tokens & reset -->
   <link rel="stylesheet" href="css/tokens.css" />
@@ -950,6 +950,22 @@
       background: transparent; color: var(--accent); padding: 2px 0;
     }
     #pg-edicao .prop-edit-add-btn:hover { background: #eef3ff; }
+    /* ── Tabela Interna props ── */
+    .tbl-prop-row { display:flex; align-items:center; gap:6px; margin:2px 0; }
+    .tbl-prop-lbl { font-size:11px; color:#888; width:110px; flex-shrink:0; }
+    .tbl-prop-row input { flex:1; font-size:11px; padding:2px 4px;
+      border:1px solid var(--panel-border); border-radius:2px;
+      background:var(--prop-value-bg); color:var(--text); }
+    .tbl-field-row { display:flex; gap:4px; align-items:center; margin:2px 0; }
+    .tbl-field-row input { font-size:11px; padding:2px 4px; flex:1;
+      border:1px solid var(--panel-border); border-radius:2px;
+      background:var(--prop-value-bg); color:var(--text); }
+    .tbl-field-del { padding:1px 5px; font-size:11px; cursor:pointer;
+      border:1px solid #bbb; border-radius:2px; background:#fff; color:#c00; flex-shrink:0; }
+    .tbl-field-del:hover { background:#fee; }
+    .tbl-preview { font-size:10px; font-family:monospace;
+      background:rgba(0,0,0,.35); color:#a6e3a1; border-radius:3px;
+      padding:6px 8px; margin:4px 0 0 0; white-space:pre; overflow-x:auto; max-height:120px; }
     #pg-edicao .prop-edit-role {
       display: flex; align-items: center; gap: 6px; margin: 4px 0 6px 0;
     }
@@ -1254,9 +1270,9 @@
   <div id="header">
     <div class="logo">
       <div class="icon-logo">CB</div>
-      COBOL Dev Studio 1.0
+      COBOL Dev Studio 2.0
     </div>
-    <div class="project-tab" title="Projeto atual">📁 Project: MeuProgramaCOBOL</div>
+    <div id="project-tab" class="project-tab" title="Projeto atual">📁 <span id="project-tab-name">MEUCOBOL</span></div>
     <div class="spacer"></div>
     <div class="user-info">dev@cobol-studio.local</div>
   </div>
@@ -1276,19 +1292,11 @@
             <span class="rbtn-icon">📂</span>
             <span class="rbtn-label">Abrir</span>
           </button>
-          <button class="rbtn large" onclick="saveProgram()" title="Salvar .CBL">
-            <span class="rbtn-icon">💾</span>
-            <span class="rbtn-label">Salvar</span>
-          </button>
           <button class="rbtn large" onclick="saveProgramAs()" title="Salvar projeto JSON escolhendo a pasta">
             <span class="rbtn-icon">📂</span>
             <span class="rbtn-label">Salvar Como</span>
           </button>
           <div class="rbtn-col">
-            <button class="rbtn small" onclick="saveProject()" title="Salvar projeto JSON">
-              <span class="rbtn-icon">📌</span>
-              <span class="rbtn-label">Salvar Projeto</span>
-            </button>
             <button class="rbtn small" onclick="importProgram()" title="Importar projeto JSON ou .CBL">
               <span class="rbtn-icon">📥</span>
               <span class="rbtn-label">Importar</span>
@@ -1319,6 +1327,10 @@
             <button class="rbtn small" onclick="importCopybooks()" title="Importar COPY">
               <span class="rbtn-icon">📋</span>
               <span class="rbtn-label">Import COPY</span>
+            </button>
+            <button class="rbtn small" onclick="importIncludes()" title="Importar INCLUDE (EXEC SQL INCLUDE)">
+              <span class="rbtn-icon">📎</span>
+              <span class="rbtn-label">Import INCLUDE</span>
             </button>
             <button class="rbtn small" onclick="manageLibraries()" title="Biblioteca">
               <span class="rbtn-icon">📚</span>
@@ -1599,6 +1611,9 @@
               <div class="activity-item" draggable="true" data-type="INITIALIZE" ondragstart="onDragStart(event,'INITIALIZE')">
                 <span class="act-icon">&#128260;</span> INITIALIZE
               </div>
+              <div class="activity-item" draggable="true" data-type="NUMVAL" ondragstart="onDragStart(event,'NUMVAL')">
+                <span class="act-icon">&#128290;</span> NUMVAL
+              </div>
             </div>
 
             <!-- COBOL.Aritmetica -->
@@ -1731,9 +1746,6 @@
               <span class="act-group-icon">&#128202;</span> COBOL.TabelaInterna
             </div>
             <div class="act-group-body" id="ag-tbl">
-              <div class="activity-item" draggable="true" data-type="TBL_DEFINE" ondragstart="onDragStart(event,'TBL_DEFINE')">
-                <span class="act-icon">&#128202;</span> OCCURS (Tabela)
-              </div>
               <div class="activity-item" draggable="true" data-type="TBL_SET" ondragstart="onDragStart(event,'TBL_SET')">
                 <span class="act-icon">&#128290;</span> SET INDEX
               </div>
@@ -1899,6 +1911,25 @@
             <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_showAddFileForm()">＋ Adicionar arquivo</button>
           </div>
 
+          <div class="prop-group-header" onclick="togglePropGroup(this,'pg-tables')">
+            ▼ &nbsp;Tabelas Internas (OCCURS)
+          </div>
+          <div id="pg-tables">
+            <div id="tables-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
+            <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_showAddTableForm()">＋ Adicionar tabela</button>
+          </div>
+
+          <div class="prop-group-header" onclick="togglePropGroup(this,'pg-linkage')">
+            ▼ &nbsp;Linkage Section
+          </div>
+          <div id="pg-linkage">
+            <div id="linkage-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
+            <div style="display:flex;gap:4px;margin-top:4px;">
+              <button class="canvas-btn" style="flex:1;" onclick="_showAddLinkageForm()">＋ Variável</button>
+              <button class="canvas-btn" style="flex:1;background:#1e40af;color:#fff;" onclick="_autoLinkageFromGoback()" title="Gerar linkage padrão para subprograma">⚡ Auto</button>
+            </div>
+          </div>
+
           <div class="prop-group-header" onclick="togglePropGroup(this,'pg-environment')">
             ▼ &nbsp;Environment
           </div>
@@ -1994,6 +2025,7 @@
       <span class="bp-tab"        id="bp-tab-console" onclick="switchBPanel('console')">Console</span>
       <span class="bp-tab-spacer"></span>
       <button class="bp-tab-action" onclick="_addWsRow()" id="bp-btn-add-ws">＋ Variável</button>
+      <button class="bp-tab-action" onclick="importWsVars()" id="bp-btn-import-ws" title="Importar variáveis de arquivo .ws/.cbl">&#128229; Import WS</button>
       <button class="bp-tab-action" onclick="_clearConsole()" id="bp-btn-clear-con" style="display:none">🗑 Limpar</button>
       <button class="bp-tab-action" style="margin-left:4px" onclick="closeBottomPanel()">✕</button>
     </div>
@@ -2039,6 +2071,10 @@
 </div>
 <!-- Input oculto para importar arquivos COPY -->
 <input type="file" id="copy-file-input" accept=".cpy,.cbl,.txt,.copy" style="display:none" onchange="_onCopyFileSelected(event)">
+<!-- Input oculto para importar arquivos INCLUDE -->
+<input type="file" id="include-file-input" accept=".inc,.cpy,.cbl,.txt" style="display:none" onchange="_onIncludeFileSelected(event)">
+<!-- Input oculto para importar variáveis Working-Storage -->
+<input type="file" id="ws-vars-input" accept=".ws,.cbl,.cpy,.txt" style="display:none" onchange="_onWsVarsFileSelected(event)">
 
 <!-- ═══ TOAST ════════════════════════════════════════════════════════ -->
 <div id="toast"></div>
@@ -2062,6 +2098,8 @@ let draggingType   = null;
 let nodeCounter    = 7;
 let _codeWasImported = false; // true quando um .CBL foi importado; false = construído pelo fluxo
 let _importedPreamble = null; // IDENTIFICATION+ENVIRONMENT+DATA DIVISION do programa importado
+let _copybookRegistry = []; // { name, content } — COPYs importados via botão Import COPY
+let _includeRegistry  = []; // { name, content } — INCLUDEs importados via botão Import INCLUDE
 let argsOpen       = false;
 let connectingFrom = null;
 let connections    = [];
@@ -2136,6 +2174,165 @@ function selectNode(nodeId, label) {
   drawArrows();
 }
 
+/* ─ Editor estruturado de Tabela Interna (TBL_DEFINE) ────────────── */
+function _renderTblDefProps(el, wrap) {
+  // Carrega configuração salva ou cria padrão
+  let cfg = el.dataset.tblConfig ? JSON.parse(el.dataset.tblConfig) : null;
+  if (!cfg) {
+    cfg = {
+      tblName:   'WS-TABELA',
+      itemName:  'WS-TB-ITEM',
+      occurs:    100,
+      indexName: 'IX-TB',
+      fields: [
+        { name: 'WS-TB-CHAVE', pic: 'PIC X(10)' },
+        { name: 'WS-TB-VALOR', pic: 'PIC X(40)' },
+        { name: 'WS-TB-NUM',   pic: 'PIC 9(7)V99' }
+      ]
+    };
+    el.dataset.tblConfig = JSON.stringify(cfg);
+  }
+
+  function _save() {
+    el.dataset.tblConfig = JSON.stringify(cfg);
+    // Atualiza os campos do card visualmente
+    const body = el.querySelector('.node-card-body');
+    if (body) {
+      body.innerHTML = '';
+      const lines = [
+        cfg.tblName + '.',
+        `   05 ${cfg.itemName} OCCURS ${cfg.occurs} TIMES`,
+        `          INDEXED BY ${cfg.indexName}.`
+      ];
+      cfg.fields.forEach(f => lines.push(`      10 ${f.name.padEnd(18)} ${f.pic}.`));
+      lines.forEach(line => {
+        const fld = document.createElement('div');
+        fld.className = 'node-field';
+        fld.innerHTML = `<span class="node-field-drag" title="Arrastar">&#8597;</span><input value="${line.replace(/"/g,'&quot;')}"/><span class="node-field-more" onclick="event.stopPropagation();fieldRowMenu(this)">···</span><span class="node-field-help">?</span>`;
+        body.appendChild(fld);
+      });
+    }
+    generateAllCode();
+  }
+
+  function _row(label, value, onChange, type) {
+    const row = document.createElement('div');
+    row.className = 'prop-edit-row tbl-prop-row';
+    const lbl = document.createElement('span');
+    lbl.className = 'tbl-prop-lbl';
+    lbl.textContent = label;
+    const inp = document.createElement('input');
+    inp.type = type || 'text';
+    inp.value = value;
+    if (type === 'number') { inp.min = 1; inp.max = 9999; inp.style.width = '70px'; }
+    inp.addEventListener('input', () => { onChange(inp.value); _save(); });
+    row.appendChild(lbl);
+    row.appendChild(inp);
+    return row;
+  }
+
+  // Título
+  const title = document.createElement('div');
+  title.className = 'prop-edit-label';
+  title.textContent = '📊 Tabela Interna (OCCURS)';
+  wrap.appendChild(title);
+
+  // Campos principais
+  wrap.appendChild(_row('Grupo 01 (nome)',  cfg.tblName,   v => { cfg.tblName   = v.toUpperCase().trim(); }));
+  wrap.appendChild(_row('Item 05 (OCCURS)', cfg.itemName,  v => { cfg.itemName  = v.toUpperCase().trim(); }));
+  wrap.appendChild(_row('Ocorrências',      cfg.occurs,    v => { cfg.occurs    = parseInt(v) || 1; }, 'number'));
+  wrap.appendChild(_row('INDEXED BY',       cfg.indexName, v => { cfg.indexName = v.toUpperCase().trim(); }));
+
+  // Separador campos
+  const sep = document.createElement('div');
+  sep.style.cssText = 'border-top:1px solid var(--panel-border);margin:8px 0 4px 0;';
+  wrap.appendChild(sep);
+  const fieldsLbl = document.createElement('div');
+  fieldsLbl.className = 'prop-edit-label';
+  fieldsLbl.textContent = 'Campos (nível 10)';
+  wrap.appendChild(fieldsLbl);
+
+  const fieldsList = document.createElement('div');
+  fieldsList.id = 'tbl-fields-list';
+  wrap.appendChild(fieldsList);
+
+  function _renderFields() {
+    fieldsList.innerHTML = '';
+    cfg.fields.forEach((f, i) => {
+      const frow = document.createElement('div');
+      frow.className = 'tbl-field-row';
+
+      const nmInp = document.createElement('input');
+      nmInp.placeholder = 'NOME';
+      nmInp.value = f.name;
+      nmInp.title = 'Nome da variável';
+      nmInp.addEventListener('input', () => { cfg.fields[i].name = nmInp.value.toUpperCase().trim(); _save(); });
+
+      const picInp = document.createElement('input');
+      picInp.placeholder = 'PIC X(10)';
+      picInp.value = f.pic;
+      picInp.title = 'Declaração PIC';
+      picInp.style.width = '100px';
+      picInp.addEventListener('input', () => { cfg.fields[i].pic = picInp.value.trim().toUpperCase(); _save(); });
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.title = 'Remover campo';
+      delBtn.className = 'tbl-field-del';
+      delBtn.addEventListener('click', () => {
+        if (cfg.fields.length <= 1) { showToast('A tabela precisa ter ao menos um campo.', 'error'); return; }
+        cfg.fields.splice(i, 1);
+        _save();
+        _renderFields();
+      });
+
+      frow.appendChild(nmInp);
+      frow.appendChild(picInp);
+      frow.appendChild(delBtn);
+      fieldsList.appendChild(frow);
+    });
+  }
+  _renderFields();
+
+  const addFldBtn = document.createElement('button');
+  addFldBtn.className = 'prop-edit-add-btn';
+  addFldBtn.textContent = '＋ Campo';
+  addFldBtn.addEventListener('click', () => {
+    cfg.fields.push({ name: 'WS-CAMPO-' + (cfg.fields.length + 1), pic: 'PIC X(10)' });
+    _save();
+    _renderFields();
+  });
+  wrap.appendChild(addFldBtn);
+
+  // Preview
+  const prevLbl = document.createElement('div');
+  prevLbl.className = 'prop-edit-label';
+  prevLbl.style.marginTop = '10px';
+  prevLbl.textContent = 'Preview WORKING-STORAGE';
+  wrap.appendChild(prevLbl);
+
+  const prev = document.createElement('pre');
+  prev.className = 'tbl-preview';
+  function _updatePreview() {
+    let txt = `       ${cfg.tblName}.\n`;
+    txt += `           05 ${cfg.itemName} OCCURS ${cfg.occurs} TIMES\n`;
+    txt += `                      INDEXED BY ${cfg.indexName}.\n`;
+    cfg.fields.forEach(f => { txt += `               10 ${f.name.padEnd(20)} ${f.pic}.\n`; });
+    prev.textContent = txt;
+  }
+  _updatePreview();
+  wrap.appendChild(prev);
+
+  // Ao salvar recria preview
+  const origSave = _save;
+  function _saveAndPreview() { origSave(); _updatePreview(); }
+  // repatch all inputs in wrap
+  wrap.querySelectorAll('input').forEach(inp => {
+    const orig = inp.oninput;
+    inp.addEventListener('input', _updatePreview);
+  });
+}
+
 function _renderPropEdit(fullId) {
   const wrap = document.getElementById('pg-edicao');
   if (!wrap) return;
@@ -2143,6 +2340,11 @@ function _renderPropEdit(fullId) {
   const el = document.getElementById(fullId);
   if (!el) {
     wrap.innerHTML = '<div class="prop-edit-empty" id="prop-edit-empty">Selecione um elemento no canvas</div>';
+    return;
+  }
+  // ── Editor especial para TBL_DEFINE (Tabela Interna) ──────────
+  if (el.dataset.nodeType === 'TBL_DEFINE') {
+    _renderTblDefProps(el, wrap);
     return;
   }
   // ── Edição do cabeçalho do bloco ──────────────────────────────
@@ -2455,6 +2657,7 @@ const activityMeta = {
   /* ── Movimentação ── */
   MOVE:          { icon:'➡️', label:'MOVE',          color:'blue',   fields:['MOVE [origem] TO [destino]'] },
   INITIALIZE:    { icon:'🔄', label:'INITIALIZE',    color:'blue',   fields:['INITIALIZE WS-VARIAVEL'] },
+  NUMVAL:        { icon:'🔢', label:'NUMVAL',         color:'blue',   fields:['MOVE FUNCTION NUMVAL([WS-STRING]) TO [WS-NUMERICO]'] },
   /* ── Aritmética ── */
   ADD:           { icon:'➕', label:'ADD',           color:'orange', fields:['ADD 1 TO WS-CONTADOR'] },
   SUBTRACT:      { icon:'➖', label:'SUBTRACT',      color:'orange', fields:['SUBTRACT WS-A FROM WS-B'] },
@@ -2592,6 +2795,18 @@ function createNodeAt(type, x, y) {
       firstField.addEventListener('change', () => { _autoRegisterVsamOpen(firstField.value); }, { once: true });
       _autoRegisterVsamOpen(firstField.value);
     }
+  }
+  // Auto-cria tabela interna padrão quando nó de operação de tabela é adicionado
+  const _TBL_OP_TYPES = ['TBL_SET','TBL_SET_UP','TBL_SET_DOWN','TBL_SEARCH','TBL_SEARCH_ALL',
+                          'TBL_PERFORM','TBL_MOVE_ITEM','TBL_LOAD'];
+  if (_TBL_OP_TYPES.includes(type) && _internalTables.length === 0) {
+    _autoRegisterDefaultTable();
+  }
+  // Auto-cria linkage padrão quando nó que contém GOBACK é adicionado
+  const _hasGobackField = Array.from(div.querySelectorAll('.node-field input'))
+    .some(inp => /\bGO\s*BACK\b/i.test(inp.value));
+  if (_hasGobackField && typeof _linkageVars !== 'undefined' && _linkageVars.length === 0) {
+    setTimeout(_autoLinkageFromGoback, 50);
   }
 }
 
@@ -3254,7 +3469,13 @@ function _doReset() {
   if (dv) dv.classList.remove('visible');
   _drillNodeId = null;
   _importedPreamble = null;
+  _copybookRegistry = [];
+  _includeRegistry  = [];
+  _internalTables   = [];
+  _linkageVars      = [];
   _codeWasImported = false;
+  // Limpa tabela WS
+  const tbWs = document.getElementById('args-tbody'); if (tbWs) tbWs.innerHTML = '';
   drawArrows();
   updateNodeCount();
 }
@@ -3263,17 +3484,11 @@ function _resetCanvasState() {
   _doReset();
   // Executa novamente após o browser tentar restaurar valores de formulário
   setTimeout(_doReset, 0);
-  // Após o último reset, restaura sessão salva (se houver)
+  // Sempre inicia limpo — sem restaurar sessão anterior
   setTimeout(() => {
     _doReset();
-    const hasCode = _loadFromStorage();
-    if (hasCode) {
-      _renderCodeHighlight();
-      requestAnimationFrame(_styleAllNodes); // aplica estilo aninhado após carregar
-    } else {
-      // Sem sessão salva: gera código inicial a partir dos nós default
-      generateAllCode();
-    }
+    try { localStorage.removeItem(_LS_KEY); } catch(e) {}
+    generateAllCode();
   }, 150);
 }
 
@@ -3328,7 +3543,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 window.addEventListener('resize', drawArrows);
-window.addEventListener('beforeunload', _saveToStorage);
+// Auto-save desativado — F5 sempre inicia limpo
 
 // ── Redimensionamento lateral do painel direito ─────────────────────
 (function() {
@@ -3373,8 +3588,19 @@ function editNodeLabel(nid) {
   const old = lbl.textContent.trim();
   const novo = prompt('Renomear parágrafo / seção:', old);
   if (novo && novo.trim() && novo.trim() !== old) {
-    lbl.textContent = novo.trim();
-    showToast('Parágrafo renomeado.', 'success');
+    const newName = novo.trim().toUpperCase();
+    const oldEsc  = old.replace(/[-_.]/g, c => '\\' + c);
+    const rx      = new RegExp('\\b' + oldEsc + '\\b', 'gi');
+    // Atualiza o label do próprio nó
+    lbl.textContent = newName;
+    // Propaga para todos os campos de todos os nós no canvas
+    document.querySelectorAll('#canvas .node-card .node-field input').forEach(inp => {
+      if (rx.test(inp.value)) {
+        inp.value = inp.value.replace(rx, newName);
+      }
+    });
+    showToast(`"${old}" renomeado para "${newName}" em todo o canvas.`, 'success');
+    generateAllCode();
     drawArrows();
   }
 }
@@ -3387,6 +3613,65 @@ document.addEventListener('dblclick', e => {
   if (e.target.closest('input, button, select, .node-connect-btn, .node-field-more, .node-field-help')) return;
   drillIntoNode(card.id);
 });
+
+// ── Sync bidirecional campo ↔ label de parágrafo ─────────────────────
+// Quando o usuário edita um campo (ex: PERFORM INI-RTN-1 → PERFORM INI-RTN-2)
+// e o nome antigo existe como label de um nó, renomeia esse nó e propaga.
+(function _setupFieldLabelSync() {
+  const canvas = document.getElementById('canvas');
+  if (!canvas) return;
+
+  // Salva valor ao focar
+  canvas.addEventListener('focusin', e => {
+    const inp = e.target;
+    if (!inp.matches || !inp.matches('.node-card .node-field input')) return;
+    inp._prevVal = inp.value;
+  }, true);
+
+  // Compara ao sair do campo
+  canvas.addEventListener('change', e => {
+    const inp = e.target;
+    if (!inp.matches || !inp.matches('.node-card .node-field input')) return;
+    const oldVal = (inp._prevVal || '').trim();
+    const newVal = inp.value.trim();
+    if (oldVal === newVal) return;
+
+    // Coleta todos os labels do canvas
+    const labelEls = Array.from(document.querySelectorAll('#canvas .node-card .node-label'));
+    const labelMap  = new Map(); // uppercase → element
+    labelEls.forEach(el => labelMap.set(el.textContent.trim().toUpperCase(), el));
+
+    // Extrai tokens COBOL (letras, dígitos, hífen)
+    const tokens = s => (s.match(/[A-Z][A-Z0-9\-]*/gi) || []).map(w => w.toUpperCase());
+    const oldTokens = tokens(oldVal);
+    const newTokens = tokens(newVal);
+
+    // Encontra o token que: estava no old, sumiu no new, e existe como label
+    const removed = oldTokens.filter(t => !newTokens.includes(t) && labelMap.has(t));
+    const added   = newTokens.filter(t => !oldTokens.includes(t) && !labelMap.has(t));
+
+    if (removed.length !== 1 || added.length !== 1) return; // ambíguo, não propaga
+
+    const oldName = removed[0];
+    const newName = added[0];
+    const rx = new RegExp('\\b' + oldName.replace(/[-_.]/g, c => '\\' + c) + '\\b', 'gi');
+
+    // Renomeia o label do nó alvo
+    const targetLbl = labelMap.get(oldName);
+    if (targetLbl) targetLbl.textContent = newName;
+
+    // Propaga para todos os outros campos que referenciam o nome antigo
+    document.querySelectorAll('#canvas .node-card .node-field input').forEach(fi => {
+      if (fi !== inp && rx.test(fi.value)) {
+        fi.value = fi.value.replace(rx, newName);
+      }
+    });
+
+    showToast(`Referências de "${oldName}" → "${newName}" atualizadas.`, 'success');
+    generateAllCode();
+    drawArrows();
+  }, true);
+})();
 
 /* ─ Nested-block visual styling ─────────────────────────────────────── */
 // Analisa os inputs de um nó e aplica classes de profundidade/cor para
@@ -3775,9 +4060,21 @@ function generateAllCode() {
     'VSAM_OPEN_INPUT','VSAM_OPEN_IO','VSAM_OPEN_OUTPUT','READ','READ_NEXT','CLOSE_FILE','WRITE','REWRITE']);
 
   const nodes = ordered;
+  const procNodes = nodes; // todos os nós vão para PROCEDURE (TBL_DEFINE foi removido do canvas)
+  // Gera bloco WS para cada tabela registrada no painel Tabelas Internas
+  let wsTableLines = '';
+  (typeof _internalTables !== 'undefined' ? _internalTables : []).forEach(t => {
+    wsTableLines += `\n       01 ${t.tblName}.\n`;
+    wsTableLines += `           05 ${t.itemName} OCCURS ${t.occurs} TIMES\n`;
+    if (t.indexName) wsTableLines += `                      INDEXED BY ${t.indexName}.\n`;
+    t.fields.forEach(f => {
+      wsTableLines += `               10 ${f.name.padEnd(20)} ${f.pic}.\n`;
+    });
+  });
+
   let procLines    = '';
   let _hasOpenRead = false;
-  nodes.forEach(n => {
+  procNodes.forEach(n => {
     const hdr      = n.querySelector('.node-card-header');
     // Usa SEMPRE apenas o .node-label — nunca o textContent do header inteiro
     const title    = hdr?.querySelector('.node-label')?.textContent?.trim() || 'PARA';
@@ -3852,7 +4149,7 @@ function generateAllCode() {
     : '';
 
   // Se não há nós de procedimento, gera apenas o esqueleto de PROCEDURE DIVISION
-  const hasNodes = nodes.length > 0;
+  const hasNodes = procNodes.length > 0;
 
   // Cabeçalho: usa preâmbulo importado original (se disponível) ou template padrão
   let preamble;
@@ -3907,15 +4204,36 @@ ${fileControlBlock}
        DATA DIVISION.
 ${fileSectionBlock}       WORKING-STORAGE SECTION.
        01 WS-FIM                  PIC X(1)  VALUE "N".
-${fileStatusWS}${sqlcaBlock}${wsLines}`;
+${fileStatusWS}${sqlcaBlock}${wsLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
+    // ── Linkage Section ──
+    const lkVars = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
+    if (lkVars.length > 0) {
+      let lkBlock = '\n\n       LINKAGE SECTION.\n';
+      lkVars.forEach(v => {
+        const valPart = v.value ? ` VALUE ${v.value}` : '';
+        lkBlock += `       ${v.level} ${v.name.padEnd(25)} ${v.pic}${valPart}.\n`;
+      });
+      preamble += lkBlock;
+    }
   }
+
+  // ── Detecta GOBACK e PROCEDURE DIVISION USING ──
+  const lkVarsFinal = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
+  const hasGoback = /\bGO\s*BACK\b/i.test(procLines);
+  // Se há GOBACK e linkage vazia, agenda criação automática (fora do codegen para evitar recursão)
+  if (hasGoback && lkVarsFinal.length === 0 && !_importedPreamble) {
+    setTimeout(() => { typeof _autoLinkageFromGoback === 'function' && _autoLinkageFromGoback(); }, 0);
+  }
+  const usingClause = lkVarsFinal.length > 0
+    ? ' USING ' + lkVarsFinal.filter(v => v.level === '01').map(v => v.name).join('\n                      ')
+    : '';
 
   const db2Block = hasDB2 ? `\n       DB2-ERRO-RTN.\n           DISPLAY "SQLCODE: " SQLCODE\n           DISPLAY "SQLERRM: " SQLERRMC\n           PERFORM 9999-FIM.\n` : '';
 
   const code = hasNodes
 ? `${preamble}
 
-       PROCEDURE DIVISION.
+       PROCEDURE DIVISION${usingClause}.
 ${procLines}${db2Block}${abendBlock}`
 : `       PROCEDURE DIVISION.\n`;
 
@@ -3924,6 +4242,391 @@ ${procLines}${db2Block}${abendBlock}`
   _saveToStorage();
   refreshProjectTree();
   return code;
+}
+
+/* ── Gerenciamento de Tabelas Internas (OCCURS / WORKING-STORAGE) ── */
+
+/**
+ * Lista de tabelas internas registradas.
+ * Cada entrada: { tblName, itemName, occurs, indexName, fields:[{name,pic}] }
+ */
+let _internalTables = [];
+
+function _renderTablesList() {
+  const list = document.getElementById('tables-list');
+  if (!list) return;
+  list.innerHTML = '';
+  _internalTables.forEach((t, i) => list.appendChild(_makeTableCard(t, i)));
+}
+
+function _makeTableCard(t, i) {
+  const esc = v => (v||'').replace(/"/g,'&quot;');
+  const fieldsHtml = t.fields.map((f,fi) => `
+    <div class="tbl-field-row" id="tf-row-${i}-${fi}">
+      <input id="tf-nm-${i}-${fi}" value="${esc(f.name)}" placeholder="NOME"
+        onchange="_tblFieldNameChange(${i},${fi},this.value)"
+        style="flex:1;font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;" />
+      <input id="tf-pic-${i}-${fi}" value="${esc(f.pic)}" placeholder="PIC X(10)"
+        oninput="_internalTables[${i}].fields[${fi}].pic=this.value.trim().toUpperCase();generateAllCode();"
+        style="width:90px;font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;" />
+      <button onclick="_removeTblField(${i},${fi})" title="Remover campo"
+        style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+    </div>`).join('');
+
+  const div = document.createElement('div');
+  div.id = `table-card-${i}`;
+  div.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;font-size:11px;overflow:hidden;';
+  div.innerHTML = `
+    <div id="tbl-info-${i}" style="padding:6px 8px;position:relative;">
+      <div style="font-weight:700;color:#1a1a2e;margin-bottom:2px;padding-right:46px;">📊 ${t.tblName}
+        <span style="font-weight:400;color:#888;">(${t.itemName} OCCURS ${t.occurs})</span></div>
+      <div style="color:#555;">INDEX: ${t.indexName} &nbsp;|&nbsp; Campos: ${t.fields.length}</div>
+      <div style="position:absolute;top:4px;right:6px;display:flex;gap:2px;">
+        <button onclick="_toggleTableForm(${i})" title="Editar"
+          style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;padding:2px;">&#9998;</button>
+        <button onclick="_removeTableEntry(${i})" title="Remover"
+          style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+      </div>
+    </div>
+    <div id="tbl-form-${i}" style="display:none;border-top:1px solid #e5e7eb;padding:8px;background:#f8fafc;">
+      <div style="display:grid;grid-template-columns:80px 1fr;gap:4px 6px;align-items:center;margin-bottom:6px;">
+        <span style="color:#555;font-size:10px;">Grupo 01</span>
+        <input id="tbl-tblname-${i}" value="${esc(t.tblName)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">Item 05</span>
+        <input id="tbl-itemname-${i}" value="${esc(t.itemName)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">Ocorrências</span>
+        <input id="tbl-occurs-${i}" type="number" min="1" max="9999" value="${t.occurs}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:70px;" />
+        <span style="color:#555;font-size:10px;">INDEXED BY</span>
+        <input id="tbl-index-${i}" value="${esc(t.indexName)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+      </div>
+      <div style="font-size:10px;color:#555;margin-bottom:4px;font-weight:600;">Campos (nível 10):</div>
+      <div id="tbl-fields-${i}">${fieldsHtml}</div>
+      <button onclick="_addTblField(${i})"
+        style="width:100%;margin:4px 0;background:transparent;border:1px dashed #2563eb;color:#2563eb;border-radius:3px;padding:2px;cursor:pointer;font-size:11px;">\uff0b Campo</button>
+      <div style="display:flex;gap:4px;margin-top:6px;">
+        <button onclick="_saveTableEntry(${i})"
+          style="flex:1;background:#1e40af;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Salvar</button>
+        <button onclick="_toggleTableForm(${i})"
+          style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function _tblFieldNameChange(i, fi, newVal) {
+  const t = _internalTables[i];
+  if (!t) return;
+  const oldName = t.fields[fi].name;
+  const newName = newVal.toUpperCase().trim();
+  if (oldName === newName) return;
+  t.fields[fi].name = newName;
+  // Propaga rename nos nós do canvas
+  if (oldName) {
+    document.querySelectorAll('#canvas .node-card .node-field input').forEach(inp => {
+      inp.value = inp.value.replace(
+        new RegExp('\\b' + oldName.replace(/[-]/g,'\\-') + '\\b', 'g'), newName
+      );
+    });
+  }
+  generateAllCode();
+}
+
+function _toggleTableForm(i) {
+  const form = document.getElementById(`tbl-form-${i}`);
+  if (!form) return;
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function _addTblField(i) {
+  _internalTables[i].fields.push({ name: 'WS-CAMPO-' + (_internalTables[i].fields.length + 1), pic: 'PIC X(10)' });
+  _renderTablesList();
+  _toggleTableForm(i); // reabre
+  generateAllCode();
+}
+
+function _removeTblField(i, fi) {
+  if (_internalTables[i].fields.length <= 1) { showToast('A tabela precisa ter ao menos um campo.', 'error'); return; }
+  _internalTables[i].fields.splice(fi, 1);
+  _renderTablesList();
+  _toggleTableForm(i);
+  generateAllCode();
+}
+
+/**
+ * Percorre todos os nós do canvas e substitui referências antigas da tabela
+ * (tblName, itemName, indexName, nomes de campos) pelos novos valores.
+ */
+function _updateTableRefsInNodes(oldT, newT) {
+  // Monta lista de pares [antigo, novo] a substituir (só os que mudaram)
+  const pairs = [];
+  if (oldT.indexName && oldT.indexName !== newT.indexName)
+    pairs.push([oldT.indexName, newT.indexName]);
+  if (oldT.itemName  && oldT.itemName  !== newT.itemName)
+    pairs.push([oldT.itemName,  newT.itemName]);
+  if (oldT.tblName   && oldT.tblName   !== newT.tblName)
+    pairs.push([oldT.tblName,   newT.tblName]);
+  // Campos renomeados (por índice)
+  oldT.fields.forEach((f, fi) => {
+    const nf = newT.fields[fi];
+    if (nf && f.name && f.name !== nf.name) pairs.push([f.name, nf.name]);
+  });
+  if (pairs.length === 0) return;
+  document.querySelectorAll('#canvas .node-card .node-field input').forEach(inp => {
+    let v = inp.value;
+    pairs.forEach(([old, nw]) => {
+      if (!old) return;
+      v = v.replace(new RegExp('\\b' + old.replace(/[-]/g,'\\-') + '\\b', 'g'), nw);
+    });
+    inp.value = v;
+  });
+}
+
+function _saveTableEntry(i) {
+  const g = id => document.getElementById(id);
+  const t = _internalTables[i];
+  // Captura valores antigos antes de alterar
+  const oldT = {
+    tblName:   t.tblName,
+    itemName:  t.itemName,
+    indexName: t.indexName,
+    fields:    t.fields.map(f => ({ ...f }))
+  };
+  t.tblName   = (g(`tbl-tblname-${i}`)?.value  || t.tblName).trim().toUpperCase();
+  t.itemName  = (g(`tbl-itemname-${i}`)?.value || t.itemName).trim().toUpperCase();
+  t.occurs    = parseInt(g(`tbl-occurs-${i}`)?.value) || t.occurs;
+  t.indexName = (g(`tbl-index-${i}`)?.value    || t.indexName).trim().toUpperCase();
+  // Substitui nos nós do canvas
+  _updateTableRefsInNodes(oldT, t);
+  _renderTablesList();
+  generateAllCode();
+  showToast(`Tabela "${t.tblName}" atualizada.`, 'success');
+}
+
+function _removeTableEntry(i) {
+  const t = _internalTables[i];
+  if (!confirm(`Remover tabela "${t.tblName}"?`)) return;
+  _internalTables.splice(i, 1);
+  _renderTablesList();
+  generateAllCode();
+}
+
+function _showAddTableForm() {
+  const list = document.getElementById('tables-list');
+  if (!list) return;
+  if (document.getElementById('table-add-form')) { document.getElementById('table-add-form').remove(); return; }
+  const form = document.createElement('div');
+  form.id = 'table-add-form';
+  form.style.cssText = 'background:#f0f7ff;border:1px solid #93c5fd;border-radius:4px;padding:8px;font-size:11px;';
+  form.innerHTML = `
+    <div style="font-weight:700;color:#1e40af;margin-bottom:6px;">📊 Nova Tabela Interna</div>
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:4px 6px;align-items:center;">
+      <span style="color:#555;font-size:10px;">Grupo 01</span>
+      <input id="tn-tblname" placeholder="WS-TABELA"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">Item 05</span>
+      <input id="tn-itemname" placeholder="WS-TB-ITEM"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">Ocorrências</span>
+      <input id="tn-occurs" type="number" min="1" max="9999" value="100"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:70px;" />
+      <span style="color:#555;font-size:10px;">INDEXED BY</span>
+      <input id="tn-index" placeholder="IX-TB"
+        style="font-size:11px;padding:2px 4px;border:1px solid #93c5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+    </div>
+    <div style="display:flex;gap:4px;margin-top:8px;">
+      <button onclick="_confirmAddTable()"
+        style="flex:1;background:#1e40af;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Adicionar</button>
+      <button onclick="document.getElementById('table-add-form').remove()"
+        style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+    </div>`;
+  list.appendChild(form);
+  document.getElementById('tn-tblname')?.focus();
+  document.getElementById('tn-tblname').addEventListener('blur', function() {
+    const n = this.value.trim().toUpperCase().replace(/^WS-/,'');
+    const item = document.getElementById('tn-itemname');
+    const idx  = document.getElementById('tn-index');
+    if (item && !item.value) item.value = 'WS-' + n.substring(0,8) + '-ITEM';
+    if (idx  && !idx.value)  idx.value  = 'IX-' + n.substring(0,6);
+  });
+}
+
+function _confirmAddTable() {
+  const g = id => document.getElementById(id);
+  const tblName   = (g('tn-tblname')?.value  || '').trim().toUpperCase() || 'WS-TABELA';
+  const itemName  = (g('tn-itemname')?.value || '').trim().toUpperCase() || (tblName.replace(/^WS-/,'') + '-ITEM');
+  const occurs    = parseInt(g('tn-occurs')?.value) || 100;
+  const indexName = (g('tn-index')?.value    || '').trim().toUpperCase() || ('IX-' + tblName.replace(/^WS-/,'').substring(0,6));
+  if (_internalTables.some(t => t.tblName === tblName)) { showToast(`"${tblName}" já está registrada.`, 'error'); return; }
+  _internalTables.push({
+    tblName, itemName, occurs, indexName,
+    fields: [
+      { name: itemName.replace(/-ITEM$/,'') + '-CHAVE', pic: 'PIC X(10)' },
+      { name: itemName.replace(/-ITEM$/,'') + '-VALOR', pic: 'PIC X(40)' }
+    ]
+  });
+  g('table-add-form')?.remove();
+  _renderTablesList();
+  generateAllCode();
+  showToast(`Tabela "${tblName}" registrada.`, 'success');
+}
+
+/* ── Gerenciamento de Linkage Section ───────────────────────────── */
+
+/**
+ * Lista de variáveis da LINKAGE SECTION.
+ * Cada entrada: { level, name, pic, value }
+ * Ex: { level:'01', name:'LS-PARAMETRO', pic:'PIC X(100)', value:'' }
+ */
+let _linkageVars = [];
+
+function _renderLinkageList() {
+  const list = document.getElementById('linkage-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (_linkageVars.length === 0) {
+    list.innerHTML = '<div style="color:#888;font-size:10px;padding:4px 0;">— nenhuma variável —</div>';
+    return;
+  }
+  _linkageVars.forEach((v, i) => list.appendChild(_makeLinkageCard(v, i)));
+}
+
+function _makeLinkageCard(v, i) {
+  const esc = s => (s||'').replace(/"/g,'&quot;');
+  const div = document.createElement('div');
+  div.id = `lk-card-${i}`;
+  div.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;font-size:11px;overflow:hidden;';
+  div.innerHTML = `
+    <div style="padding:5px 8px;display:flex;align-items:center;gap:6px;position:relative;">
+      <span style="font-size:10px;font-weight:700;color:#7c3aed;min-width:20px;">${esc(v.level)}</span>
+      <span style="font-weight:600;color:#1a1a2e;flex:1;">${esc(v.name)}</span>
+      <span style="color:#555;font-size:10px;">${esc(v.pic)}</span>
+      <div style="display:flex;gap:2px;margin-left:4px;">
+        <button onclick="_toggleLinkageForm(${i})" title="Editar"
+          style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;padding:2px;">&#9998;</button>
+        <button onclick="_removeLinkageEntry(${i})" title="Remover"
+          style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+      </div>
+    </div>
+    <div id="lk-form-${i}" style="display:none;border-top:1px solid #e5e7eb;padding:8px;background:#f8fafc;">
+      <div style="display:grid;grid-template-columns:50px 1fr;gap:4px 6px;align-items:center;">
+        <span style="color:#555;font-size:10px;">Nível</span>
+        <input id="lk-level-${i}" value="${esc(v.level)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:50px;" />
+        <span style="color:#555;font-size:10px;">Nome</span>
+        <input id="lk-name-${i}" value="${esc(v.name)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">PIC</span>
+        <input id="lk-pic-${i}" value="${esc(v.pic)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">VALUE</span>
+        <input id="lk-val-${i}" value="${esc(v.value||'')}" placeholder="(opcional)"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+      </div>
+      <div style="display:flex;gap:4px;margin-top:6px;">
+        <button onclick="_saveLinkageEntry(${i})"
+          style="flex:1;background:#1e40af;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Salvar</button>
+        <button onclick="_toggleLinkageForm(${i})"
+          style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function _toggleLinkageForm(i) {
+  const f = document.getElementById(`lk-form-${i}`);
+  if (f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function _saveLinkageEntry(i) {
+  const g = id => document.getElementById(id);
+  const v = _linkageVars[i];
+  v.level = (g(`lk-level-${i}`)?.value || v.level).trim();
+  v.name  = (g(`lk-name-${i}`)?.value  || v.name).trim().toUpperCase();
+  v.pic   = (g(`lk-pic-${i}`)?.value   || v.pic).trim().toUpperCase();
+  v.value = (g(`lk-val-${i}`)?.value   || '').trim();
+  _renderLinkageList();
+  generateAllCode();
+  showToast(`Variável "${v.name}" atualizada.`, 'success');
+}
+
+function _removeLinkageEntry(i) {
+  if (!confirm(`Remover "${_linkageVars[i].name}" da Linkage Section?`)) return;
+  _linkageVars.splice(i, 1);
+  _renderLinkageList();
+  generateAllCode();
+}
+
+function _showAddLinkageForm() {
+  const list = document.getElementById('linkage-list');
+  if (!list) return;
+  if (document.getElementById('lk-add-form')) { document.getElementById('lk-add-form').remove(); return; }
+  const form = document.createElement('div');
+  form.id = 'lk-add-form';
+  form.style.cssText = 'background:#f5f0ff;border:1px solid #c4b5fd;border-radius:4px;padding:8px;font-size:11px;';
+  form.innerHTML = `
+    <div style="font-weight:700;color:#7c3aed;margin-bottom:6px;">🔗 Nova Variável Linkage</div>
+    <div style="display:grid;grid-template-columns:50px 1fr;gap:4px 6px;align-items:center;">
+      <span style="color:#555;font-size:10px;">Nível</span>
+      <input id="lkn-level" value="01"
+        style="font-size:11px;padding:2px 4px;border:1px solid #c4b5fd;border-radius:3px;width:50px;" />
+      <span style="color:#555;font-size:10px;">Nome</span>
+      <input id="lkn-name" placeholder="LS-PARAMETRO"
+        style="font-size:11px;padding:2px 4px;border:1px solid #c4b5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">PIC</span>
+      <input id="lkn-pic" placeholder="PIC X(100)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #c4b5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">VALUE</span>
+      <input id="lkn-val" placeholder="(opcional)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #c4b5fd;border-radius:3px;width:100%;box-sizing:border-box;" />
+    </div>
+    <div style="display:flex;gap:4px;margin-top:8px;">
+      <button onclick="_confirmAddLinkage()"
+        style="flex:1;background:#7c3aed;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Adicionar</button>
+      <button onclick="document.getElementById('lk-add-form').remove()"
+        style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+    </div>`;
+  list.parentElement.insertBefore(form, list.nextSibling.nextSibling); // insere antes dos botões
+  // Tenta inserir antes do div de botões
+  const btns = document.querySelector('#pg-linkage > div:last-child');
+  const pg = document.getElementById('pg-linkage');
+  if (pg && btns) pg.insertBefore(form, btns);
+  else if (list) list.after(form);
+  document.getElementById('lkn-name')?.focus();
+}
+
+function _confirmAddLinkage() {
+  const g = id => document.getElementById(id);
+  const level = (g('lkn-level')?.value || '01').trim();
+  const name  = (g('lkn-name')?.value  || '').trim().toUpperCase() || 'LS-PARAM';
+  const pic   = (g('lkn-pic')?.value   || '').trim().toUpperCase() || 'PIC X(100)';
+  const value = (g('lkn-val')?.value   || '').trim();
+  if (_linkageVars.some(v => v.name === name)) { showToast(`"${name}" já existe na Linkage.`, 'error'); return; }
+  _linkageVars.push({ level, name, pic, value });
+  document.getElementById('lk-add-form')?.remove();
+  _renderLinkageList();
+  generateAllCode();
+  showToast(`"${name}" adicionada à Linkage Section.`, 'success');
+}
+
+/**
+ * Cria uma linkage padrão de subprograma quando GOBACK está no canvas
+ * e ainda não há variáveis na Linkage Section.
+ */
+function _autoLinkageFromGoback() {
+  if (_linkageVars.length > 0) {
+    showToast('Linkage Section já possui variáveis.', 'warn'); return;
+  }
+  _linkageVars.push(
+    { level: '01', name: 'LK-PARM',   pic: '',          value: '' },
+    { level: '03', name: 'LK-DADOS',  pic: 'PIC X(01)', value: '' }
+  );
+  _renderLinkageList();
+  generateAllCode();
+  showToast('Linkage Section criada com parâmetros padrão.', 'success');
 }
 
 /* ── Gerenciamento de Arquivos (FILE-CONTROL / FILE SECTION) ─────── */
@@ -4289,11 +4992,34 @@ function _autoRegisterVsamOpen(fieldValue) {
   showToast(`Arquivo VSAM "${name}" adicionado ao FILE-CONTROL (INDEXED/DYNAMIC).`, 'success');
 }
 
+/** Auto-cria tabela interna padrão quando o primeiro nó de operação de tabela é solto no canvas */
+function _autoRegisterDefaultTable() {
+  if (_internalTables.length > 0) return;
+  _internalTables.push({
+    tblName:   'WS-TABELA',
+    itemName:  'WS-TB-ITEM',
+    occurs:    100,
+    indexName: 'IX-TB',
+    fields: [
+      { name: 'WS-TB-CHAVE', pic: 'PIC X(10)' },
+      { name: 'WS-TB-VALOR', pic: 'PIC X(40)' },
+      { name: 'WS-TB-NUM',   pic: 'PIC 9(7)V99' }
+    ]
+  });
+  _renderTablesList();
+  generateAllCode();
+  showToast('Tabela "WS-TABELA" criada automaticamente. Edite no painel Tabelas Internas (OCCURS).', 'success');
+}
+
 /* ─ Toolbar Actions ────────────────────────────────────────────────── */
 function newProgram() {
   if (!confirm('Criar novo programa? O projeto atual não salvo será perdido.')) return;
   _codeWasImported = false;
   _importedPreamble = null;
+  _copybookRegistry = [];
+  _includeRegistry  = [];
+  _internalTables   = [];
+  _linkageVars      = [];
   try { localStorage.removeItem(_LS_KEY); } catch(e) {}
   document.querySelectorAll('#canvas .cf-node:not(#node-start):not(#node-end-node)').forEach(n => n.remove());
   const tb = document.getElementById('args-tbody'); if (tb) tb.innerHTML = '';
@@ -5286,8 +6012,9 @@ function generateFlowMap() {
 
 
 let _customFileSect    = null;  // null = usa template padrão
-let _customLinkageSect = null;  // null = não inclui LINKAGE SECTION
+let _customLinkageSect = null;  // null = não inclui LINKAGE SECTION (modo legado)
 let _customEnvSect     = null;  // null = usa template padrão
+// _linkageVars é declarado junto do CRUD de Linkage Section
 
 // Modal com callback de salvar opcional
 let _modalSaveFn = null;
@@ -5319,15 +6046,83 @@ function _onCopyFileSelected(e) {
       'Importar COPY: ' + file.name,
       content,
       function(val) {
-        // Adiciona COPY ao preamble (WORKING-STORAGE) se possível
-        if (_importedPreamble) {
+        // Registra no registry (substitui se já existir)
+        const idx = _copybookRegistry.findIndex(c => c.name === name);
+        if (idx >= 0) _copybookRegistry[idx].content = val;
+        else _copybookRegistry.push({ name, content: val });
+
+        // Se houver preamble importado, injeta lá também
+        if (_importedPreamble && !_importedPreamble.includes('COPY ' + name)) {
           const copyLine = '\n       COPY ' + name + '.';
           _importedPreamble = _importedPreamble.replace(
             /(WORKING-STORAGE\s+SECTION\.)/i,
             '$1' + copyLine
           );
         }
-        showToast('COPY ' + name + ' importado.', 'success');
+        showToast('COPY ' + name + ' registrado na WORKING-STORAGE.', 'success');
+        generateAllCode();
+        _renderCodeHighlight();
+      }
+    );
+  };
+  reader.readAsText(file);
+}
+
+function importWsVars() {
+  document.getElementById('ws-vars-input').value = '';
+  document.getElementById('ws-vars-input').click();
+}
+function _onWsVarsFileSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const lines = ev.target.result.split(/\r?\n/);
+    // Regex para capturar declarações COBOL: [nivel] [nome] PIC ... [VALUE ...].
+    const re = /^\s*(\d{1,2})\s+(\S+)\s+(PIC\s+\S+(?:\(\d+\))?(?:\s+COMP(?:-\d)?)?)(\s+VALUE\s+("[^"]*"|\S+))?/i;
+    let count = 0;
+    lines.forEach(line => {
+      const m = line.match(re);
+      if (!m) return;
+      const lv  = m[1].trim();
+      const nm  = m[2].trim().toUpperCase();
+      const pic = m[3].trim().toUpperCase();
+      const val = m[5] ? m[5].trim() : '';
+      // Ignora linhas de comentário (*) ou divisões
+      if (nm === 'SECTION.' || nm === 'DIVISION.') return;
+      _addWsRow(nm, lv, pic, val);
+      count++;
+    });
+    if (count > 0) {
+      generateAllCode();
+      showToast(count + ' variável(is) importada(s) para Working-Storage.', 'success');
+      toggleBottomPanel('ws');
+    } else {
+      showToast('Nenhuma variável encontrada no arquivo.', 'warn');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function importIncludes() {
+  document.getElementById('include-file-input').value = '';
+  document.getElementById('include-file-input').click();
+}
+function _onIncludeFileSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const content = ev.target.result;
+    const name = file.name.replace(/\.[^.]+$/, '').toUpperCase();
+    _showModalEditable(
+      'Importar INCLUDE: ' + file.name,
+      content,
+      function(val) {
+        const idx = _includeRegistry.findIndex(c => c.name === name);
+        if (idx >= 0) _includeRegistry[idx].content = val;
+        else _includeRegistry.push({ name, content: val });
+        showToast('INCLUDE ' + name + ' registrado na WORKING-STORAGE.', 'success');
         generateAllCode();
         _renderCodeHighlight();
       }
@@ -5337,116 +6132,279 @@ function _onCopyFileSelected(e) {
 }
 
 function manageLibraries() {
-  const code = document.getElementById('code-editor')?.value || '';
-  const copies = [];
-  const re = /\bCOPY\s+([\w-]+)/gi;
-  let m;
-  while ((m = re.exec(code)) !== null) copies.push('  COPY ' + m[1].toUpperCase() + '.');
-  const content = copies.length
-    ? 'COPYBOOKs referenciados no programa:\n\n' + copies.join('\n')
-    : 'Nenhum COPY encontrado no código atual.\n\nDica: Use "Import COPY" para adicionar um arquivo .cpy.';
-  showModal('Biblioteca de COPYs', content);
+  const copies   = typeof _copybookRegistry !== 'undefined' ? _copybookRegistry : [];
+  const includes = typeof _includeRegistry  !== 'undefined' ? _includeRegistry  : [];
+
+  let content = '';
+
+  if (copies.length > 0) {
+    content += 'COPYBOOKs importados:\n';
+    copies.forEach(c => { content += '  COPY ' + c.name + '.\n'; });
+  }
+
+  if (includes.length > 0) {
+    if (content) content += '\n';
+    content += 'INCLUDEs importados (EXEC SQL):\n';
+    includes.forEach(c => { content += '  EXEC SQL INCLUDE ' + c.name + ' END-EXEC.\n'; });
+  }
+
+  if (!content) {
+    content = 'Nenhuma dependência registrada.\n\nDica: Use "Import COPY" ou "Import INCLUDE" para adicionar arquivos.';
+  }
+
+  showModal('Biblioteca de COPYs e INCLUDEs', content);
 }
 
 function editWorkingStorage() {
-  toggleBottomPanel('ws');
-  showToast('Edite a Working-Storage na barra inferior.', 'success');
+  // Tenta extrair do código gerado
+  const code = document.getElementById('code-editor')?.value || '';
+  if (!code.trim()) { showToast('Gere o código primeiro para visualizar a WORKING-STORAGE.', 'warn'); return; }
+  const m = code.match(/WORKING-STORAGE\s+SECTION\.[\s\S]*?(?=\n[ \t]*(?:LINKAGE|LOCAL-STORAGE|PROCEDURE)\s+(?:SECTION|DIVISION)|$)/i);
+  if (!m) { showToast('WORKING-STORAGE SECTION não encontrada no código gerado.', 'warn'); return; }
+  showModal('Working-Storage Section', m[0].trimEnd());
 }
 
 function editFileSection() {
-  let content = _customFileSect;
-  if (!content) {
-    const code = document.getElementById('code-editor')?.value || '';
-    const m = code.match(/FILE\s+SECTION\.[\s\S]*?(?=\n[ \t]*(?:WORKING-STORAGE|LINKAGE|PROCEDURE|LOCAL-STORAGE)\s+(?:SECTION|DIVISION)|$)/i);
-    content = m ? m[0].trimEnd() : '       FILE SECTION.\n       FD  ARQ-ENTRADA  RECORDING MODE IS F\n                        BLOCK CONTAINS 0 RECORDS\n                        RECORD CONTAINS 80 CHARACTERS.\n       01  REG-ENTRADA.\n           05  RE-TIPO    PIC X(1).\n           05  RE-DADOS   PIC X(79).';
+  // Se há customização salva, usa ela
+  if (_customFileSect) {
+    _showModalEditable('Editar FILE SECTION', _customFileSect, function(val) {
+      _customFileSect = val.trim();
+      generateAllCode(); _renderCodeHighlight();
+      showToast('File Section atualizada.', 'success');
+    });
+    return;
   }
-  _showModalEditable('Editar FILE SECTION', content, function(val) {
+  // Tenta extrair do código gerado
+  const code = document.getElementById('code-editor')?.value || '';
+  if (!code.trim()) { showToast('Gere o código primeiro para visualizar a FILE SECTION.', 'warn'); return; }
+  const m = code.match(/FILE\s+SECTION\.[\s\S]*?(?=\n[ \t]*(?:WORKING-STORAGE|LINKAGE|PROCEDURE|LOCAL-STORAGE)\s+(?:SECTION|DIVISION)|$)/i);
+  if (!m) { showToast('FILE SECTION não encontrada no código gerado.', 'warn'); return; }
+  _showModalEditable('Editar FILE SECTION', m[0].trimEnd(), function(val) {
     _customFileSect = val.trim();
-    generateAllCode();
-    _renderCodeHighlight();
+    generateAllCode(); _renderCodeHighlight();
     showToast('File Section atualizada.', 'success');
   });
 }
 
 function editLinkage() {
-  const content = _customLinkageSect ||
-    '       LINKAGE SECTION.\n       01  LS-PARM.\n           05  LS-PARM-LEN  PIC S9(4) COMP.\n           05  LS-PARM-DAT  PIC X(100).';
-  _showModalEditable('Editar LINKAGE SECTION', content, function(val) {
+  // Se há customização salva, usa ela
+  if (_customLinkageSect) {
+    _showModalEditable('Editar LINKAGE SECTION', _customLinkageSect, function(val) {
+      _customLinkageSect = val.trim();
+      generateAllCode(); _renderCodeHighlight();
+      showToast('Linkage Section atualizada.', 'success');
+    });
+    return;
+  }
+  // Tenta extrair do código gerado
+  const code = document.getElementById('code-editor')?.value || '';
+  if (!code.trim()) { showToast('Gere o código primeiro para visualizar a LINKAGE SECTION.', 'warn'); return; }
+  const m = code.match(/LINKAGE\s+SECTION\.[\s\S]*?(?=\n[ \t]*(?:PROCEDURE|LOCAL-STORAGE)\s+(?:SECTION|DIVISION)|$)/i);
+  if (!m) { showToast('LINKAGE SECTION não encontrada no código gerado.', 'warn'); return; }
+  _showModalEditable('Editar LINKAGE SECTION', m[0].trimEnd(), function(val) {
     _customLinkageSect = val.trim();
-    generateAllCode();
-    _renderCodeHighlight();
+    generateAllCode(); _renderCodeHighlight();
     showToast('Linkage Section atualizada.', 'success');
   });
 }
 
 function editEnvironment() {
-  let content = _customEnvSect;
-  if (!content) {
-    const code = document.getElementById('code-editor')?.value || '';
-    const m = code.match(/ENVIRONMENT\s+DIVISION\.[\s\S]*?(?=\n[ \t]*DATA\s+DIVISION|\n[ \t]*PROCEDURE\s+DIVISION|$)/i);
-    content = m ? m[0].trimEnd()
-      : '       ENVIRONMENT DIVISION.\n       CONFIGURATION SECTION.\n       SOURCE-COMPUTER. IBM-ZOS.\n       OBJECT-COMPUTER. IBM-ZOS.\n\n       INPUT-OUTPUT SECTION.\n       FILE-CONTROL.\n           SELECT ARQ-ENTRADA ASSIGN TO ENTRADA\n               ORGANIZATION IS SEQUENTIAL\n               FILE STATUS  IS WS-STATUS-ENT.';
+  // Se há customização salva, usa ela
+  if (_customEnvSect) {
+    _showModalEditable('Editar ENVIRONMENT DIVISION', _customEnvSect, function(val) {
+      _customEnvSect = val.trim();
+      generateAllCode(); _renderCodeHighlight();
+      showToast('Environment Division atualizada.', 'success');
+    });
+    return;
   }
-  _showModalEditable('Editar ENVIRONMENT DIVISION', content, function(val) {
+  // Tenta extrair do código gerado
+  const code = document.getElementById('code-editor')?.value || '';
+  if (!code.trim()) { showToast('Gere o código primeiro para visualizar a ENVIRONMENT DIVISION.', 'warn'); return; }
+  const m = code.match(/ENVIRONMENT\s+DIVISION\.[\s\S]*?(?=\n[ \t]*DATA\s+DIVISION|\n[ \t]*PROCEDURE\s+DIVISION|$)/i);
+  if (!m) { showToast('ENVIRONMENT DIVISION não encontrada no código gerado.', 'warn'); return; }
+  _showModalEditable('Editar ENVIRONMENT DIVISION', m[0].trimEnd(), function(val) {
     _customEnvSect = val.trim();
-    generateAllCode();
-    _renderCodeHighlight();
+    generateAllCode(); _renderCodeHighlight();
     showToast('Environment Division atualizada.', 'success');
   });
 }
 
 function showDocs() {
   showModal('Referência Rápida COBOL', [
-    '╔══════════════════════════════════════╗',
-    '║  REFERÊNCIA RÁPIDA — IBM COBOL/zOS   ║',
-    '╚══════════════════════════════════════╝',
+    '╔════════════════════════════════════════════════╗',
+    '║   REFERÊNCIA RÁPIDA — IBM ENTERPRISE COBOL/zOS ║',
+    '╚════════════════════════════════════════════════╝',
     '',
-    '── ARITMÉTICA ─────────────────────────',
+    '── IDENTIFICAÇÃO ──────────────────────────────────',
+    '  IDENTIFICATION DIVISION.',
+    '  PROGRAM-ID.    NOMEDOPROG.',
+    '  AUTHOR.        NOME.',
+    '  DATE-WRITTEN.  AAAA-MM-DD.',
+    '  REMARKS.       DESCRICAO.',
+    '',
+    '── ENVIRONMENT ────────────────────────────────────',
+    '  ENVIRONMENT DIVISION.',
+    '  CONFIGURATION SECTION.',
+    '    SOURCE-COMPUTER. IBM-ZOS.',
+    '    OBJECT-COMPUTER. IBM-ZOS.',
+    '  INPUT-OUTPUT SECTION.',
+    '  FILE-CONTROL.',
+    '    SELECT ARQ-ENT ASSIGN TO ENTRADA',
+    '      ORGANIZATION IS SEQUENTIAL',
+    '      FILE STATUS  IS WS-ST-ENT.',
+    '    SELECT ARQ-SAI ASSIGN TO SAIDA',
+    '      ORGANIZATION IS SEQUENTIAL',
+    '      FILE STATUS  IS WS-ST-SAI.',
+    '',
+    '── DATA DIVISION ──────────────────────────────────',
+    '  FILE SECTION.',
+    '    FD  ARQ-ENT  RECORDING MODE IS F',
+    '                 BLOCK CONTAINS 0 RECORDS',
+    '                 RECORD CONTAINS 80 CHARACTERS.',
+    '    01  REG-ENTRADA  PIC X(80).',
+    '',
+    '  WORKING-STORAGE SECTION.',
+    '    01 WS-FIM          PIC X(1)  VALUE "N".',
+    '    01 WS-STATUS       PIC X(2)  VALUE SPACES.',
+    '    01 WS-CONTADOR     PIC 9(6)  VALUE ZEROS.',
+    '    01 WS-DATA.',
+    '       05 WS-ANO       PIC 9(4).',
+    '       05 WS-MES       PIC 9(2).',
+    '       05 WS-DIA       PIC 9(2).',
+    '',
+    '── PROCEDURE DIVISION ─────────────────────────────',
+    '  0000-MAIN SECTION.',
+    '    PERFORM 1000-INICIALIZAR',
+    '    PERFORM 2000-PROCESSAR UNTIL WS-FIM = "S"',
+    '    PERFORM 3000-FINALIZAR',
+    '    STOP RUN.',
+    '',
+    '── ARQUIVOS ───────────────────────────────────────',
+    '  OPEN INPUT  ARQ-ENT',
+    '  OPEN OUTPUT ARQ-SAI',
+    '  OPEN I-O    ARQ-VSAM',
+    '  OPEN EXTEND ARQ-LOG',
+    '',
+    '  READ ARQ-ENT',
+    '    AT END MOVE "S" TO WS-FIM',
+    '    NOT AT END CONTINUE',
+    '  END-READ',
+    '',
+    '  READ ARQ-ENT NEXT RECORD',
+    '    AT END MOVE "S" TO WS-FIM',
+    '  END-READ',
+    '',
+    '  WRITE REG-SAI FROM WS-DADOS',
+    '  REWRITE REG-VSAM FROM WS-DADOS',
+    '  DELETE ARQ-VSAM',
+    '  CLOSE ARQ-ENT ARQ-SAI',
+    '',
+    '── FILE STATUS ────────────────────────────────────',
+    '  "00" — operação OK',
+    '  "02" — chave duplicada (VSAM KSDS)',
+    '  "10" — fim de arquivo (AT END)',
+    '  "22" — chave duplicada (WRITE)',
+    '  "23" — registro não encontrado',
+    '  "35" — arquivo não existe (OPEN)',
+    '  "39" — atributos incompatíveis',
+    '  "41" — arquivo já aberto',
+    '  "42" — arquivo já fechado',
+    '  "46" — READ sem AT END',
+    '  "47" — OPEN não autorizado',
+    '',
+    '── ARITMÉTICA ─────────────────────────────────────',
     '  MOVE valor TO var',
     '  ADD a TO b',
+    '  ADD a b GIVING c',
     '  SUBTRACT a FROM b',
+    '  SUBTRACT a FROM b GIVING c',
+    '  MULTIPLY a BY b',
     '  MULTIPLY a BY b GIVING c',
     '  DIVIDE a BY b GIVING c REMAINDER r',
-    '  COMPUTE x = a + b * c',
+    '  COMPUTE x = (a + b) * c / d',
     '',
-    '── CONTROLE DE FLUXO ──────────────────',
-    '  PERFORM paragrafo',
-    '  PERFORM paragrafo UNTIL cond',
-    '  PERFORM VARYING i FROM 1 BY 1 UNTIL i > n',
-    '  GO TO paragrafo',
-    '  STOP RUN',
-    '  GOBACK',
-    '',
-    '── CONDICIONAIS ───────────────────────',
+    '── CONDICIONAIS ───────────────────────────────────',
     '  IF cond',
+    '    statements',
+    '  ELSE IF cond2',
     '    statements',
     '  ELSE',
     '    statements',
     '  END-IF',
     '',
     '  EVALUATE var',
-    '    WHEN "A"  statements',
-    '    WHEN OTHER statements',
+    '    WHEN "A"        statements',
+    '    WHEN "B" "C"    statements',
+    '    WHEN 1 THRU 10  statements',
+    '    WHEN OTHER      statements',
     '  END-EVALUATE',
     '',
-    '── ARQUIVOS ───────────────────────────',
-    '  OPEN INPUT arq',
-    '  READ arq INTO ws-area',
-    '    AT END MOVE "S" TO ws-fim',
-    '  END-READ',
-    '  WRITE reg FROM ws-area',
-    '  CLOSE arq',
+    '── LAÇOS ──────────────────────────────────────────',
+    '  PERFORM paragrafo',
+    '  PERFORM paragrafo THRU paragrafo-exit',
+    '  PERFORM paragrafo 5 TIMES',
+    '  PERFORM paragrafo UNTIL cond',
+    '  PERFORM VARYING i FROM 1 BY 1 UNTIL i > 10',
+    '    statements',
+    '  END-PERFORM',
     '',
-    '── STRINGS ────────────────────────────',
-    '  STRING a DELIMITED SIZE INTO b',
-    '  UNSTRING a DELIMITED ";" INTO b c',
+    '── STRINGS ────────────────────────────────────────',
+    '  MOVE SPACES TO ws-var',
+    '  MOVE ZEROS  TO ws-num',
+    '  STRING a DELIMITED SIZE',
+    '         b DELIMITED ";"',
+    '         INTO ws-res',
+    '  END-STRING',
+    '  UNSTRING ws-res DELIMITED ";"',
+    '    INTO a b c',
+    '  END-UNSTRING',
     '  INSPECT var TALLYING cnt FOR ALL "X"',
+    '  INSPECT var REPLACING ALL "A" BY "B"',
     '',
-    '── DB2 (EXEC SQL) ─────────────────────',
-    '  EXEC SQL SELECT col INTO :ws-var',
-    '    FROM tabela WHERE chave = :ws-chave',
+    '── DISPLAY / ACCEPT ───────────────────────────────',
+    '  DISPLAY "MSG: " ws-var',
+    '  DISPLAY "VALOR = " ws-num',
+    '  ACCEPT ws-var',
+    '  ACCEPT ws-data FROM DATE YYYYMMDD',
+    '  ACCEPT ws-hora FROM TIME',
+    '',
+    '── CALL / GOBACK ──────────────────────────────────',
+    '  CALL "SUBPROG" USING BY REFERENCE ws-parm',
+    '  CALL "SUBPROG" USING BY CONTENT  ws-val',
+    '  GOBACK',
+    '  STOP RUN',
+    '',
+    '── DB2 / SQL ──────────────────────────────────────',
+    '  EXEC SQL',
+    '    SELECT COL1, COL2',
+    '      INTO :WS-COL1, :WS-COL2',
+    '      FROM SCHEMA.TABELA',
+    '     WHERE CHAVE = :WS-CHAVE',
     '  END-EXEC',
-    '  EXEC SQL COMMIT END-EXEC',
+    '  EXEC SQL INSERT INTO TAB VALUES (:WS-V1, :WS-V2) END-EXEC',
+    '  EXEC SQL UPDATE TAB SET COL = :WS-V WHERE ID = :WS-ID END-EXEC',
+    '  EXEC SQL DELETE FROM TAB WHERE ID = :WS-ID END-EXEC',
+    '  EXEC SQL COMMIT   END-EXEC',
+    '  EXEC SQL ROLLBACK END-EXEC',
+    '  SQLCODE: 0=OK  100=NOT FOUND  <0=ERRO',
+    '',
+    '── CICS (BÁSICO) ──────────────────────────────────',
+    '  EXEC CICS RECEIVE MAP("MAPA") MAPSET("MAPSET") END-EXEC',
+    '  EXEC CICS SEND   MAP("MAPA") MAPSET("MAPSET") ERASE END-EXEC',
+    '  EXEC CICS READ   FILE("ARQ") INTO(WS-REG) RIDFLD(WS-CHAVE) END-EXEC',
+    '  EXEC CICS WRITE  FILE("ARQ") FROM(WS-REG) RIDFLD(WS-CHAVE) END-EXEC',
+    '  EXEC CICS REWRITE FILE("ARQ") FROM(WS-REG) END-EXEC',
+    '  EXEC CICS DELETE  FILE("ARQ") RIDFLD(WS-CHAVE) END-EXEC',
+    '  EXEC CICS RETURN  TRANSID("TRID") COMMAREA(WS-CA) END-EXEC',
+    '  EXEC CICS ABEND   ABCODE("AB01") END-EXEC',
+    '  EIBRESP: 0=OK  13=NOT FOUND  22=DUPREC',
+    '',
+    '── ABEND / ERRO ───────────────────────────────────',
+    '  9999-ABEND SECTION.',
+    '    DISPLAY "** ABEND: " WS-STATUS',
+    '    MOVE 16 TO RETURN-CODE',
+    '    STOP RUN.',
   ].join('\n'));
 }
 
@@ -5514,6 +6472,8 @@ function clearPropSearch() {
 function updateProgramName(val) {
   const label = document.getElementById('prog-name-label');
   if (label) label.textContent = val.toUpperCase() || 'MEUCOBOL';
+  const tab = document.getElementById('project-tab-name');
+  if (tab) tab.textContent = val.toUpperCase() || 'MEUCOBOL';
   scheduleTreeRefresh();
 }
 

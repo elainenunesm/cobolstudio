@@ -90,6 +90,42 @@ function refreshProjectTree() {
   const progLabel = document.getElementById('prog-name-label');
   if (progLabel) progLabel.textContent = pid;
 
+  // Atualiza dependências (COPYbooks importados)
+  const depsContainer = document.getElementById('tree-deps');
+  if (depsContainer) {
+    const copies   = typeof _copybookRegistry !== 'undefined' ? _copybookRegistry : [];
+    const includes = typeof _includeRegistry  !== 'undefined' ? _includeRegistry  : [];
+    if (copies.length === 0 && includes.length === 0) {
+      depsContainer.innerHTML = '<div class="tree-item" style="padding-left:24px;color:#aaa;font-style:italic;font-size:11px"><span class="tree-label">— nenhuma —</span></div>';
+    } else {
+      depsContainer.innerHTML = '';
+      copies.forEach(copy => {
+        const item = document.createElement('div');
+        item.className = 'tree-item';
+        item.style.paddingLeft = '24px';
+        item.innerHTML = `<span class="tree-icon">📄</span><span class="tree-label">COPY ${copy.name}</span>`;
+        item.title = 'COPY ' + copy.name + '.cpy';
+        item.addEventListener('click', () => {
+          selectTreeItem(item);
+          if (typeof showModal === 'function') showModal('COPY ' + copy.name, copy.content || '');
+        });
+        depsContainer.appendChild(item);
+      });
+      includes.forEach(inc => {
+        const item = document.createElement('div');
+        item.className = 'tree-item';
+        item.style.paddingLeft = '24px';
+        item.innerHTML = `<span class="tree-icon">📎</span><span class="tree-label">INCLUDE ${inc.name}</span>`;
+        item.title = 'EXEC SQL INCLUDE ' + inc.name + ' END-EXEC.';
+        item.addEventListener('click', () => {
+          selectTreeItem(item);
+          if (typeof showModal === 'function') showModal('INCLUDE ' + inc.name, inc.content || '');
+        });
+        depsContainer.appendChild(item);
+      });
+    }
+  }
+
   const container = document.getElementById('tree-proc');
   if (!container) return;
 
