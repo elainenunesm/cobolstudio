@@ -471,8 +471,8 @@
     }
     #canvas {
       min-width: 900px;
-      min-height: 800px;      /* expandido dinamicamente pelo JS após import */
-      width: 100%;
+      min-height: max(800px, 100%); /* sempre cobre o scroll container */
+      width: max(900px, 100%);
       height: auto;           /* cresce com os nós */
       background-color: var(--canvas-bg);
       background-image:
@@ -1259,6 +1259,10 @@
             <span class="rbtn-icon">📄</span>
             <span class="rbtn-label">Novo</span>
           </button>
+          <button class="rbtn large" onclick="importProgram()" title="Abrir projeto JSON ou .CBL">
+            <span class="rbtn-icon">📂</span>
+            <span class="rbtn-label">Abrir</span>
+          </button>
           <button class="rbtn large" onclick="saveProgram()" title="Salvar .CBL">
             <span class="rbtn-icon">💾</span>
             <span class="rbtn-label">Salvar</span>
@@ -1540,6 +1544,21 @@
               <span class="act-group-icon">&#128260;</span> COBOL.EntradaSaida
             </div>
             <div class="act-group-body" id="ag-io">
+              <div class="activity-item" draggable="true" data-type="OPEN_INPUT" ondragstart="onDragStart(event,'OPEN_INPUT')">
+                <span class="act-icon">&#128194;</span> OPEN INPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="OPEN_OUTPUT" ondragstart="onDragStart(event,'OPEN_OUTPUT')">
+                <span class="act-icon">&#128194;</span> OPEN OUTPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="OPEN_IO" ondragstart="onDragStart(event,'OPEN_IO')">
+                <span class="act-icon">&#128194;</span> OPEN I-O
+              </div>
+              <div class="activity-item" draggable="true" data-type="OPEN_EXTEND" ondragstart="onDragStart(event,'OPEN_EXTEND')">
+                <span class="act-icon">&#128194;</span> OPEN EXTEND
+              </div>
+              <div class="activity-item" draggable="true" data-type="CLOSE_FILE" ondragstart="onDragStart(event,'CLOSE_FILE')">
+                <span class="act-icon">&#128193;</span> CLOSE
+              </div>
               <div class="activity-item" draggable="true" data-type="READ" ondragstart="onDragStart(event,'READ')">
                 <span class="act-icon">&#128214;</span> READ File
               </div>
@@ -1616,6 +1635,38 @@
               </div>
               <div class="activity-item" draggable="true" data-type="UNSTRING" ondragstart="onDragStart(event,'UNSTRING')">
                 <span class="act-icon">&#9986;</span> UNSTRING
+              </div>
+            </div>
+
+            <!-- COBOL.VSAM -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-vsam')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128190;</span> COBOL.VSAM
+            </div>
+            <div class="act-group-body" id="ag-vsam">
+              <div class="activity-item" draggable="true" data-type="VSAM_OPEN_INPUT" ondragstart="onDragStart(event,'VSAM_OPEN_INPUT')">
+                <span class="act-icon">&#128449;</span> VSAM OPEN INPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="VSAM_OPEN_IO" ondragstart="onDragStart(event,'VSAM_OPEN_IO')">
+                <span class="act-icon">&#128449;</span> VSAM OPEN I-O
+              </div>
+              <div class="activity-item" draggable="true" data-type="VSAM_OPEN_OUTPUT" ondragstart="onDragStart(event,'VSAM_OPEN_OUTPUT')">
+                <span class="act-icon">&#128449;</span> VSAM OPEN OUTPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="START_KEY" ondragstart="onDragStart(event,'START_KEY')">
+                <span class="act-icon">&#127919;</span> START
+              </div>
+              <div class="activity-item" draggable="true" data-type="READ_NEXT" ondragstart="onDragStart(event,'READ_NEXT')">
+                <span class="act-icon">&#9193;</span> READ NEXT
+              </div>
+              <div class="activity-item" draggable="true" data-type="REWRITE" ondragstart="onDragStart(event,'REWRITE')">
+                <span class="act-icon">&#128260;</span> REWRITE
+              </div>
+              <div class="activity-item" draggable="true" data-type="DELETE_REC" ondragstart="onDragStart(event,'DELETE_REC')">
+                <span class="act-icon">&#128465;</span> DELETE Record
+              </div>
+              <div class="activity-item" draggable="true" data-type="VSAM_ERRO" ondragstart="onDragStart(event,'VSAM_ERRO')">
+                <span class="act-icon">&#9888;</span> VSAM Erro RTN
               </div>
             </div>
 
@@ -1824,6 +1875,14 @@
               <label>Remarks</label>
               <input class="prop-val" id="prop-remarks" value="Programa gerado pelo protótipo" />
             </div>
+          </div>
+
+          <div class="prop-group-header" onclick="togglePropGroup(this,'pg-files')">
+            ▼ &nbsp;Arquivos (FILE-CONTROL)
+          </div>
+          <div id="pg-files">
+            <div id="files-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
+            <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_addFileEntry()">＋ Adicionar arquivo</button>
           </div>
 
           <div class="prop-group-header" onclick="togglePropGroup(this,'pg-environment')">
@@ -2362,8 +2421,21 @@ function onCanvasDrop(event) {
 
 const activityMeta = {
   /* ── Entrada / Saída ── */
+  OPEN_INPUT:    { icon:'📂', label:'OPEN INPUT',    color:'green',  fields:['OPEN INPUT [arquivo]'] },
+  OPEN_OUTPUT:   { icon:'📂', label:'OPEN OUTPUT',   color:'green',  fields:['OPEN OUTPUT [arquivo]'] },
+  OPEN_IO:       { icon:'📂', label:'OPEN I-O',      color:'green',  fields:['OPEN I-O [arquivo]'] },
+  OPEN_EXTEND:   { icon:'📂', label:'OPEN EXTEND',   color:'green',  fields:['OPEN EXTEND [arquivo]'] },
+  VSAM_OPEN_INPUT: { icon:'🗂️', label:'VSAM OPEN INPUT',  color:'green', fields:['OPEN INPUT [vsam-arquivo]'] },
+  VSAM_OPEN_IO:    { icon:'🗂️', label:'VSAM OPEN I-O',    color:'green', fields:['OPEN I-O [vsam-arquivo]'] },
+  VSAM_OPEN_OUTPUT:{ icon:'🗂️', label:'VSAM OPEN OUTPUT', color:'green', fields:['OPEN OUTPUT [vsam-arquivo]'] },
+  CLOSE_FILE:    { icon:'📁', label:'CLOSE',         color:'green',  fields:['CLOSE [arquivo]'] },
   READ:          { icon:'📖', label:'READ',          color:'green',  fields:['READ [arquivo]','  AT END MOVE "S" TO WS-FIM'] },
+  READ_NEXT:     { icon:'⏩', label:'READ NEXT',      color:'green',  fields:['READ [arquivo] NEXT RECORD','  AT END MOVE "S" TO WS-FIM','  NOT AT END','    CONTINUE','END-READ'] },
   WRITE:         { icon:'✍️', label:'WRITE',         color:'purple', fields:['WRITE [registro] FROM WS-REG'] },
+  REWRITE:       { icon:'🔄', label:'REWRITE',        color:'purple', fields:['REWRITE [registro] FROM WS-REG','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-REWRITE'] },
+  DELETE_REC:    { icon:'🗑️', label:'DELETE Record',  color:'red',    fields:['DELETE [arquivo] RECORD','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-DELETE'] },
+  START_KEY:     { icon:'🎯', label:'START',          color:'green',  fields:['MOVE [chave] TO [key-field]','START [arquivo] KEY IS EQUAL TO [key-field]','  INVALID KEY','    PERFORM VSAM-ERRO-RTN','END-START'] },
+  VSAM_ERRO:     { icon:'⚠️', label:'VSAM Erro RTN',  color:'yellow', fields:['VSAM-ERRO-RTN.','    DISPLAY "VSAM ERROR STATUS: " WS-STATUS','    PERFORM 9999-FIM'] },
   DISPLAY:       { icon:'🖥️', label:'DISPLAY',       color:'purple', fields:['DISPLAY WS-MENSAGEM'] },
   ACCEPT:        { icon:'⌨️', label:'ACCEPT',        color:'green',  fields:['ACCEPT WS-VARIAVEL'] },
   /* ── Movimentação ── */
@@ -2485,6 +2557,23 @@ function createNodeAt(type, x, y) {
       inp.addEventListener('input', () => _styleNodeFields(div));
     });
   });
+
+  // Auto-registra arquivo quando é um nó OPEN sequencial
+  if (['OPEN_INPUT','OPEN_OUTPUT','OPEN_IO','OPEN_EXTEND'].includes(type)) {
+    const firstField = div.querySelector('.node-field input');
+    if (firstField) {
+      firstField.addEventListener('change', () => { _autoRegisterFileFromOpen(firstField.value); }, { once: true });
+      _autoRegisterFileFromOpen(firstField.value);
+    }
+  }
+  // Auto-registra arquivo VSAM (INDEXED / DYNAMIC)
+  if (['VSAM_OPEN_INPUT','VSAM_OPEN_IO','VSAM_OPEN_OUTPUT'].includes(type)) {
+    const firstField = div.querySelector('.node-field input');
+    if (firstField) {
+      firstField.addEventListener('change', () => { _autoRegisterVsamOpen(firstField.value); }, { once: true });
+      _autoRegisterVsamOpen(firstField.value);
+    }
+  }
 }
 
 function updateNodeCount() {
@@ -2778,15 +2867,24 @@ function makeDraggable(el) {
       el.style.left = (startLeft + dx) + 'px';
       el.style.top  = (startTop  + dy)  + 'px';
 
+      // Expande canvas se o nó foi arrastado para além do limite atual
+      const _canvas = document.getElementById('canvas');
+      if (_canvas) {
+        const _needW = (startLeft + dx) + el.offsetWidth + 60;
+        const _needH = (startTop  + dy) + el.offsetHeight + 60;
+        if (_needW > parseInt(_canvas.style.minWidth  || 900)) _canvas.style.minWidth  = _needW + 'px';
+        if (_needH > parseInt(_canvas.style.minHeight || 800)) _canvas.style.minHeight = _needH + 'px';
+      }
+
       // throttle drawArrows via rAF
       if (_rafId) cancelAnimationFrame(_rafId);
       _rafId = requestAnimationFrame(() => { drawArrows(); _rafId = null; });
 
-      // Detecta nest (só se cursor está sobre outro card)
+      // Detecta nest (só se cursor está sobre o CABEÇALHO de outro card)
       el.style.pointerEvents = 'none';
       const under = document.elementFromPoint(ev.clientX, ev.clientY);
       el.style.pointerEvents = '';
-      const candidate = under?.closest('.node-card');
+      const candidate = under?.closest('.node-card-header')?.closest('.node-card');
       const nestTarget = (candidate && candidate !== el) ? candidate : null;
       if (nestTarget !== _dropTarget) {
         if (_dropTarget) _dropTarget.classList.remove('drop-target');
@@ -2855,7 +2953,7 @@ function makeDraggable(el) {
 // Reposiciona card visualmente — NÃO cria conexões automáticas.
 // Conexões só são criadas pelo botão → (startConnect/finishConnect).
 function reorderCard(card, insertAfterNode) {
-  requestAnimationFrame(() => { reflowCanvas(); drawArrows(); });
+  requestAnimationFrame(() => { drawArrows(); });
 }
 
 // Encaixa srcCard como sub-bloco dentro de dstCard
@@ -3607,6 +3705,35 @@ function generateAllCode() {
   if (_importedPreamble) {
     preamble = _importedPreamble;
   } else {
+    // ── Gera FILE-CONTROL e FILE SECTION a partir de _programFiles ──
+    let fileControlBlock = '';
+    let fileSectionBlock = '';
+    let fileStatusWS     = '';
+    if (_programFiles.length > 0) {
+      fileControlBlock = '\n       INPUT-OUTPUT SECTION.\n       FILE-CONTROL.\n';
+      fileSectionBlock = '\n       FILE SECTION.\n';
+      _programFiles.forEach(f => {
+        const isIndexed = f.org === 'INDEXED';
+        const isRelative = f.org === 'RELATIVE';
+        fileControlBlock +=
+          `           SELECT ${f.name.padEnd(20)} ASSIGN TO ${f.assign}\n` +
+          `               ORGANIZATION IS ${f.org}\n` +
+          `               ACCESS MODE  IS ${f.access}\n` +
+          (isIndexed && f.recKey ? `               RECORD KEY   IS ${f.recKey}\n` : '') +
+          (isIndexed && f.altKey ? `               ALTERNATE RECORD KEY IS ${f.altKey} WITH DUPLICATES\n` : '') +
+          (isRelative && f.recKey ? `               RELATIVE KEY IS ${f.recKey}\n` : '') +
+          `               FILE STATUS  IS ${f.status}.\n`;
+        fileSectionBlock +=
+          `       FD  ${f.name}  RECORDING MODE IS F\n` +
+          `                        BLOCK CONTAINS 0 RECORDS\n` +
+          `                        RECORD CONTAINS ${f.recSize} CHARACTERS.\n` +
+          `       01  ${f.recName}.\n` +
+          `           05  FILLER             PIC X(${f.recSize}).\n\n`;
+        fileStatusWS +=
+          `       01 ${f.status.padEnd(22)} PIC X(2)  VALUE SPACES.\n`;
+      });
+    }
+
     preamble = `      *================================================================*
       *  PROGRAMA  : ${pid.padEnd(20)}                             *
       *  DIALETO   : ${dialect.padEnd(28)}                 *
@@ -3622,38 +3749,11 @@ function generateAllCode() {
        CONFIGURATION SECTION.
        SOURCE-COMPUTER. IBM-ZOS.
        OBJECT-COMPUTER. IBM-ZOS.
-
-       INPUT-OUTPUT SECTION.
-       FILE-CONTROL.
-           SELECT ARQ-ENTRADA  ASSIGN TO ENTRADA
-               ORGANIZATION IS SEQUENTIAL
-               ACCESS MODE  IS SEQUENTIAL
-               FILE STATUS  IS WS-STATUS-ENT.
-           SELECT ARQ-SAIDA    ASSIGN TO SAIDA
-               ORGANIZATION IS SEQUENTIAL
-               ACCESS MODE  IS SEQUENTIAL
-               FILE STATUS  IS WS-STATUS-SAI.
-
+${fileControlBlock}
        DATA DIVISION.
-       FILE SECTION.
-       FD  ARQ-ENTRADA  RECORDING MODE IS F
-                        BLOCK CONTAINS 0 RECORDS
-                        RECORD CONTAINS 80 CHARACTERS.
-       01  REG-ENTRADA.
-           05  RE-TIPO            PIC X(1).
-           05  RE-DADOS           PIC X(79).
-
-       FD  ARQ-SAIDA    RECORDING MODE IS F
-                        BLOCK CONTAINS 0 RECORDS
-                        RECORD CONTAINS 133 CHARACTERS.
-       01  REG-SAIDA.
-           05  RS-LINHA           PIC X(133).
-
-       WORKING-STORAGE SECTION.
-       01 WS-STATUS-ENT           PIC X(2)  VALUE SPACES.
-       01 WS-STATUS-SAI           PIC X(2)  VALUE SPACES.
+${fileSectionBlock}       WORKING-STORAGE SECTION.
        01 WS-FIM                  PIC X(1)  VALUE "N".
-${sqlcaBlock}${wsLines}`;
+${fileStatusWS}${sqlcaBlock}${wsLines}`;
   }
 
   const db2Block = hasDB2 ? `\n       DB2-ERRO-RTN.\n           DISPLAY "SQLCODE: " SQLCODE\n           DISPLAY "SQLERRM: " SQLERRMC\n           PERFORM 9999-FIM.\n` : '';
@@ -3670,6 +3770,110 @@ ${procLines}${db2Block}`
   _saveToStorage();
   refreshProjectTree();
   return code;
+}
+
+/* ── Gerenciamento de Arquivos (FILE-CONTROL / FILE SECTION) ─────── */
+
+/**
+ * Lista de arquivos registrados no programa.
+ * Cada entrada: { name, assign, org, access, recSize, recName, status }
+ */
+let _programFiles = [];
+
+function _renderFilesList() {
+  const list = document.getElementById('files-list');
+  if (!list) return;
+  list.innerHTML = '';
+  _programFiles.forEach((f, i) => {
+    const isVsam = f.org === 'INDEXED' || f.org === 'RELATIVE';
+    const icon   = isVsam ? '🗂️' : '📁';
+    const keyLine = isVsam && f.recKey
+      ? `<div style="color:#2563eb;">RECORD KEY: ${f.recKey}${f.altKey ? ' &nbsp;|&nbsp; ALT KEY: ' + f.altKey : ''}</div>`
+      : '';
+    const row = document.createElement('div');
+    row.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;padding:6px 8px;font-size:11px;position:relative;';
+    row.innerHTML = `
+      <div style="font-weight:700;color:#1a1a2e;margin-bottom:3px;">${icon} ${f.name} <span style="font-weight:400;color:#888;">(${f.org})</span></div>
+      <div style="color:#555;">ASSIGN TO ${f.assign} &nbsp;|&nbsp; ACCESS: ${f.access}</div>
+      <div style="color:#555;">FD: ${f.recName} &nbsp;|&nbsp; ${f.recSize} chars &nbsp;|&nbsp; STATUS: ${f.status}</div>
+      ${keyLine}
+      <button onclick="_removeFileEntry(${i})" title="Remover arquivo"
+        style="position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;color:#dc2626;font-size:13px;">✕</button>`;
+    list.appendChild(row);
+  });
+}
+
+function _addFileEntry(defaults) {
+  const d = defaults || {};
+  const name    = (d.name    || prompt('Nome do arquivo COBOL (ex: ARQ-ENTRADA):', 'ARQ-') || '').trim().toUpperCase();
+  if (!name) return;
+  if (_programFiles.some(f => f.name === name)) { showToast(`"${name}" já está registrado.`, 'error'); return; }
+  const assign  = (d.assign  || prompt('ASSIGN TO (DDname/caminho):', name.replace('ARQ-','')) || name).trim().toUpperCase();
+  const orgOpts = ['SEQUENTIAL','INDEXED','RELATIVE'];
+  const org     = d.org || orgOpts[parseInt(prompt('Organização:\n0=SEQUENTIAL\n1=INDEXED\n2=RELATIVE','0')) || 0] || 'SEQUENTIAL';
+  const accOpts = ['SEQUENTIAL','RANDOM','DYNAMIC'];
+  const access  = d.access || accOpts[parseInt(prompt('Access mode:\n0=SEQUENTIAL\n1=RANDOM\n2=DYNAMIC','0')) || 0] || 'SEQUENTIAL';
+  const recSize = (d.recSize || prompt('Tamanho do registro (chars):', '80') || '80').trim();
+  const recName = (d.recName || prompt('Nome do 01-nível (registro):', 'REG-' + name.replace('ARQ-','')) || ('REG-' + name.replace('ARQ-',''))).trim().toUpperCase();
+  const status  = (d.status  || prompt('Variável FILE STATUS (ex: WS-STATUS-ENT):', 'WS-ST-' + name.replace('ARQ-','').substring(0,6)) || ('WS-ST-' + name.substring(0,6))).trim().toUpperCase();
+
+  _programFiles.push({ name, assign, org, access, recSize, recName, status });
+  _renderFilesList();
+  generateAllCode();
+  showToast(`Arquivo "${name}" registrado.`, 'success');
+}
+
+function _removeFileEntry(i) {
+  const f = _programFiles[i];
+  if (!f) return;
+  if (!confirm(`Remover arquivo "${f.name}" da lista?`)) return;
+  _programFiles.splice(i, 1);
+  _renderFilesList();
+  generateAllCode();
+}
+
+/** Registra arquivo silenciosamente ao criar um nó OPEN (sem prompts extras se já existir) */
+function _autoRegisterFileFromOpen(fieldValue) {
+  const m = fieldValue.match(/OPEN\s+(?:INPUT|OUTPUT|I-O|EXTEND)\s+(\S+)/i);
+  const name = (m ? m[1] : fieldValue.replace(/OPEN\s+\S+\s*/i,'').trim()).toUpperCase();
+  if (!name || name.startsWith('[')) return;
+  if (_programFiles.some(f => f.name === name)) return;
+
+  const isOutput = /OUTPUT|EXTEND/i.test(fieldValue);
+  const assign   = name.replace(/^ARQ-/,'');
+  const recSize  = isOutput ? '133' : '80';
+  const recName  = 'REG-' + name.replace(/^ARQ-/,'').substring(0,10);
+  const status   = 'WS-ST-' + name.replace(/^ARQ-/,'').substring(0,6);
+
+  _programFiles.push({
+    name, assign, org: 'SEQUENTIAL', access: 'SEQUENTIAL',
+    recSize, recName, status, recKey: null, altKey: null
+  });
+  _renderFilesList();
+  generateAllCode();
+  showToast(`Arquivo "${name}" adicionado ao FILE-CONTROL automaticamente.`, 'success');
+}
+
+function _autoRegisterVsamOpen(fieldValue) {
+  const m = fieldValue.match(/OPEN\s+(?:INPUT|OUTPUT|I-O|EXTEND)\s+(\S+)/i);
+  const name = (m ? m[1] : fieldValue.replace(/OPEN\s+\S+\s*/i,'').trim()).toUpperCase();
+  if (!name || name.startsWith('[')) return;
+  if (_programFiles.some(f => f.name === name)) return;
+
+  const shortName = name.replace(/^ARQ-/,'').substring(0,8);
+  const assign    = name.replace(/^ARQ-/,'');
+  const recName   = 'REG-' + shortName;
+  const status    = 'WS-ST-' + shortName.substring(0,6);
+  const recKey    = 'WS-' + shortName.substring(0,6) + '-KEY';
+
+  _programFiles.push({
+    name, assign, org: 'INDEXED', access: 'DYNAMIC',
+    recSize: '80', recName, status,
+    recKey, altKey: null
+  });
+  _renderFilesList();
+  generateAllCode();
+  showToast(`Arquivo VSAM "${name}" adicionado ao FILE-CONTROL (INDEXED/DYNAMIC).`, 'success');
 }
 
 /* ─ Toolbar Actions ────────────────────────────────────────────────── */
@@ -4173,13 +4377,18 @@ function reflowCanvas() {
   let curY = parseInt(nodes[0].style.top) || 180;
   nodes.forEach(n => {
     n.style.top  = curY + 'px';
-    n.style.left = nodeX + 'px';
+    // Preserva a posição horizontal de cada card (não força coluna única)
+    if (!n.style.left || n.style.left === '0px') n.style.left = nodeX + 'px';
     curY += n.offsetHeight + _REFLOW_GAP;
   });
   const endNode = document.getElementById('node-end-node');
   if (endNode) { endNode.style.top = curY + 'px'; endNode.style.left = (nodeX + 15) + 'px'; }
   const minH = curY + 200;
   if (parseInt(canvas.style.minHeight || 0) < minH) canvas.style.minHeight = minH + 'px';
+  // Expande horizontalmente se algum nó estiver além do limite atual
+  const allNodes = Array.from(canvas.querySelectorAll('.cf-node'));
+  const maxRight = allNodes.reduce((acc, n) => Math.max(acc, (parseInt(n.style.left) || 0) + n.offsetWidth + 60), 900);
+  if (parseInt(canvas.style.minWidth || 0) < maxRight) canvas.style.minWidth = maxRight + 'px';
   requestAnimationFrame(() => { drawArrows(); _styleAllNodes(); });
 }
 
