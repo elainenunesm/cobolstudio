@@ -1380,6 +1380,124 @@
       #view-tabs { padding: 0 4px; }
       .canvas-btn { padding: 3px 6px; font-size: 10px; }
     }
+
+    /* ─── Layout Editor Modal ────────────────────────────────────── */
+    #layout-editor-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 2000;
+      align-items: center; justify-content: center;
+    }
+    #layout-editor-overlay.open { display: flex; }
+    #layout-editor-modal {
+      background: #fff; border-radius: 10px;
+      width: 920px; max-width: 97vw; max-height: 94vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.38);
+      overflow: hidden;
+    }
+    #layout-editor-header {
+      background: #1e3a5f; color: #fff;
+      padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+    #layout-editor-header .leh-close {
+      margin-left: auto; background: rgba(255,255,255,0.18);
+      border: none; color: #fff; border-radius: 4px;
+      padding: 2px 10px; cursor: pointer; font-size: 13px;
+    }
+    #layout-editor-header .leh-close:hover { background: rgba(255,255,255,0.35); }
+    #layout-editor-body {
+      display: flex; flex: 1; overflow: hidden; gap: 0;
+    }
+    #layout-left-pane {
+      flex: 1; display: flex; flex-direction: column;
+      border-right: 1px solid #e0e0e0; overflow: hidden;
+    }
+    #layout-right-pane {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .layout-pane-title {
+      background: #f5f5f5; border-bottom: 1px solid #e0e0e0;
+      padding: 5px 12px; font-size: 11px; font-weight: 700; color: #444;
+      flex-shrink: 0;
+    }
+    #layout-help {
+      background: #fffbe6; border-bottom: 1px solid #ffe082;
+      padding: 6px 12px; font-size: 11px; color: #6b4f00;
+      flex-shrink: 0; line-height: 1.6;
+    }
+    #layout-help code { background: #fff3c4; border-radius: 2px; padding: 0 3px; font-family: monospace; }
+    #layout-name-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px; background: #f9f9f9; border-bottom: 1px solid #e8e8e8;
+      flex-shrink: 0;
+    }
+    #layout-name-row label { font-size: 11px; color: #555; white-space: nowrap; }
+    #layout-set-name {
+      flex: 1; font-size: 11px; padding: 3px 6px;
+      border: 1px solid #ccc; border-radius: 3px; font-family: monospace;
+    }
+    #layout-input {
+      flex: 1; resize: none; border: none; outline: none;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 12px;
+      line-height: 1.6; padding: 10px 12px;
+      background: #1e1e2e; color: #cdd6f4;
+      min-height: 0;
+    }
+    #layout-input::placeholder { color: #555; }
+    #layout-ws-preview {
+      flex: 1; overflow: auto; margin: 0; padding: 10px 12px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 11px;
+      background: #1e1e2e; color: #a6e3a1; line-height: 1.6;
+      white-space: pre; min-height: 0;
+    }
+    #layout-fields-wrap {
+      flex-shrink: 0; max-height: 180px; overflow-y: auto;
+      border-top: 1px solid #e0e0e0;
+    }
+    #layout-fields-table {
+      width: 100%; border-collapse: collapse; font-size: 11px;
+    }
+    #layout-fields-table thead tr { position: sticky; top: 0; }
+    #layout-fields-table th {
+      background: #f0f0f0; padding: 3px 8px; text-align: left;
+      font-size: 10px; color: #555; border-bottom: 1px solid #ddd;
+    }
+    #layout-fields-table td { padding: 1px 4px; border-bottom: 1px solid #f5f5f5; }
+    #layout-fields-table tr:hover td { background: #f7f9ff; }
+    .layout-field-name-inp {
+      font-size: 11px; width: 100%; border: 1px solid #ddd; border-radius: 2px;
+      padding: 2px 4px; font-family: 'Consolas', monospace; outline: none;
+    }
+    .layout-field-name-inp:focus { border-color: #2563eb; }
+    #layout-sets-list {
+      flex-shrink: 0; border-top: 1px solid #e0e0e0;
+      padding: 6px 12px; max-height: 90px; overflow-y: auto;
+    }
+    .layout-set-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 2px 0; font-size: 11px;
+    }
+    .layout-set-item span { flex: 1; font-family: monospace; color: #1e3a5f; }
+    .layout-set-del { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 12px; }
+    #layout-editor-footer {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-top: 1px solid #e0e0e0;
+      background: #f9f9f9; flex-shrink: 0;
+    }
+    #layout-editor-footer button {
+      padding: 5px 14px; border-radius: 4px; font-size: 12px;
+      border: 1px solid #ccc; cursor: pointer;
+    }
+    #layout-editor-footer .le-btn-primary {
+      background: #1e3a5f; color: #fff; border-color: #1e3a5f;
+    }
+    #layout-editor-footer .le-btn-primary:hover { background: #15304f; }
+    #layout-editor-footer .le-btn-danger {
+      background: #fee2e2; color: #b91c1c; border-color: #fca5a5;
+    }
+    #layout-editor-footer .le-btn-danger:hover { background: #fecaca; }
+    #layout-editor-footer .le-spacer { flex: 1; }
   </style>
 </head>
 <body autocomplete="off">
@@ -1510,6 +1628,10 @@
               <span class="rbtn-label">Environment</span>
             </button>
           </div>
+          <button class="rbtn" onclick="showLayoutEditor()" title="Editor de Layout de Relatório — desenhe a maquete em TXT e gere a WS automaticamente" style="background:#e8f0fb;border-color:#93c5fd;">
+            <span class="rbtn-icon">📐</span>
+            <span class="rbtn-label">Layout<br>Rel.</span>
+          </button>
         </div>
         <div class="ribbon-group-label">Dados</div>
       </div>
@@ -2465,6 +2587,67 @@
   </div>
 
 </div><!-- /app -->
+
+<!-- ═══ LAYOUT EDITOR MODAL ═════════════════════════════════════════ -->
+<div id="layout-editor-overlay" onclick="_layoutOverlayClick(event)">
+  <div id="layout-editor-modal">
+    <div id="layout-editor-header">
+      📐 Editor de Layout de Relatório
+      <button class="leh-close" onclick="_layoutClose()">✕ Fechar</button>
+    </div>
+    <div id="layout-editor-body">
+
+      <!-- Painel esquerdo: entrada da maquete -->
+      <div id="layout-left-pane">
+        <div class="layout-pane-title">📝 Maquete (desenhe o layout linha por linha)</div>
+        <div id="layout-help">
+          Use <code>X</code> para alfanumérico · <code>9</code> para numérico · <code>ZZ,ZZ9.99</code> para editado<br>
+          Texto literal fica como <code>FILLER VALUE</code> · Linha só com <code>---</code> vira separador<br>
+          Prefixe uma linha com <code>&gt;&gt; NOME:</code> para nomear o registro (ex: <code>&gt;&gt; CABECALHO:</code>)
+        </div>
+        <div id="layout-name-row">
+          <label>Identificador do conjunto:</label>
+          <input id="layout-set-name" value="Layout1" placeholder="ex: Layout-Relatorio-Vendas" />
+        </div>
+        <textarea id="layout-input" spellcheck="false"
+          placeholder="Exemplo:&#10;&gt;&gt; CABECALHO:&#10;EMPRESA XXXXXXXXXXXXXXXXXXXX  DATA: 99/99/9999  PG: ZZ9&#10;&gt;&gt; SUBCAB:&#10;CODIGO  DESCRICAO                                  VALOR&#10;&gt;&gt; SEP:&#10;--------------------------------------------------------------&#10;&gt;&gt; DETALHE:&#10;99999   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ZZZ,ZZ9.99&#10;&gt;&gt; TOTAL:&#10;                              TOTAL GERAL:  ZZZ,ZZZ.99"
+          oninput="_layoutUpdateAll()"></textarea>
+      </div>
+
+      <!-- Painel direito: WS gerada + tabela de campos -->
+      <div id="layout-right-pane">
+        <div class="layout-pane-title">🗃️ Working-Storage gerada (preview)</div>
+        <pre id="layout-ws-preview">(cole sua maquete à esquerda)</pre>
+        <div class="layout-pane-title" style="border-top:1px solid #e0e0e0;">✏️ Renomear campos variáveis</div>
+        <div id="layout-fields-wrap">
+          <table id="layout-fields-table">
+            <thead><tr>
+              <th style="width:28px;">#</th>
+              <th>Nome do campo (WS)</th>
+              <th>PIC</th>
+              <th style="width:90px;">Linha</th>
+            </tr></thead>
+            <tbody id="layout-fields-tbody">
+              <tr><td colspan="4" style="color:#aaa;text-align:center;padding:8px;">Nenhum campo detectado ainda</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="layout-pane-title" style="border-top:1px solid #e0e0e0;">📦 Conjuntos gerados</div>
+        <div id="layout-sets-list">
+          <div id="layout-sets-empty" style="font-size:11px;color:#aaa;padding:4px 0;">Nenhum layout gerado ainda.</div>
+        </div>
+      </div>
+
+    </div><!-- /layout-editor-body -->
+    <div id="layout-editor-footer">
+      <button onclick="_layoutClear()" title="Limpar textarea">🗑 Limpar</button>
+      <button onclick="_layoutLoadExample()" title="Carregar exemplo de layout">📋 Exemplo</button>
+      <div class="le-spacer"></div>
+      <button class="le-btn-danger" onclick="_layoutClearAll()" title="Remover todos os layouts gerados da WS">✕ Remover todos</button>
+      <button class="le-btn-primary" onclick="_layoutApply()">✓ Gerar WS</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ MODAL ════════════════════════════════════════════════════════ -->
 <div id="modal-overlay" onclick="closeModalIfOutside(event)">
@@ -4882,6 +5065,12 @@ function generateAllCode() {
 
   const _rptWsBlock = wsRptLines;
 
+  // ── Layouts personalizados definidos pelo editor de maquete ──────
+  const _customLayoutsWs = (window._rptCustomLayouts && window._rptCustomLayouts.length > 0)
+    ? '\n      * ── Layouts personalizados de relatorio ──────────────\n' +
+      window._rptCustomLayouts.map(l => l.wsCode).join('')
+    : '';
+
   // DB2
   const hasDB2 = document.querySelectorAll('#canvas .cf-node[id*="db2"]').length > 0
     || [...document.querySelectorAll('#canvas .node-card-header')].some(h => h.textContent.includes('DB2'));
@@ -5073,7 +5262,7 @@ function generateAllCode() {
 ${fileControlBlock}
        DATA DIVISION.
 ${fileSectionBlock}       WORKING-STORAGE SECTION.
-${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(1)  VALUE "N".\n' : ''}${wsLines}${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsTableLines}${_rptWsBlock}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
+${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(1)  VALUE "N".\n' : ''}${wsLines}${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsTableLines}${_rptWsBlock}${_customLayoutsWs}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
     // ── Linkage Section (linkage vars + DFHCOMMAREA) ──
     const lkVars = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
     const _ca    = typeof _commareaVars !== 'undefined' ? _commareaVars : [];
@@ -7873,6 +8062,282 @@ function openFieldPicker(nodeId, fieldIdx) {
 
 (Em uma versão completa, clique para inserir no campo.)`
   );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   LAYOUT EDITOR DE RELATÓRIO
+   Permite ao usuário desenhar a maquete do relatório em texto e
+   gerar automaticamente as variáveis da Working-Storage.
+──────────────────────────────────────────────────────────────────── */
+window._rptCustomLayouts = [];   // [{ label, wsCode, records }]
+window._layoutParsedRecords = [];
+window._layoutWsCode = '';
+window._layoutFieldsTable = [];
+
+function showLayoutEditor() {
+  document.getElementById('layout-editor-overlay').classList.add('open');
+  _layoutRenderSetsList();
+}
+function _layoutClose() {
+  document.getElementById('layout-editor-overlay').classList.remove('open');
+}
+function _layoutOverlayClick(e) {
+  if (e.target === document.getElementById('layout-editor-overlay')) _layoutClose();
+}
+
+/* ── Tokeniza uma linha da maquete ──────────────────────────────── */
+function _layoutTokenizeLine(line) {
+  const tokens = [];
+  let i = 0;
+  while (i < line.length) {
+    const ch = line[i];
+    if (ch === 'X') {
+      let j = i;
+      while (j < line.length && line[j] === 'X') j++;
+      tokens.push({ type: 'ALPHA', len: j - i, raw: line.slice(i, j) });
+      i = j;
+    } else if (ch === 'Z') {
+      // Z editado: ZZ,ZZZ,ZZ9.99 — consome Z,9,,,.,- enquanto continuar
+      let j = i;
+      while (j < line.length && /[Z9,.\-+]/.test(line[j])) j++;
+      const raw = line.slice(i, j);
+      tokens.push({ type: 'ZEDIT', pic: raw, raw });
+      i = j;
+    } else if (ch === '9') {
+      let j = i;
+      while (j < line.length && line[j] === '9') j++;
+      tokens.push({ type: 'NUM', len: j - i, raw: line.slice(i, j) });
+      i = j;
+    } else {
+      // literal
+      if (tokens.length > 0 && tokens[tokens.length - 1].type === 'LIT') {
+        tokens[tokens.length - 1].raw += ch;
+      } else {
+        tokens.push({ type: 'LIT', raw: ch });
+      }
+      i++;
+    }
+  }
+  return tokens;
+}
+
+/* ── Constrói código WS a partir dos records ────────────────────── */
+function _layoutBuildWsCode(records) {
+  let wsCode = '';
+  records.forEach(rec => {
+    if (rec.type === 'sep') {
+      const sepVal = rec.sepChar === '=' ? 'ALL "="' : 'ALL "-"';
+      wsCode += `       01 ${rec.wsName}`.padEnd(36) + ` PIC X(${rec.len}) VALUE ${sepVal}.\n`;
+    } else {
+      wsCode += `       01 ${rec.wsName}.\n`;
+      rec.tokens.forEach(tok => {
+        if (tok.type === 'LIT') {
+          const val = tok.raw;
+          const valStr = val.trim() === '' ? 'SPACES' : `'${val.replace(/'/g, "''")}'`;
+          wsCode += `           03 FILLER`.padEnd(38) + ` PIC X(${tok.raw.length})`.padEnd(16) + ` VALUE ${valStr}.\n`;
+        } else if (tok.type === 'ALPHA') {
+          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC X(${tok.len})`.padEnd(16) + ` VALUE SPACES.\n`;
+        } else if (tok.type === 'NUM') {
+          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC 9(${tok.len})`.padEnd(16) + ` VALUE ZEROS.\n`;
+        } else if (tok.type === 'ZEDIT') {
+          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC ${tok.pic}`.padEnd(16) + ` VALUE ZEROS.\n`;
+        }
+      });
+    }
+  });
+  return wsCode;
+}
+
+/* ── Faz o parse de todo o texto da maquete ─────────────────────── */
+function _layoutParse(text) {
+  const lines = text.split('\n');
+  const records = [];
+  const fieldsTable = [];
+  let currentName = null;
+  let recordIdx = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Linha de anotação de nome: >> NOME: ou >> NOME
+    if (/^\s*>>/.test(line)) {
+      const namePart = line.replace(/^\s*>>\s*/, '').replace(/:.*/, '').trim().toUpperCase();
+      if (namePart) {
+        currentName = namePart.startsWith('WS-') ? namePart : 'WS-LIN-' + namePart;
+      }
+      continue;
+    }
+
+    // Linha vazia → reseta nome
+    if (line.trim() === '') {
+      currentName = null;
+      continue;
+    }
+
+    recordIdx++;
+    const wsName = currentName || `WS-LIN-${recordIdx}`;
+    currentName = null;
+
+    // Separador: linha composta só de -, =, *
+    if (/^[\-=*]+$/.test(line.trim())) {
+      const sepChar = line.trim()[0] === '=' ? '=' : '-';
+      const len = Math.max(1, line.trimEnd().length);
+      records.push({ wsName, type: 'sep', sepChar, len, maquette: line });
+      continue;
+    }
+
+    // Linha de dados: tokenizar
+    const tokens = _layoutTokenizeLine(line);
+    const shortBase = wsName.replace(/^WS-LIN-/, '').replace(/^WS-/, '');
+    let fieldIdx = 1;
+    tokens.forEach(tok => {
+      if (tok.type !== 'LIT') {
+        tok.fieldName = `WS-${shortBase}-F${fieldIdx++}`;
+        tok.originalFieldName = tok.fieldName;
+        fieldsTable.push({ wsName, tok });
+      }
+    });
+    records.push({ wsName, type: 'data', tokens, maquette: line });
+  }
+
+  const wsCode = _layoutBuildWsCode(records);
+  return { records, wsCode, fieldsTable };
+}
+
+/* ── Atualiza o preview ao digitar ──────────────────────────────── */
+function _layoutUpdateAll() {
+  const text = document.getElementById('layout-input').value;
+  const { records, wsCode, fieldsTable } = _layoutParse(text);
+  window._layoutParsedRecords = records;
+  window._layoutWsCode = wsCode;
+  window._layoutFieldsTable = fieldsTable;
+
+  const preview = document.getElementById('layout-ws-preview');
+  preview.textContent = wsCode || '(nenhum layout inserido)';
+
+  _layoutBuildFieldsTable(fieldsTable);
+}
+
+/* ── Renderiza a tabela de renomeação de campos ─────────────────── */
+function _layoutBuildFieldsTable(fieldsTable) {
+  const tbody = document.getElementById('layout-fields-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!fieldsTable.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#aaa;text-align:center;padding:8px;">Nenhum campo variável detectado</td></tr>';
+    return;
+  }
+  fieldsTable.forEach((entry, fi) => {
+    const pic = entry.tok.type === 'ALPHA' ? `PIC X(${entry.tok.len})` :
+                entry.tok.type === 'NUM'   ? `PIC 9(${entry.tok.len})` : `PIC ${entry.tok.pic}`;
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td style="padding:2px 6px;font-size:11px;color:#aaa;text-align:right;">${fi + 1}</td>` +
+      `<td style="padding:1px 4px;"><input class="layout-field-name-inp" data-fi="${fi}" value="${entry.tok.fieldName}" /></td>` +
+      `<td style="padding:2px 6px;font-size:11px;color:#666;font-family:monospace;">${pic}</td>` +
+      `<td style="padding:2px 6px;font-size:10px;color:#888;font-family:monospace;">${entry.wsName}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.layout-field-name-inp').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const fi = parseInt(inp.dataset.fi);
+      if (window._layoutFieldsTable[fi]) {
+        window._layoutFieldsTable[fi].tok.fieldName = (inp.value.trim().toUpperCase()) || window._layoutFieldsTable[fi].tok.originalFieldName;
+        // Rebuild WS code with updated field names
+        const newWs = _layoutBuildWsCode(window._layoutParsedRecords);
+        window._layoutWsCode = newWs;
+        document.getElementById('layout-ws-preview').textContent = newWs;
+      }
+    });
+  });
+}
+
+/* ── Aplica o layout (salva na lista e regenera o código) ────────── */
+function _layoutApply() {
+  if (!window._layoutParsedRecords || window._layoutParsedRecords.length === 0) {
+    showToast('Digite um layout à esquerda antes de gerar.', 'error');
+    return;
+  }
+  const label = (document.getElementById('layout-set-name').value.trim() || 'Layout1').toUpperCase();
+  const entry = { label, wsCode: window._layoutWsCode, records: window._layoutParsedRecords };
+  const idx = window._rptCustomLayouts.findIndex(l => l.label === label);
+  if (idx >= 0) {
+    window._rptCustomLayouts[idx] = entry;
+  } else {
+    window._rptCustomLayouts.push(entry);
+  }
+  generateAllCode();
+  _layoutRenderSetsList();
+  showToast(`✓ Layout "${label}" gerado na Working-Storage!`, 'success');
+}
+
+/* ── Renderiza a lista de layouts salvos ────────────────────────── */
+function _layoutRenderSetsList() {
+  const list = document.getElementById('layout-sets-list');
+  const empty = document.getElementById('layout-sets-empty');
+  if (!list) return;
+  // Remove items antigos (mantém o div #layout-sets-empty)
+  Array.from(list.children).forEach(c => { if (!c.id) c.remove(); });
+  if (!window._rptCustomLayouts.length) {
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  window._rptCustomLayouts.forEach((lay, i) => {
+    const d = document.createElement('div');
+    d.className = 'layout-set-item';
+    d.innerHTML =
+      `<span>📦 ${lay.label}</span>` +
+      `<button class="layout-set-del" title="Remover este layout" onclick="_layoutRemoveSet(${i})">✕</button>`;
+    list.appendChild(d);
+  });
+}
+
+function _layoutRemoveSet(idx) {
+  window._rptCustomLayouts.splice(idx, 1);
+  generateAllCode();
+  _layoutRenderSetsList();
+  showToast('Layout removido da Working-Storage.', 'success');
+}
+
+function _layoutClear() {
+  document.getElementById('layout-input').value = '';
+  document.getElementById('layout-ws-preview').textContent = '(nenhum layout inserido)';
+  document.getElementById('layout-fields-tbody').innerHTML =
+    '<tr><td colspan="4" style="color:#aaa;text-align:center;padding:8px;">Nenhum campo detectado ainda</td></tr>';
+  window._layoutParsedRecords = [];
+  window._layoutWsCode = '';
+  window._layoutFieldsTable = [];
+}
+
+function _layoutClearAll() {
+  if (!window._rptCustomLayouts.length) { showToast('Nenhum layout salvo.'); return; }
+  if (!confirm('Remover todos os layouts personalizados da Working-Storage?')) return;
+  window._rptCustomLayouts = [];
+  generateAllCode();
+  _layoutRenderSetsList();
+  showToast('Todos os layouts removidos.', 'success');
+}
+
+function _layoutLoadExample() {
+  document.getElementById('layout-input').value =
+`>> CABECALHO:
+EMPRESA XXXXXXXXXXXXXXXXXXXX  DATA: 99/99/9999  PAG: ZZ9
+>> SEP1:
+--------------------------------------------------------------
+>> SUBCAB:
+CODIGO  DESCRICAO                                      VALOR
+>> SEP2:
+--------------------------------------------------------------
+>> DETALHE:
+99999   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     ZZZ,ZZ9.99
+>> SEP3:
+--------------------------------------------------------------
+>> TOTAL:
+                            TOTAL GERAL:    ZZZ,ZZZ.99`;
+  document.getElementById('layout-set-name').value = 'LAYOUT-PADRAO';
+  _layoutUpdateAll();
 }
 
 </script>
