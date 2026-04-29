@@ -76,6 +76,13 @@
     touch-action: none;
   }
 
+  /* Nós de início/fim (cf-node sem header): elemento inteiro é o handle */
+  #node-start,
+  #node-end-node {
+    touch-action: none;
+    cursor: grab;
+  }
+
   /* Corpo do nó: permite scroll/pan nativo (não é handle de drag) */
   .node-card-body {
     touch-action: pan-x pan-y;

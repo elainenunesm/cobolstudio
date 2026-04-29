@@ -316,8 +316,8 @@
     // Palette
     document.querySelectorAll('.activity-item').forEach(_bindActivityItem);
 
-    // Nós já existentes no canvas
-    document.querySelectorAll('#canvas .node-card').forEach(_bindNodeCard);
+    // Nós já existentes no canvas (inclui start/end que só têm cf-node)
+    document.querySelectorAll('#canvas .cf-node').forEach(_bindNodeCard);
 
     // MutationObserver: ativa touch em nós criados dinamicamente
     const canvas = document.getElementById('canvas');
@@ -325,7 +325,7 @@
       new MutationObserver((mutations) => {
         mutations.forEach(({ addedNodes }) => {
           addedNodes.forEach((n) => {
-            if (n.nodeType === 1 && n.classList?.contains('node-card')) {
+            if (n.nodeType === 1 && n.classList?.contains('cf-node')) {
               _bindNodeCard(n);
             }
           });
