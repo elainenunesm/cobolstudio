@@ -1616,6 +1616,78 @@
               </div>
             </div>
 
+            <!-- COBOL.Datas -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-datas')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128197;</span> COBOL.Datas
+            </div>
+            <div class="act-group-body" id="ag-datas">
+              <div class="activity-item" draggable="true" data-type="DT_AAAAMMDD" ondragstart="onDragStart(event,'DT_AAAAMMDD')">
+                <span class="act-icon">&#128197;</span> Decompor AAAAMMDD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_DDMMAAAA" ondragstart="onDragStart(event,'DT_DDMMAAAA')">
+                <span class="act-icon">&#128197;</span> Decompor DDMMAAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_MMAAAA" ondragstart="onDragStart(event,'DT_MMAAAA')">
+                <span class="act-icon">&#128197;</span> Decompor MMAAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_AAAAMM" ondragstart="onDragStart(event,'DT_AAAAMM')">
+                <span class="act-icon">&#128197;</span> Decompor AAAAMM
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_TO_DDMMAAAA" ondragstart="onDragStart(event,'DT_TO_DDMMAAAA')">
+                <span class="act-icon">&#128260;</span> Conv → DDMMAAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_TO_AAAAMMDD" ondragstart="onDragStart(event,'DT_TO_AAAAMMDD')">
+                <span class="act-icon">&#128260;</span> Conv → AAAAMMDD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_CURRENT" ondragstart="onDragStart(event,'DT_CURRENT')">
+                <span class="act-icon">&#128336;</span> Data Atual
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_DIFF" ondragstart="onDragStart(event,'DT_DIFF')">
+                <span class="act-icon">&#128208;</span> Diferença Datas
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_FMT_BARRA" ondragstart="onDragStart(event,'DT_FMT_BARRA')">
+                <span class="act-icon">&#128197;</span> Fmt DD/MM/AAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_FMT_PONTO" ondragstart="onDragStart(event,'DT_FMT_PONTO')">
+                <span class="act-icon">&#128197;</span> Fmt DD.MM.AAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_FMT_HIFEN" ondragstart="onDragStart(event,'DT_FMT_HIFEN')">
+                <span class="act-icon">&#128197;</span> Fmt AAAA-MM-DD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_HORA" ondragstart="onDragStart(event,'DT_HORA')">
+                <span class="act-icon">&#128336;</span> Hora Atual
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_HORA_FMT" ondragstart="onDragStart(event,'DT_HORA_FMT')">
+                <span class="act-icon">&#128337;</span> Fmt HH:MM:SS
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_TIMESTAMP" ondragstart="onDragStart(event,'DT_TIMESTAMP')">
+                <span class="act-icon">&#9201;</span> Timestamp
+              </div>
+              <div style="font-size:10px;color:#7c3aed;font-weight:700;padding:4px 6px 2px;">&#8594; Conversão direta</div>
+              <div class="activity-item" draggable="true" data-type="DT_AAAAMMDD_TO_SLASH" ondragstart="onDragStart(event,'DT_AAAAMMDD_TO_SLASH')">
+                <span class="act-icon">&#128260;</span> AAAAMMDD→DD/MM/AAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_AAAAMMDD_TO_PONTO" ondragstart="onDragStart(event,'DT_AAAAMMDD_TO_PONTO')">
+                <span class="act-icon">&#128260;</span> AAAAMMDD→DD.MM.AAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_AAAAMMDD_TO_ISO" ondragstart="onDragStart(event,'DT_AAAAMMDD_TO_ISO')">
+                <span class="act-icon">&#128260;</span> AAAAMMDD→AAAA-MM-DD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_DDMMAAAA_TO_SLASH" ondragstart="onDragStart(event,'DT_DDMMAAAA_TO_SLASH')">
+                <span class="act-icon">&#128260;</span> DDMMAAAA→DD/MM/AAAA
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_SLASH_TO_AAAAMMDD" ondragstart="onDragStart(event,'DT_SLASH_TO_AAAAMMDD')">
+                <span class="act-icon">&#128260;</span> DD/MM/AAAA→AAAAMMDD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_PONTO_TO_AAAAMMDD" ondragstart="onDragStart(event,'DT_PONTO_TO_AAAAMMDD')">
+                <span class="act-icon">&#128260;</span> DD.MM.AAAA→AAAAMMDD
+              </div>
+              <div class="activity-item" draggable="true" data-type="DT_ISO_TO_AAAAMMDD" ondragstart="onDragStart(event,'DT_ISO_TO_AAAAMMDD')">
+                <span class="act-icon">&#128260;</span> AAAA-MM-DD→AAAAMMDD
+              </div>
+            </div>
+
             <!-- COBOL.Aritmetica -->
             <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-arit')">
               <span class="act-group-toggle">&#9658;</span>
@@ -2658,6 +2730,29 @@ const activityMeta = {
   MOVE:          { icon:'➡️', label:'MOVE',          color:'blue',   fields:['MOVE [origem] TO [destino]'] },
   INITIALIZE:    { icon:'🔄', label:'INITIALIZE',    color:'blue',   fields:['INITIALIZE WS-VARIAVEL'] },
   NUMVAL:        { icon:'🔢', label:'NUMVAL',         color:'blue',   fields:['MOVE FUNCTION NUMVAL([WS-STRING]) TO [WS-NUMERICO]'] },
+  /* ── Datas ── */
+  DT_AAAAMMDD:   { icon:'📅', label:'Data AAAAMMDD',   color:'indigo', fields:['*> Entrada: WS-DATA-ENT PIC X(08) "AAAAMMDD"','MOVE WS-DATA-ENT(1:4) TO WS-ANO','MOVE WS-DATA-ENT(5:2) TO WS-MES','MOVE WS-DATA-ENT(7:2) TO WS-DIA'] },
+  DT_DDMMAAAA:   { icon:'📅', label:'Data DDMMAAAA',   color:'indigo', fields:['*> Entrada: WS-DATA-ENT PIC X(08) "DDMMAAAA"','MOVE WS-DATA-ENT(1:2) TO WS-DIA','MOVE WS-DATA-ENT(3:2) TO WS-MES','MOVE WS-DATA-ENT(5:4) TO WS-ANO'] },
+  DT_MMAAAA:     { icon:'📅', label:'Data MMAAAA',     color:'indigo', fields:['*> Entrada: WS-DATA-ENT PIC X(06) "MMAAAA"','MOVE WS-DATA-ENT(1:2) TO WS-MES','MOVE WS-DATA-ENT(3:4) TO WS-ANO'] },
+  DT_AAAAMM:     { icon:'📅', label:'Data AAAAMM',     color:'indigo', fields:['*> Entrada: WS-DATA-ENT PIC X(06) "AAAAMM"','MOVE WS-DATA-ENT(1:4) TO WS-ANO','MOVE WS-DATA-ENT(5:2) TO WS-MES'] },
+  DT_TO_DDMMAAAA:{ icon:'🔁', label:'Conv → DDMMAAAA', color:'indigo', fields:['*> Converte AAAAMMDD → DDMMAAAA','MOVE [WS-DATA-AAAAMMDD](7:2) TO WS-DATA-SAIDA(1:2)','MOVE [WS-DATA-AAAAMMDD](5:2) TO WS-DATA-SAIDA(3:2)','MOVE [WS-DATA-AAAAMMDD](1:4) TO WS-DATA-SAIDA(5:4)'] },
+  DT_TO_AAAAMMDD:{ icon:'🔁', label:'Conv → AAAAMMDD', color:'indigo', fields:['*> Converte DDMMAAAA → AAAAMMDD','MOVE [WS-DATA-DDMMAAAA](5:4) TO WS-DATA-SAIDA(1:4)','MOVE [WS-DATA-DDMMAAAA](3:2) TO WS-DATA-SAIDA(5:2)','MOVE [WS-DATA-DDMMAAAA](1:2) TO WS-DATA-SAIDA(7:2)'] },
+  DT_CURRENT:    { icon:'🕐', label:'Data Atual',      color:'indigo', fields:['MOVE FUNCTION CURRENT-DATE TO WS-CURRENT-DATE','*> WS-CURRENT-DATE PIC X(21)','*> [1:4]=ANO [5:2]=MES [7:2]=DIA','MOVE WS-CURRENT-DATE(1:4) TO WS-ANO','MOVE WS-CURRENT-DATE(5:2) TO WS-MES','MOVE WS-CURRENT-DATE(7:2) TO WS-DIA'] },
+  DT_DIFF:       { icon:'📐', label:'Diferença Datas', color:'indigo', fields:['*> Diferença em dias entre duas datas (INTEGER-OF-DATE)','COMPUTE WS-DIAS-DIFF =','  FUNCTION INTEGER-OF-DATE([WS-DATA1-NUM])','  - FUNCTION INTEGER-OF-DATE([WS-DATA2-NUM])','*> WS-DATA-NUM: PIC 9(8) formato AAAAMMDD'] },
+  DT_FMT_BARRA:  { icon:'📅', label:'Fmt DD/MM/AAAA', color:'indigo', fields:['*> Formata data com barra: DD/MM/AAAA','MOVE WS-DIA              TO WS-DATA-FMT(1:2)','MOVE "/"               TO WS-DATA-FMT(3:1)','MOVE WS-MES              TO WS-DATA-FMT(4:2)','MOVE "/"               TO WS-DATA-FMT(6:1)','MOVE WS-ANO              TO WS-DATA-FMT(7:4)'] },
+  DT_FMT_PONTO:  { icon:'📅', label:'Fmt DD.MM.AAAA', color:'indigo', fields:['*> Formata data com ponto: DD.MM.AAAA','MOVE WS-DIA              TO WS-DATA-FMT(1:2)','MOVE "."               TO WS-DATA-FMT(3:1)','MOVE WS-MES              TO WS-DATA-FMT(4:2)','MOVE "."               TO WS-DATA-FMT(6:1)','MOVE WS-ANO              TO WS-DATA-FMT(7:4)'] },
+  DT_FMT_HIFEN:  { icon:'📅', label:'Fmt AAAA-MM-DD', color:'indigo', fields:['*> Formata data ISO: AAAA-MM-DD','MOVE WS-ANO              TO WS-DATA-FMT(1:4)','MOVE "-"               TO WS-DATA-FMT(5:1)','MOVE WS-MES              TO WS-DATA-FMT(6:2)','MOVE "-"               TO WS-DATA-FMT(8:1)','MOVE WS-DIA              TO WS-DATA-FMT(9:2)'] },
+  DT_HORA:       { icon:'🕐', label:'Hora Atual',     color:'indigo', fields:['*> Extrai hora de CURRENT-DATE','*> [9:2]=HH [11:2]=MM [13:2]=SS','MOVE WS-CURRENT-DATE(9:2)  TO WS-HORA','MOVE WS-CURRENT-DATE(11:2) TO WS-MINUTO','MOVE WS-CURRENT-DATE(13:2) TO WS-SEGUNDO'] },
+  DT_HORA_FMT:   { icon:'🕑', label:'Fmt HH:MM:SS',  color:'indigo', fields:['*> Formata hora: HH:MM:SS','MOVE WS-HORA             TO WS-HORA-FMT(1:2)','MOVE ":"               TO WS-HORA-FMT(3:1)','MOVE WS-MINUTO           TO WS-HORA-FMT(4:2)','MOVE ":"               TO WS-HORA-FMT(6:1)','MOVE WS-SEGUNDO          TO WS-HORA-FMT(7:2)'] },
+  DT_TIMESTAMP:  { icon:'⏱️', label:'Timestamp',     color:'indigo', fields:['*> Monta timestamp: AAAA-MM-DD HH:MM:SS','MOVE WS-ANO              TO WS-TIMESTAMP(1:4)','MOVE "-"               TO WS-TIMESTAMP(5:1)','MOVE WS-MES              TO WS-TIMESTAMP(6:2)','MOVE "-"               TO WS-TIMESTAMP(8:1)','MOVE WS-DIA              TO WS-TIMESTAMP(9:2)','MOVE " "               TO WS-TIMESTAMP(11:1)','MOVE WS-HORA             TO WS-TIMESTAMP(12:2)','MOVE ":"               TO WS-TIMESTAMP(14:1)','MOVE WS-MINUTO           TO WS-TIMESTAMP(15:2)','MOVE ":"               TO WS-TIMESTAMP(17:1)','MOVE WS-SEGUNDO          TO WS-TIMESTAMP(18:2)'] },
+  /* ── Conversão direta de formato de data ── */
+  DT_AAAAMMDD_TO_SLASH:  { icon:'🔁', label:'AAAAMMDD→DD/MM/AAAA', color:'indigo', fields:['*> Converte AAAAMMDD → DD/MM/AAAA','MOVE [WS-DATA-AAAAMMDD](7:2) TO WS-DATA-FMT(1:2)','MOVE "/"                     TO WS-DATA-FMT(3:1)','MOVE [WS-DATA-AAAAMMDD](5:2) TO WS-DATA-FMT(4:2)','MOVE "/"                     TO WS-DATA-FMT(6:1)','MOVE [WS-DATA-AAAAMMDD](1:4) TO WS-DATA-FMT(7:4)'] },
+  DT_AAAAMMDD_TO_PONTO:  { icon:'🔁', label:'AAAAMMDD→DD.MM.AAAA', color:'indigo', fields:['*> Converte AAAAMMDD → DD.MM.AAAA','MOVE [WS-DATA-AAAAMMDD](7:2) TO WS-DATA-FMT(1:2)','MOVE "."                     TO WS-DATA-FMT(3:1)','MOVE [WS-DATA-AAAAMMDD](5:2) TO WS-DATA-FMT(4:2)','MOVE "."                     TO WS-DATA-FMT(6:1)','MOVE [WS-DATA-AAAAMMDD](1:4) TO WS-DATA-FMT(7:4)'] },
+  DT_AAAAMMDD_TO_ISO:    { icon:'🔁', label:'AAAAMMDD→AAAA-MM-DD', color:'indigo', fields:['*> Converte AAAAMMDD → AAAA-MM-DD (ISO)','MOVE [WS-DATA-AAAAMMDD](1:4) TO WS-DATA-FMT(1:4)','MOVE "-"                     TO WS-DATA-FMT(5:1)','MOVE [WS-DATA-AAAAMMDD](5:2) TO WS-DATA-FMT(6:2)','MOVE "-"                     TO WS-DATA-FMT(8:1)','MOVE [WS-DATA-AAAAMMDD](7:2) TO WS-DATA-FMT(9:2)'] },
+  DT_DDMMAAAA_TO_SLASH:  { icon:'🔁', label:'DDMMAAAA→DD/MM/AAAA', color:'indigo', fields:['*> Converte DDMMAAAA → DD/MM/AAAA','MOVE [WS-DATA-DDMMAAAA](1:2) TO WS-DATA-FMT(1:2)','MOVE "/"                     TO WS-DATA-FMT(3:1)','MOVE [WS-DATA-DDMMAAAA](3:2) TO WS-DATA-FMT(4:2)','MOVE "/"                     TO WS-DATA-FMT(6:1)','MOVE [WS-DATA-DDMMAAAA](5:4) TO WS-DATA-FMT(7:4)'] },
+  DT_SLASH_TO_AAAAMMDD:  { icon:'🔁', label:'DD/MM/AAAA→AAAAMMDD', color:'indigo', fields:['*> Converte DD/MM/AAAA → AAAAMMDD','MOVE [WS-DATA-FMT](7:4)      TO WS-DATA-SAIDA(1:4)','MOVE [WS-DATA-FMT](4:2)      TO WS-DATA-SAIDA(5:2)','MOVE [WS-DATA-FMT](1:2)      TO WS-DATA-SAIDA(7:2)'] },
+  DT_PONTO_TO_AAAAMMDD:  { icon:'🔁', label:'DD.MM.AAAA→AAAAMMDD', color:'indigo', fields:['*> Converte DD.MM.AAAA → AAAAMMDD','MOVE [WS-DATA-FMT](7:4)      TO WS-DATA-SAIDA(1:4)','MOVE [WS-DATA-FMT](4:2)      TO WS-DATA-SAIDA(5:2)','MOVE [WS-DATA-FMT](1:2)      TO WS-DATA-SAIDA(7:2)'] },
+  DT_ISO_TO_AAAAMMDD:    { icon:'🔁', label:'AAAA-MM-DD→AAAAMMDD', color:'indigo', fields:['*> Converte AAAA-MM-DD → AAAAMMDD','MOVE [WS-DATA-FMT](1:4)      TO WS-DATA-SAIDA(1:4)','MOVE [WS-DATA-FMT](6:2)      TO WS-DATA-SAIDA(5:2)','MOVE [WS-DATA-FMT](9:2)      TO WS-DATA-SAIDA(7:2)'] },
   /* ── Aritmética ── */
   ADD:           { icon:'➕', label:'ADD',           color:'orange', fields:['ADD 1 TO WS-CONTADOR'] },
   SUBTRACT:      { icon:'➖', label:'SUBTRACT',      color:'orange', fields:['SUBTRACT WS-A FROM WS-B'] },
@@ -4032,6 +4127,96 @@ function generateAllCode() {
     }
   });
 
+  // ── Working-Storage: variáveis de data automáticas ──────────────
+  const _dtNodeTypes = Array.from(document.querySelectorAll('#canvas .cf-node[data-node-type]'))
+    .map(n => n.dataset.nodeType);
+  const _hasDtNode  = t => _dtNodeTypes.includes(t);
+  const _hasAnyDt   = ['DT_AAAAMMDD','DT_DDMMAAAA','DT_MMAAAA','DT_AAAAMM',
+                        'DT_TO_DDMMAAAA','DT_TO_AAAAMMDD','DT_CURRENT','DT_DIFF',
+                        'DT_FMT_BARRA','DT_FMT_PONTO','DT_FMT_HIFEN',
+                        'DT_HORA','DT_HORA_FMT','DT_TIMESTAMP',
+                        'DT_AAAAMMDD_TO_SLASH','DT_AAAAMMDD_TO_PONTO','DT_AAAAMMDD_TO_ISO',
+                        'DT_DDMMAAAA_TO_SLASH','DT_SLASH_TO_AAAAMMDD',
+                        'DT_PONTO_TO_AAAAMMDD','DT_ISO_TO_AAAAMMDD']
+                       .some(t => _hasDtNode(t));
+
+  let wsDtLines = '';
+  if (_hasAnyDt) {
+    wsDtLines += '\n      * Variaveis de Data\n';
+
+    // ── 01 WS-DT-COMPONENTES: ANO / MES / DIA ──
+    const needAMD = ['DT_AAAAMMDD','DT_DDMMAAAA','DT_MMAAAA','DT_AAAAMM',
+                     'DT_CURRENT','DT_FMT_BARRA','DT_FMT_PONTO','DT_FMT_HIFEN',
+                     'DT_TIMESTAMP'].some(t => _hasDtNode(t));
+    if (needAMD) {
+      wsDtLines += '       01 WS-DT-COMPONENTES.\n';
+      wsDtLines += '           03 WS-ANO               PIC 9(4)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-MES               PIC 9(2)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-DIA               PIC 9(2)  VALUE ZEROS.\n';
+    }
+
+    // ── 01 WS-DT-ENTRADA: strings raw de entrada ──
+    const needEnt = ['DT_AAAAMMDD','DT_TO_AAAAMMDD','DT_TO_DDMMAAAA',
+                     'DT_DDMMAAAA','DT_MMAAAA','DT_AAAAMM',
+                     'DT_AAAAMMDD_TO_SLASH','DT_AAAAMMDD_TO_PONTO','DT_AAAAMMDD_TO_ISO',
+                     'DT_DDMMAAAA_TO_SLASH'].some(t => _hasDtNode(t));
+    if (needEnt) {
+      wsDtLines += '       01 WS-DT-ENTRADA.\n';
+      if (_hasDtNode('DT_AAAAMMDD') || _hasDtNode('DT_TO_AAAAMMDD') || _hasDtNode('DT_TO_DDMMAAAA') ||
+          _hasDtNode('DT_AAAAMMDD_TO_SLASH') || _hasDtNode('DT_AAAAMMDD_TO_PONTO') || _hasDtNode('DT_AAAAMMDD_TO_ISO'))
+        wsDtLines += '           03 WS-DATA-AAAAMMDD     PIC X(08) VALUE SPACES.\n';
+      if (_hasDtNode('DT_DDMMAAAA') || _hasDtNode('DT_DDMMAAAA_TO_SLASH'))
+        wsDtLines += '           03 WS-DATA-DDMMAAAA     PIC X(08) VALUE SPACES.\n';
+      if (_hasDtNode('DT_MMAAAA'))
+        wsDtLines += '           03 WS-DATA-MMAAAA       PIC X(06) VALUE SPACES.\n';
+      if (_hasDtNode('DT_AAAAMM'))
+        wsDtLines += '           03 WS-DATA-AAAAMM       PIC X(06) VALUE SPACES.\n';
+    }
+
+    // ── 01 WS-DT-SAIDA: datas convertidas / formatadas ──
+    const needSaida = ['DT_TO_DDMMAAAA','DT_TO_AAAAMMDD',
+                       'DT_FMT_BARRA','DT_FMT_PONTO','DT_FMT_HIFEN',
+                       'DT_AAAAMMDD_TO_SLASH','DT_AAAAMMDD_TO_PONTO','DT_AAAAMMDD_TO_ISO',
+                       'DT_DDMMAAAA_TO_SLASH'].some(t => _hasDtNode(t));
+    const needFmtRev = ['DT_SLASH_TO_AAAAMMDD','DT_PONTO_TO_AAAAMMDD','DT_ISO_TO_AAAAMMDD'].some(t => _hasDtNode(t));
+    if (needSaida || needFmtRev) {
+      wsDtLines += '       01 WS-DT-SAIDA.\n';
+      if (_hasDtNode('DT_TO_DDMMAAAA') || _hasDtNode('DT_TO_AAAAMMDD') || needFmtRev)
+        wsDtLines += '           03 WS-DATA-SAIDA        PIC X(08) VALUE SPACES.\n';
+      if (_hasDtNode('DT_FMT_BARRA') || _hasDtNode('DT_FMT_PONTO') || _hasDtNode('DT_FMT_HIFEN') ||
+          _hasDtNode('DT_AAAAMMDD_TO_SLASH') || _hasDtNode('DT_AAAAMMDD_TO_PONTO') ||
+          _hasDtNode('DT_AAAAMMDD_TO_ISO')   || _hasDtNode('DT_DDMMAAAA_TO_SLASH') || needFmtRev)
+        wsDtLines += '           03 WS-DATA-FMT          PIC X(10) VALUE SPACES.\n';
+    }
+
+    // ── 01 WS-DT-HORA: hora / minuto / segundo / formatada ──
+    const needHora = ['DT_HORA','DT_HORA_FMT','DT_TIMESTAMP'].some(t => _hasDtNode(t));
+    if (needHora) {
+      wsDtLines += '       01 WS-DT-HORA.\n';
+      wsDtLines += '           03 WS-HORA               PIC 9(2)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-MINUTO             PIC 9(2)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-SEGUNDO            PIC 9(2)  VALUE ZEROS.\n';
+      if (_hasDtNode('DT_HORA_FMT'))
+        wsDtLines += '           03 WS-HORA-FMT           PIC X(08) VALUE SPACES.\n';
+    }
+
+    // ── 01 WS-DT-TIMESTAMP ──
+    if (_hasDtNode('DT_TIMESTAMP'))
+      wsDtLines += '       01 WS-DT-TIMESTAMP          PIC X(19) VALUE SPACES.\n';
+
+    // ── 01 WS-DT-CALCULO: diferença de datas ──
+    if (_hasDtNode('DT_DIFF')) {
+      wsDtLines += '       01 WS-DT-CALCULO.\n';
+      wsDtLines += '           03 WS-DATA1-NUM          PIC 9(8)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-DATA2-NUM          PIC 9(8)  VALUE ZEROS.\n';
+      wsDtLines += '           03 WS-DIAS-DIFF          PIC S9(8) VALUE ZEROS.\n';
+    }
+
+    // ── CURRENT-DATE (buffer do sistema) ──
+    if (_hasDtNode('DT_CURRENT') || needHora)
+      wsDtLines += '       01 WS-CURRENT-DATE          PIC X(21) VALUE SPACES.\n';
+  }
+
   // DB2
   const hasDB2 = document.querySelectorAll('#canvas .cf-node[id*="db2"]').length > 0
     || [...document.querySelectorAll('#canvas .node-card-header')].some(h => h.textContent.includes('DB2'));
@@ -4204,7 +4389,7 @@ ${fileControlBlock}
        DATA DIVISION.
 ${fileSectionBlock}       WORKING-STORAGE SECTION.
        01 WS-FIM                  PIC X(1)  VALUE "N".
-${fileStatusWS}${sqlcaBlock}${wsLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
+${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
     // ── Linkage Section ──
     const lkVars = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
     if (lkVars.length > 0) {
@@ -5047,6 +5232,15 @@ async function saveProgramAs() {
   const json     = JSON.stringify(project, null, 2);
 
   if (window.showSaveFilePicker) {
+    // Mostra overlay enquanto o diálogo nativo está aberto
+    const ov = document.createElement('div');
+    ov.id = '_picker-overlay';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.72);backdrop-filter:blur(4px);z-index:99998;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML = '<div style="background:#fff;border-radius:10px;padding:24px 32px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">'
+      + '<div style="font-size:22px;margin-bottom:8px;">💾</div>'
+      + '<div style="font-size:13px;font-weight:600;color:#1e40af;">Escolha onde salvar o projeto...</div>'
+      + '</div>';
+    document.body.appendChild(ov);
     try {
       const fh = await window.showSaveFilePicker({
         suggestedName: fileName,
@@ -5059,6 +5253,8 @@ async function saveProgramAs() {
       setStatus(`Projeto salvo: ${fh.name}`);
     } catch (e) {
       if (e.name !== 'AbortError') showToast('Erro ao salvar: ' + e.message, 'error');
+    } finally {
+      document.getElementById('_picker-overlay')?.remove();
     }
   } else {
     const blob = new Blob([json], { type: 'application/json' });
