@@ -1435,13 +1435,13 @@
     <!-- ─── Left Panel ───────────────────────────────────────────── -->
     <div id="left-panel">
       <div id="left-panel-tabs">
-        <div class="ltab active" onclick="switchLTab(this,'project-tab-content')">Projeto</div>
-        <div class="ltab" onclick="switchLTab(this,'activities-panel')">Atividades</div>
+        <div class="ltab active" onclick="switchLTab(this,'activities-panel')">Blocos</div>
+        <div class="ltab" onclick="switchLTab(this,'project-tab-content')">Projeto</div>
       </div>
       <div id="left-panel-content">
 
         <!-- Project Tree -->
-        <div id="project-tab-content">
+        <div id="project-tab-content" style="display:none">
           <div class="tree-item open" onclick="toggleTree(this, 'tree-deps')">
             <span class="tree-toggle">▶</span>
             <span class="tree-icon">📦</span>
@@ -1522,7 +1522,7 @@
         </div><!-- /project-tab-content -->
 
         <!-- Activities Panel -->
-        <div id="activities-panel">
+        <div id="activities-panel" style="display:flex">
           <!-- Barra de pesquisa -->
           <div id="act-search-wrap">
             <input type="text" id="act-search" placeholder="&#128269; Pesquisar atividade..."
@@ -1533,11 +1533,11 @@
           <div id="act-groups">
 
             <!-- COBOL.Sistema -->
-            <div class="act-group-header open" onclick="toggleActivityGroup(this,'ag-sistema')">
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-sistema')">
               <span class="act-group-toggle">&#9658;</span>
               <span class="act-group-icon">&#9881;</span> COBOL.Sistema
             </div>
-            <div class="act-group-body open" id="ag-sistema">
+            <div class="act-group-body" id="ag-sistema">
               <div class="activity-item" draggable="true" data-type="IPT_SET" ondragstart="onDragStart(event,'IPT_SET')">
                 <span class="act-icon">🎯</span> PERFORM INI/PRO/TER
               </div>
@@ -1560,7 +1560,7 @@
                 <span class="act-icon">&#8618;</span> GO TO
               </div>
               <div class="activity-item" draggable="true" data-type="GO_BACK" ondragstart="onDragStart(event,'GO_BACK')">
-                <span class="act-icon">&#8617;</span> GO BACK
+                <span class="act-icon">&#8617;</span> GOBACK
               </div>
             </div>
 
@@ -2376,6 +2376,11 @@ function selectTreeItem(el, propGroup) {
 function switchLTab(tab, contentId) {
   document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
   tab.classList.add('active');
+  // Recolhe todos os grupos de blocos ao abrir a aba
+  if (contentId === 'activities-panel') {
+    document.querySelectorAll('.act-group-header').forEach(h => h.classList.remove('open'));
+    document.querySelectorAll('.act-group-body').forEach(b => b.classList.remove('open'));
+  }
   ['project-tab-content','activities-panel','custom-tab-content'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -2948,7 +2953,7 @@ const activityMeta = {
   PERFORM_UNTIL: { icon:'🔂', label:'PERFORM UNTIL',   color:'blue',   fields:['PERFORM [paragrafo]','  UNTIL WS-FIM = "S"'] },
   PERFORM_VARYING:{ icon:'🔃', label:'PERFORM VARYING', color:'blue',  fields:['PERFORM VARYING WS-CTR FROM 1 BY 1','  UNTIL WS-CTR > WS-TOTAL','    PERFORM [paragrafo]','END-PERFORM'] },
   GO_TO:         { icon:'↪️', label:'GO TO',           color:'red',    fields:['GO TO [paragrafo]'] },
-  GO_BACK:       { icon:'↩️', label:'GO BACK',          color:'red',    fields:['GO BACK'] },
+  GO_BACK:       { icon:'↩️', label:'GOBACK',          color:'red',    fields:['GOBACK'] },
   STOP_RUN:      { icon:'⏹️', label:'STOP RUN',        color:'red',    fields:['STOP RUN'] },
   /* ── String ── */
   STRING_OP:     { icon:'🔤', label:'STRING',           color:'blue',   fields:['STRING WS-A DELIMITED SIZE','  WS-B DELIMITED SIZE','  INTO WS-DESTINO','  WITH POINTER WS-PTR','END-STRING'] },
@@ -3185,6 +3190,11 @@ function createNodeAt(type, x, y) {
     div.dataset.codeRole = 'pure-comment';
     const hdr = div.querySelector('.node-card-header');
     if (hdr) hdr.classList.add('code-role-comment');
+  }
+
+  // GOBACK e STOP RUN não são parágrafos — saem inline (sem cabeçalho SECTION)
+  if (type === 'GO_BACK' || type === 'STOP_RUN') {
+    div.dataset.codeRole = 'inline';
   }
 }
 
@@ -4751,7 +4761,7 @@ ${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(
   // ── Detecta GOBACK e PROCEDURE DIVISION USING ──
   const lkVarsFinal = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
   const _caFinal    = typeof _commareaVars !== 'undefined' ? _commareaVars : [];
-  const hasGoback = /\bGO\s*BACK\b/i.test(procLines);
+  const hasGoback = /\bGOBACK\b/i.test(procLines);
   // Se há GOBACK e linkage vazia, agenda criação automática (fora do codegen para evitar recursão)
   if (hasGoback && lkVarsFinal.length === 0 && !_importedPreamble) {
     setTimeout(() => { typeof _autoLinkageFromGoback === 'function' && _autoLinkageFromGoback(); }, 0);
