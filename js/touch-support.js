@@ -152,18 +152,18 @@
   function _bindNodeCard(el) {
     let sx, sy, sl, st, dragging;
 
-    el.addEventListener('touchstart', (e) => {
+    const header = el.querySelector('.node-card-header');
+
+    // Drag de nó: só inicia a partir do cabeçalho (igual ao mouse)
+    const dragHandle = header || el;
+    dragHandle.addEventListener('touchstart', (e) => {
       const tgt = e.target;
-      // Ignora elementos interativos dentro do nó
+      // Ignora elementos interativos dentro do cabeçalho
       if (
         tgt.tagName === 'INPUT'    || tgt.tagName === 'BUTTON' ||
         tgt.tagName === 'SELECT'   || tgt.tagName === 'TEXTAREA' ||
-        tgt.classList.contains('node-field-more')    ||
         tgt.classList.contains('node-connect-btn')   ||
-        tgt.classList.contains('node-add-field-btn') ||
-        tgt.classList.contains('node-card-remove-btn') ||
-        tgt.classList.contains('node-field-drag')    ||
-        tgt.classList.contains('node-sub-block-drag')
+        tgt.classList.contains('node-card-remove-btn')
       ) return;
 
       sx       = e.touches[0].clientX;
@@ -173,7 +173,7 @@
       dragging = false;
     }, { passive: true });
 
-    el.addEventListener('touchmove', (e) => {
+    dragHandle.addEventListener('touchmove', (e) => {
       if (sx === undefined) return;
       const t  = e.touches[0];
       const dx = t.clientX - sx;
@@ -205,8 +205,109 @@
       sx = undefined;
     };
 
-    el.addEventListener('touchend',    _onEnd, { passive: true });
-    el.addEventListener('touchcancel', _onEnd, { passive: true });
+    dragHandle.addEventListener('touchend',    _onEnd, { passive: true });
+    dragHandle.addEventListener('touchcancel', _onEnd, { passive: true });
+  }
+
+  /* ── 4: Pinch-to-zoom no canvas ─────────────────────────────────── */
+
+  const ZOOM_MIN = 0.3;
+  const ZOOM_MAX = 2.5;
+  let _scale     = 1;
+  let _pinchStartDist = null;
+  let _pinchStartScale = 1;
+
+  function _dist(t1, t2) {
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function _applyScale(newScale, originX, originY) {
+    const canvas   = document.getElementById('canvas');
+    const scrollEl = document.getElementById('canvas-scroll');
+    if (!canvas || !scrollEl) return;
+
+    newScale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, newScale));
+    const ratio = newScale / _scale;
+    _scale = newScale;
+
+    canvas.style.transform       = `scale(${_scale})`;
+    canvas.style.transformOrigin = '0 0';
+
+    // Ajusta o scroll para manter o ponto central visível
+    scrollEl.scrollLeft = (scrollEl.scrollLeft + originX) * ratio - originX;
+    scrollEl.scrollTop  = (scrollEl.scrollTop  + originY) * ratio - originY;
+
+    _updateZoomBadge();
+    if (window.drawArrows) window.drawArrows();
+  }
+
+  function _updateZoomBadge() {
+    let badge = document.getElementById('canvas-zoom-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'canvas-zoom-badge';
+      const toolbar = document.getElementById('canvas-toolbar');
+      if (toolbar) toolbar.appendChild(badge);
+    }
+    badge.textContent = Math.round(_scale * 100) + '%';
+    badge.style.cssText = 'font-size:11px;color:#888;margin-left:4px;min-width:34px;text-align:right;';
+    // Botão reset de zoom (aparece ao lado do badge)
+    let resetBtn = document.getElementById('canvas-zoom-reset');
+    if (!resetBtn) {
+      resetBtn = document.createElement('button');
+      resetBtn.id        = 'canvas-zoom-reset';
+      resetBtn.title     = 'Resetar zoom (100%)';
+      resetBtn.className = 'canvas-btn';
+      resetBtn.textContent = '1:1';
+      resetBtn.style.cssText = 'font-size:10px;padding:2px 6px;';
+      resetBtn.addEventListener('click', () => _applyScale(1, 0, 0));
+      const toolbar = document.getElementById('canvas-toolbar');
+      if (toolbar) toolbar.appendChild(resetBtn);
+    }
+  }
+
+  function _bindPinchZoom() {
+    const scrollEl = document.getElementById('canvas-scroll');
+    if (!scrollEl) return;
+
+    // Previne zoom do browser (double-tap / pinch nativo)
+    scrollEl.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        _pinchStartDist  = _dist(e.touches[0], e.touches[1]);
+        _pinchStartScale = _scale;
+      }
+    }, { passive: false });
+
+    scrollEl.addEventListener('touchmove', (e) => {
+      if (e.touches.length !== 2 || _pinchStartDist === null) return;
+      e.preventDefault();
+
+      const d     = _dist(e.touches[0], e.touches[1]);
+      const scale = _pinchStartScale * (d / _pinchStartDist);
+
+      // Ponto central entre os dois dedos (em coordenadas do scrollEl)
+      const rect  = scrollEl.getBoundingClientRect();
+      const cx    = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+      const cy    = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+
+      _applyScale(scale, cx, cy);
+    }, { passive: false });
+
+    scrollEl.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) _pinchStartDist = null;
+    }, { passive: true });
+
+    // Zoom com Ctrl+scroll no desktop também
+    scrollEl.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      const rect  = scrollEl.getBoundingClientRect();
+      _applyScale(_scale * delta, e.clientX - rect.left, e.clientY - rect.top);
+    }, { passive: false });
   }
 
   /* ── Inicialização ──────────────────────────────────────────────── */
@@ -231,6 +332,10 @@
         });
       }).observe(canvas, { childList: true });
     }
+
+    // Pinch zoom
+    _bindPinchZoom();
+    _updateZoomBadge();
   }
 
   // Aguarda o DOM e os scripts inline estarem prontos

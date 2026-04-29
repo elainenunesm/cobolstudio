@@ -2,6 +2,12 @@
    touch.css — Estilos para interações touch / mobile
    ================================================================= */
 
+/* ── Pinch zoom: canvas precisa de transform-origin correto ──────── */
+#canvas {
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
 /* ── Ghost de drag (palette → canvas) ──────────────────────────── */
 #touch-drop-ghost {
   position: fixed;
@@ -66,18 +72,27 @@
     min-height: 42px;
     padding: 6px 10px;
     cursor: grab;
+    /* Bloqueia scroll nativo só no header: JS cuida do drag */
+    touch-action: none;
   }
 
-  /* Scroll suave e nativo no canvas */
+  /* Corpo do nó: permite scroll/pan nativo (não é handle de drag) */
+  .node-card-body {
+    touch-action: pan-x pan-y;
+  }
+
+  /* Canvas: scroll nativo suave em todas as direções */
   #canvas-scroll {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+    touch-action: pan-x pan-y;
   }
 
-  /* Evita seleção de texto durante gestos de drag */
+  /* Fundo do canvas (área vazia): pan nativo */
   #canvas {
     user-select: none;
     -webkit-user-select: none;
+    touch-action: pan-x pan-y;
   }
 
   /* Feedback visual: item da palette ao toque */
