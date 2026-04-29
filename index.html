@@ -1737,6 +1737,24 @@
               <div class="activity-item" draggable="true" data-type="UNSTRING" ondragstart="onDragStart(event,'UNSTRING')">
                 <span class="act-icon">&#9986;</span> UNSTRING
               </div>
+              <div class="activity-item" draggable="true" data-type="INSPECT_TALLY" ondragstart="onDragStart(event,'INSPECT_TALLY')">
+                <span class="act-icon">&#128290;</span> INSPECT TALLYING
+              </div>
+              <div class="activity-item" draggable="true" data-type="INSPECT_REPL" ondragstart="onDragStart(event,'INSPECT_REPL')">
+                <span class="act-icon">&#128260;</span> INSPECT REPLACING
+              </div>
+              <div class="activity-item" draggable="true" data-type="STR_UPPER" ondragstart="onDragStart(event,'STR_UPPER')">
+                <span class="act-icon">&#128288;</span> UPPER-CASE
+              </div>
+              <div class="activity-item" draggable="true" data-type="STR_LOWER" ondragstart="onDragStart(event,'STR_LOWER')">
+                <span class="act-icon">&#128289;</span> LOWER-CASE
+              </div>
+              <div class="activity-item" draggable="true" data-type="STR_TRIM" ondragstart="onDragStart(event,'STR_TRIM')">
+                <span class="act-icon">&#9986;</span> TRIM
+              </div>
+              <div class="activity-item" draggable="true" data-type="STR_LENGTH" ondragstart="onDragStart(event,'STR_LENGTH')">
+                <span class="act-icon">&#128207;</span> LENGTH
+              </div>
             </div>
 
             <!-- COBOL.VSAM -->
@@ -1841,6 +1859,147 @@
               </div>
               <div class="activity-item" draggable="true" data-type="TBL_LOAD" ondragstart="onDragStart(event,'TBL_LOAD')">
                 <span class="act-icon">&#128229;</span> Carregar Tabela
+              </div>
+            </div>
+
+            <!-- Utilitários -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-util')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128172;</span> Utilitários
+            </div>
+            <div class="act-group-body" id="ag-util">
+              <div class="activity-item" draggable="true" data-type="BLOCO_COMENTARIO" ondragstart="onDragStart(event,'BLOCO_COMENTARIO')">
+                <span class="act-icon">&#128172;</span> Bloco Comentário
+              </div>
+            </div>
+
+            <!-- COBOL.CALL -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-call')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128222;</span> COBOL.CALL
+            </div>
+            <div class="act-group-body" id="ag-call">
+              <div class="activity-item" draggable="true" data-type="CALL_OP" ondragstart="onDragStart(event,'CALL_OP')">
+                <span class="act-icon">&#128222;</span> CALL
+              </div>
+              <div class="activity-item" draggable="true" data-type="CALL_EXCEPT" ondragstart="onDragStart(event,'CALL_EXCEPT')">
+                <span class="act-icon">&#9888;</span> CALL ON EXCEPTION
+              </div>
+              <div class="activity-item" draggable="true" data-type="CALL_CANCEL" ondragstart="onDragStart(event,'CALL_CANCEL')">
+                <span class="act-icon">&#128683;</span> CANCEL
+              </div>
+            </div>
+
+            <!-- COBOL.Arquivos -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-arq')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128196;</span> COBOL.Arquivos
+            </div>
+            <div class="act-group-body" id="ag-arq">
+              <div class="activity-item" draggable="true" data-type="FILE_OPEN_IN" ondragstart="onDragStart(event,'FILE_OPEN_IN')">
+                <span class="act-icon">&#128194;</span> OPEN INPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_OPEN_OUT" ondragstart="onDragStart(event,'FILE_OPEN_OUT')">
+                <span class="act-icon">&#128194;</span> OPEN OUTPUT
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_OPEN_IO" ondragstart="onDragStart(event,'FILE_OPEN_IO')">
+                <span class="act-icon">&#128194;</span> OPEN I-O
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_OPEN_EXT" ondragstart="onDragStart(event,'FILE_OPEN_EXT')">
+                <span class="act-icon">&#128194;</span> OPEN EXTEND
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_READ" ondragstart="onDragStart(event,'FILE_READ')">
+                <span class="act-icon">&#128214;</span> READ (sequencial)
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_READ_KEY" ondragstart="onDragStart(event,'FILE_READ_KEY')">
+                <span class="act-icon">&#128273;</span> READ BY KEY
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_WRITE" ondragstart="onDragStart(event,'FILE_WRITE')">
+                <span class="act-icon">&#9998;</span> WRITE
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_REWRITE" ondragstart="onDragStart(event,'FILE_REWRITE')">
+                <span class="act-icon">&#128260;</span> REWRITE
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_DELETE" ondragstart="onDragStart(event,'FILE_DELETE')">
+                <span class="act-icon">&#128465;</span> DELETE (registro)
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_START" ondragstart="onDragStart(event,'FILE_START')">
+                <span class="act-icon">&#9654;</span> START
+              </div>
+              <div class="activity-item" draggable="true" data-type="FILE_CLOSE" ondragstart="onDragStart(event,'FILE_CLOSE')">
+                <span class="act-icon">&#128193;</span> CLOSE
+              </div>
+            </div>
+
+            <!-- COBOL.Nivel88 -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-fl88')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#127942;</span> COBOL.Nivel88
+            </div>
+            <div class="act-group-body" id="ag-fl88">
+              <div class="activity-item" draggable="true" data-type="FL88_IF" ondragstart="onDragStart(event,'FL88_IF')">
+                <span class="act-icon">&#128680;</span> IF flag-88
+              </div>
+              <div class="activity-item" draggable="true" data-type="FL88_SET_TRUE" ondragstart="onDragStart(event,'FL88_SET_TRUE')">
+                <span class="act-icon">&#9989;</span> SET flag TRUE
+              </div>
+              <div class="activity-item" draggable="true" data-type="FL88_SET_FALSE" ondragstart="onDragStart(event,'FL88_SET_FALSE')">
+                <span class="act-icon">&#10060;</span> SET flag FALSE
+              </div>
+            </div>
+
+            <!-- COBOL.ErrosArit -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-size')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#9888;</span> COBOL.ErroAritmetico
+            </div>
+            <div class="act-group-body" id="ag-size">
+              <div class="activity-item" draggable="true" data-type="COMPUTE_SIZE" ondragstart="onDragStart(event,'COMPUTE_SIZE')">
+                <span class="act-icon">&#9888;</span> COMPUTE ON SIZE ERROR
+              </div>
+              <div class="activity-item" draggable="true" data-type="DIVIDE_ZERO" ondragstart="onDragStart(event,'DIVIDE_ZERO')">
+                <span class="act-icon">&#10135;</span> DIVIDE ON ZERO
+              </div>
+            </div>
+
+            <!-- COBOL.CICS -->
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-cics')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">&#128187;</span> COBOL.CICS
+            </div>
+            <div class="act-group-body" id="ag-cics">
+              <div class="activity-item" draggable="true" data-type="CICS_RECEIVE" ondragstart="onDragStart(event,'CICS_RECEIVE')">
+                <span class="act-icon">&#128229;</span> CICS RECEIVE MAP
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_SEND" ondragstart="onDragStart(event,'CICS_SEND')">
+                <span class="act-icon">&#128228;</span> CICS SEND MAP
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_READ" ondragstart="onDragStart(event,'CICS_READ')">
+                <span class="act-icon">&#128214;</span> CICS READ
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_WRITE" ondragstart="onDragStart(event,'CICS_WRITE')">
+                <span class="act-icon">&#9998;</span> CICS WRITE
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_REWRITE" ondragstart="onDragStart(event,'CICS_REWRITE')">
+                <span class="act-icon">&#128260;</span> CICS REWRITE
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_DELETE" ondragstart="onDragStart(event,'CICS_DELETE')">
+                <span class="act-icon">&#128465;</span> CICS DELETE
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_LINK" ondragstart="onDragStart(event,'CICS_LINK')">
+                <span class="act-icon">&#128279;</span> CICS LINK
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_XCTL" ondragstart="onDragStart(event,'CICS_XCTL')">
+                <span class="act-icon">&#128256;</span> CICS XCTL
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_COMMAREA" ondragstart="onDragStart(event,'CICS_COMMAREA')">
+                <span class="act-icon">&#128193;</span> CICS COMMAREA
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_RETURN" ondragstart="onDragStart(event,'CICS_RETURN')">
+                <span class="act-icon">&#8617;</span> CICS RETURN
+              </div>
+              <div class="activity-item" draggable="true" data-type="CICS_ABEND" ondragstart="onDragStart(event,'CICS_ABEND')">
+                <span class="act-icon">&#128165;</span> CICS ABEND
               </div>
             </div>
 
@@ -1989,6 +2148,27 @@
           <div id="pg-tables">
             <div id="tables-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
             <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_showAddTableForm()">＋ Adicionar tabela</button>
+          </div>
+
+          <div class="prop-group-header" onclick="togglePropGroup(this,'pg-fl88')">
+            ▼ &nbsp;Nível 88 (Condições)
+          </div>
+          <div id="pg-fl88">
+            <div style="font-size:10px;color:#6b7280;padding:4px 6px 2px;">Condições 88 são subordinadas a uma variável da Working-Storage.</div>
+            <div id="fl88-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
+            <button class="canvas-btn" style="width:100%;margin-top:4px;" onclick="_showAddFl88Form()">＋ Condição</button>
+          </div>
+
+          <div class="prop-group-header" onclick="togglePropGroup(this,'pg-commarea')">
+            ▼ &nbsp;COMMAREA (CICS)
+          </div>
+          <div id="pg-commarea">
+            <div style="font-size:10px;color:#6b7280;padding:2px 0 4px;">Variáveis da COMMAREA — geradas como grupo 01 WS-COMMAREA na Working-Storage.</div>
+            <div id="commarea-list" style="display:flex;flex-direction:column;gap:4px;padding:4px 0;"></div>
+            <div style="display:flex;gap:4px;margin-top:4px;">
+              <button class="canvas-btn" style="flex:1;" onclick="_showAddCommareaForm()">＋ Campo</button>
+              <button class="canvas-btn" style="flex:1;background:#0e7490;color:#fff;" onclick="_autoCommareaDefault()" title="Criar COMMAREA padrão">⚡ Auto</button>
+            </div>
           </div>
 
           <div class="prop-group-header" onclick="togglePropGroup(this,'pg-linkage')">
@@ -2468,7 +2648,7 @@ function _renderPropEdit(fullId) {
   roleLbl.textContent = 'No código:';
   const roleSel = document.createElement('select');
   roleSel.title = 'Como este bloco aparece no código COBOL gerado';
-  [['paragraph', '📌 Parágrafo COBOL'], ['comment', '💬 Comentário (*>)'], ['inline', '➡️ Inline (sem cabeçalho)']]
+  [['paragraph', '📌 Parágrafo COBOL'], ['comment', '💬 Comentário (*>)'], ['inline', '➡️ Inline (sem cabeçalho)'], ['pure-comment', '🗒️ Só Comentários COBOL (*)']]
     .forEach(([val, txt]) => {
       const opt = document.createElement('option');
       opt.value = val; opt.textContent = txt;
@@ -2771,8 +2951,49 @@ const activityMeta = {
   GO_BACK:       { icon:'↩️', label:'GO BACK',          color:'red',    fields:['GO BACK'] },
   STOP_RUN:      { icon:'⏹️', label:'STOP RUN',        color:'red',    fields:['STOP RUN'] },
   /* ── String ── */
-  STRING_OP:     { icon:'🔤', label:'STRING',        color:'blue',   fields:['STRING WS-A DELIMITED SIZE','  INTO WS-DESTINO','END-STRING'] },
-  UNSTRING:      { icon:'✂️', label:'UNSTRING',      color:'blue',   fields:['UNSTRING WS-ORIGEM DELIMITED ";"','  INTO WS-A WS-B','END-UNSTRING'] },
+  STRING_OP:     { icon:'🔤', label:'STRING',           color:'blue',   fields:['STRING WS-A DELIMITED SIZE','  WS-B DELIMITED SIZE','  INTO WS-DESTINO','  WITH POINTER WS-PTR','END-STRING'] },
+  UNSTRING:      { icon:'✂️', label:'UNSTRING',         color:'blue',   fields:['UNSTRING WS-ORIGEM DELIMITED ";"','  INTO WS-A WS-B','END-UNSTRING'] },
+  INSPECT_TALLY: { icon:'🔢', label:'INSPECT TALLYING', color:'blue',   fields:['MOVE ZEROS TO WS-CONTADOR','INSPECT WS-CAMPO TALLYING','  WS-CONTADOR FOR ALL [" "]'] },
+  INSPECT_REPL:  { icon:'🔄', label:'INSPECT REPLACING',color:'blue',   fields:['INSPECT WS-CAMPO REPLACING','  ALL [" "] BY ["*"]'] },
+  STR_UPPER:     { icon:'🔠', label:'UPPER-CASE',       color:'blue',   fields:['MOVE FUNCTION UPPER-CASE([WS-TEXTO]) TO [WS-RESULTADO]'] },
+  STR_LOWER:     { icon:'🔡', label:'LOWER-CASE',       color:'blue',   fields:['MOVE FUNCTION LOWER-CASE([WS-TEXTO]) TO [WS-RESULTADO]'] },
+  STR_TRIM:      { icon:'✂️', label:'TRIM',             color:'blue',   fields:['MOVE FUNCTION TRIM([WS-TEXTO] LEADING) TO [WS-RESULTADO]'] },
+  STR_LENGTH:    { icon:'📏', label:'LENGTH',           color:'blue',   fields:['COMPUTE WS-TAMANHO = FUNCTION LENGTH([WS-TEXTO])'] },
+  /* ── CALL (Subprograma) ── */
+  CALL_OP:       { icon:'📞', label:'CALL',             color:'violet', fields:['CALL "[NOME-PROG]" USING','  BY REFERENCE [WS-PARM1]','  BY CONTENT  [WS-PARM2]','END-CALL'] },
+  CALL_EXCEPT:   { icon:'⚠️', label:'CALL ON EXCEPTION',color:'violet', fields:['CALL "[NOME-PROG]" USING','  BY REFERENCE [WS-PARM1]','  ON EXCEPTION','    MOVE "ERRO CALL" TO WS-MSG','    PERFORM [ERRO-RTN]','END-CALL'] },
+  CALL_CANCEL:   { icon:'🚫', label:'CANCEL',           color:'violet', fields:['CANCEL "[NOME-PROG]"'] },
+  /* ── Arquivos (FILE I/O) ── */
+  FILE_OPEN_IN:  { icon:'📂', label:'OPEN INPUT',       color:'amber',  fields:['OPEN INPUT [ARQ-NOME]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_OPEN_OUT: { icon:'📂', label:'OPEN OUTPUT',      color:'amber',  fields:['OPEN OUTPUT [ARQ-NOME]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_OPEN_IO:  { icon:'📂', label:'OPEN I-O',         color:'amber',  fields:['OPEN I-O [ARQ-NOME]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_OPEN_EXT: { icon:'📂', label:'OPEN EXTEND',      color:'amber',  fields:['OPEN EXTEND [ARQ-NOME]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_READ:     { icon:'📖', label:'READ',             color:'amber',  fields:['READ [ARQ-NOME]','  AT END','    MOVE "S" TO WS-FIM-ARQ','  NOT AT END','    PERFORM [PROC-REGISTRO]','END-READ'] },
+  FILE_READ_KEY: { icon:'🔑', label:'READ BY KEY',      color:'amber',  fields:['MOVE [WS-CHAVE] TO [ARQ-KEY]','READ [ARQ-NOME] KEY IS [ARQ-KEY]','  INVALID KEY','    MOVE "N" TO WS-ACHOU','  NOT INVALID KEY','    MOVE "S" TO WS-ACHOU','END-READ'] },
+  FILE_WRITE:    { icon:'✏️', label:'WRITE',            color:'amber',  fields:['MOVE [WS-DADOS] TO [ARQ-REG]','WRITE [ARQ-REG]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_REWRITE:  { icon:'🔃', label:'REWRITE',          color:'amber',  fields:['MOVE [WS-DADOS] TO [ARQ-REG]','REWRITE [ARQ-REG]','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_DELETE:   { icon:'🗑️', label:'DELETE (registro)',color:'amber',  fields:['DELETE [ARQ-NOME] RECORD','IF WS-STATUS-[ARQ] NOT = "00"','  PERFORM [ARQ-ERRO-RTN]','END-IF'] },
+  FILE_CLOSE:    { icon:'📁', label:'CLOSE',            color:'amber',  fields:['CLOSE [ARQ-NOME]'] },
+  FILE_START:    { icon:'▶️', label:'START',            color:'amber',  fields:['MOVE [WS-CHAVE] TO [ARQ-KEY]','START [ARQ-NOME] KEY >= [ARQ-KEY]','  INVALID KEY PERFORM [ARQ-ERRO-RTN]','END-START'] },
+  /* ── Nível 88 / Flags ── */
+  FL88_IF:       { icon:'🚦', label:'IF flag-88',       color:'lime',   fields:['IF [COND-FLAG]','  PERFORM [acao-verdadeira]','ELSE','  PERFORM [acao-falsa]','END-IF'] },
+  FL88_SET_TRUE: { icon:'✅', label:'SET flag TRUE',     color:'lime',   fields:['SET [COND-FLAG] TO TRUE'] },
+  FL88_SET_FALSE:{ icon:'❌', label:'SET flag FALSE',    color:'lime',   fields:['SET [COND-FLAG] TO FALSE'] },
+  /* ── ON SIZE ERROR ── */
+  COMPUTE_SIZE:  { icon:'⚠️', label:'COMPUTE ON SIZE ERROR',   color:'rose', fields:['COMPUTE [WS-RESULT] ROUNDED =','  [WS-A] + [WS-B]','  ON SIZE ERROR','    PERFORM [OVERFLOW-RTN]','  NOT ON SIZE ERROR','    CONTINUE','END-COMPUTE'] },
+  DIVIDE_ZERO:   { icon:'➗', label:'DIVIDE ON ZERO',    color:'rose',   fields:['DIVIDE [WS-A] BY [WS-B]','  GIVING [WS-RESULT] ROUNDED','  ON SIZE ERROR','    MOVE "DIV-ZERO" TO WS-MSG','    PERFORM [ERRO-RTN]','END-DIVIDE'] },
+  /* ── CICS ── */
+  CICS_RECEIVE:  { icon:'📥', label:'CICS RECEIVE MAP', color:'purple', fields:['EXEC CICS RECEIVE MAP([MAPA])','    MAPSET([MAPSET])','    INTO([WS-MAPA-AREA])','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_SEND:     { icon:'📤', label:'CICS SEND MAP',    color:'purple', fields:['EXEC CICS SEND MAP([MAPA])','    MAPSET([MAPSET])','    FROM([WS-MAPA-AREA])','    ERASE','    RESP(WS-RESP)','END-EXEC'] },
+  CICS_READ:     { icon:'📖', label:'CICS READ',        color:'purple', fields:['EXEC CICS READ FILE([ARQ-NOME])','    INTO([WS-REGISTRO])','    RIDFLD([WS-CHAVE])','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_WRITE:    { icon:'✏️', label:'CICS WRITE',       color:'purple', fields:['EXEC CICS WRITE FILE([ARQ-NOME])','    FROM([WS-REGISTRO])','    RIDFLD([WS-CHAVE])','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_REWRITE:  { icon:'🔃', label:'CICS REWRITE',     color:'purple', fields:['EXEC CICS REWRITE FILE([ARQ-NOME])','    FROM([WS-REGISTRO])','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_DELETE:   { icon:'🗑️', label:'CICS DELETE',      color:'purple', fields:['EXEC CICS DELETE FILE([ARQ-NOME])','    RIDFLD([WS-CHAVE])','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_COMMAREA: { icon:'📁', label:'CICS COMMAREA',    color:'purple', fields:['IF EIBCALEN > 0','*    use os campos de DFHCOMMAREA diretamente','    CONTINUE','END-IF'] },
+  CICS_RETURN:   { icon:'↩️', label:'CICS RETURN',      color:'purple', fields:['EXEC CICS RETURN','    TRANSID([TRAN-ID])','    COMMAREA([WS-COMMAREA])','    LENGTH(LENGTH OF WS-COMMAREA)','END-EXEC'] },
+  CICS_ABEND:    { icon:'💥', label:'CICS ABEND',       color:'purple', fields:['EXEC CICS ABEND ABCODE("[ABND]")','END-EXEC'] },
+  CICS_LINK:     { icon:'🔗', label:'CICS LINK',        color:'purple', fields:['EXEC CICS LINK PROGRAM("[NOME-PROG]")','    COMMAREA([WS-COMMAREA])','    LENGTH(LENGTH OF WS-COMMAREA)','    RESP(WS-RESP)','END-EXEC','IF WS-RESP NOT = DFHRESP(NORMAL)','  PERFORM [CICS-ERRO-RTN]','END-IF'] },
+  CICS_XCTL:     { icon:'🔀', label:'CICS XCTL',        color:'purple', fields:['EXEC CICS XCTL PROGRAM("[PROXIMO-PROG]")','    COMMAREA([WS-COMMAREA])','    LENGTH(LENGTH OF WS-COMMAREA)','END-EXEC'] },
   /* ── DB2 ── */
   DB2_SELECT:    { icon:'🔍', label:'DB2 SELECT',     color:'teal',   fields:['EXEC SQL','  SELECT [coluna]','  INTO :[host-var]','  FROM [tabela]','  WHERE [condição]','END-EXEC','IF SQLCODE NOT = 0','  PERFORM DB2-ERRO-RTN','END-IF'] },
   DB2_INSERT:    { icon:'➕', label:'DB2 INSERT',     color:'teal',   fields:['EXEC SQL','  INSERT INTO [tabela]','  ([col1], [col2])','  VALUES (:[hv1], :[hv2])','END-EXEC','IF SQLCODE NOT = 0','  PERFORM DB2-ERRO-RTN','END-IF'] },
@@ -2795,6 +3016,8 @@ const activityMeta = {
   TBL_PERFORM:   { icon:'🔄', label:'PERFORM Tabela',   color:'sky',    fields:['PERFORM VARYING IX-TB FROM 1 BY 1','  UNTIL IX-TB > WS-TB-QTD','    PERFORM [paragrafo-proc-item]','END-PERFORM'] },
   TBL_MOVE_ITEM: { icon:'➡️', label:'MOVE p/ Tabela',   color:'sky',    fields:['MOVE WS-DADO-CHAVE  TO WS-TB-CHAVE(IX-TB)','MOVE WS-DADO-VALOR  TO WS-TB-VALOR(IX-TB)','MOVE WS-DADO-NUM    TO WS-TB-NUM(IX-TB)'] },
   TBL_LOAD:      { icon:'📥', label:'Carregar Tabela',  color:'sky',    fields:['SET IX-TB TO 0','PERFORM UNTIL WS-FIM = "S"','  READ ARQ-TABELA','    AT END MOVE "S" TO WS-FIM','  END-READ','  IF WS-FIM NOT = "S"','    SET IX-TB UP BY 1','    MOVE RE-CHAVE TO WS-TB-CHAVE(IX-TB)','    MOVE RE-VALOR TO WS-TB-VALOR(IX-TB)','  END-IF','END-PERFORM','MOVE IX-TB TO WS-TB-QTD'] },
+  /* ── Utilitários ── */
+  BLOCO_COMENTARIO: { icon:'💬', label:'Bloco Comentário', color:'gray', fields:['* ─────────────────────────────────','* Descrição do bloco','* ─────────────────────────────────'] },
 };
 
 function createNodeAt(type, x, y) {
@@ -2903,6 +3126,66 @@ function createNodeAt(type, x, y) {
   if (_hasGobackField && typeof _linkageVars !== 'undefined' && _linkageVars.length === 0) {
     setTimeout(_autoLinkageFromGoback, 50);
   }
+
+  // Auto-cria COMMAREA padrão quando nó CICS_COMMAREA é arrastado ao canvas
+  if (type === 'CICS_COMMAREA') {
+    if (typeof _commareaVars !== 'undefined' && _commareaVars.length === 0) {
+      _commareaVars.push(
+        { level: '03', name: 'CA-FUNCAO',  pic: 'PIC X(01)', value: '' },
+        { level: '03', name: 'CA-RETORNO', pic: 'PIC X(01)', value: '' },
+        { level: '03', name: 'CA-DADOS',   pic: 'PIC X(72)', value: '' }
+      );
+      _renderCommareaList();
+      generateAllCode();
+      showToast('COMMAREA criada — ajuste em Propriedades → COMMAREA (CICS).', 'success');
+    }
+    // Substitui placeholder [WS-COMMAREA] no nó
+    div.querySelectorAll('.node-field input').forEach(inp => {
+      inp.value = inp.value.replace(/\[WS-COMMAREA\]/g, 'WS-COMMAREA');
+    });
+    // Abre seção COMMAREA nas propriedades
+    const pgCa = document.getElementById('pg-commarea');
+    if (pgCa && pgCa.style.display === 'none') {
+      const hdr = document.querySelector('[onclick*="pg-commarea"]');
+      if (hdr) togglePropGroup(hdr, 'pg-commarea');
+    }
+  }
+
+  // Auto-cria condição nível 88 quando nó FL88 é arrastado ao canvas
+  if (['FL88_IF','FL88_SET_TRUE','FL88_SET_FALSE'].includes(type)) {
+    const seq = nodeSeqCounter[type];
+    const condName   = `COND-FLAG-${seq}`;
+    const parentName = `WS-FLAG-${seq}`;
+    if (typeof _fl88Vars !== 'undefined' && !_fl88Vars.some(c => c.name === condName)) {
+      // Cria variável pai na Working-Storage se ainda não existe
+      const tbody = document.getElementById('args-tbody');
+      const jaExiste = tbody && Array.from(tbody.querySelectorAll('input:first-child'))
+        .some(inp => inp.value.toUpperCase() === parentName);
+      if (!jaExiste) _addWsRow(parentName, '77', 'PIC X(01)', 'SPACES');
+      // Registra a condição 88
+      _fl88Vars.push({ parent: parentName, name: condName, value: '"S"', thru: '' });
+      _renderFl88List();
+      // Substitui placeholder [COND-FLAG] nos campos do nó
+      div.querySelectorAll('.node-field input').forEach(inp => {
+        inp.value = inp.value.replace(/\[COND-FLAG\]/g, condName);
+      });
+      // Abre seção Nível 88 nas propriedades
+      const pg88 = document.getElementById('pg-fl88');
+      if (pg88 && pg88.style.display === 'none') {
+        const hdr = document.querySelector('[onclick*="pg-fl88"]');
+        if (hdr) togglePropGroup(hdr, 'pg-fl88');
+      }
+      generateAllCode();
+      showToast(`"${condName}" criado — ajuste em Propriedades → Nível 88.`, 'success');
+    }
+  }
+
+  // Bloco Comentário: define codeRole como pure-comment automaticamente
+  if (type === 'BLOCO_COMENTARIO') {
+    div.dataset.codeRole = 'pure-comment';
+    const hdr = div.querySelector('.node-card-header');
+    if (hdr) hdr.classList.add('code-role-comment');
+  }
 }
 
 function updateNodeCount() {
@@ -2958,6 +3241,23 @@ function _removeNodeCard(btn) {
   card.remove();
   updateNodeCount();
   drawArrows();
+  // Se era nó FL88, remove condição associada (lê o primeiro campo como nome da condição)
+  if (typeof _fl88Vars !== 'undefined' && card.dataset &&
+      ['FL88_IF','FL88_SET_TRUE','FL88_SET_FALSE'].includes(card.dataset.nodeType)) {
+    const firstInp = card.querySelector('.node-field input');
+    if (firstInp) {
+      // Extrai o nome da condição do conteúdo do campo (ex: "IF COND-FLAG-1" → "COND-FLAG-1")
+      const condMatch = firstInp.value.trim().match(/^\s*(?:IF\s+|SET\s+)?([A-Z0-9][A-Z0-9-]*)/i);
+      const condName = condMatch ? condMatch[1].toUpperCase() : null;
+      if (condName) {
+        const idx = _fl88Vars.findIndex(c => c.name === condName);
+        if (idx !== -1) {
+          _fl88Vars.splice(idx, 1);
+          _renderFl88List();
+        }
+      }
+    }
+  }
   generateAllCode();
   _renderCodeHighlight();
 }
@@ -3568,6 +3868,10 @@ function _doReset() {
   _includeRegistry  = [];
   _internalTables   = [];
   _linkageVars      = [];
+  _commareaVars     = [];
+  _renderCommareaList();
+  _fl88Vars         = [];
+  _renderFl88List();
   _codeWasImported = false;
   // Limpa tabela WS
   const tbWs = document.getElementById('args-tbody'); if (tbWs) tbWs.innerHTML = '';
@@ -4061,6 +4365,11 @@ function _cobolProcIndent(rawLines) {
   rawLines.forEach(raw => {
     const line = raw.trim();
     if (!line) return;
+    // Linha de comentário COBOL (* na coluna 7) — não altera depth
+    if (line.startsWith('*')) {
+      out.push('      ' + line);
+      return;
+    }
     if (CLOSE.test(line)) { depth = Math.max(0, depth - 1); }
     if (AREA_A.test(line)) {
       // Seção ou parágrafo: sempre na Área A, zera indentação
@@ -4113,18 +4422,34 @@ function generateAllCode() {
   const remarks = document.getElementById('prop-remarks')?.value || '';
   const dialect = document.getElementById('prop-dialect')?.value || 'IBM Enterprise COBOL';
 
-  // Coleta Working-Storage
+  // Coleta Working-Storage — nível 77 sempre antes dos 01
   const rows = document.querySelectorAll('#args-tbody tr');
   let wsLines = '';
+  const _fl88 = typeof _fl88Vars !== 'undefined' ? _fl88Vars : [];
+
+  // Separa as linhas em dois grupos: 77 e demais
+  const _wsRows77  = [];
+  const _wsRowsRest = [];
   rows.forEach(r => {
     const inputs = r.querySelectorAll('input');
     if (inputs[0] && inputs[2]) {
-      const nm = inputs[0].value.trim();
-      const lv = inputs[1]?.value.trim() || '01';
+      const nm  = inputs[0].value.trim();
+      const lv  = inputs[1]?.value.trim() || '01';
       const pic = inputs[2]?.value.trim() || 'PIC X';
       const val = inputs[3]?.value.trim() || '';
-      wsLines += `       ${lv} ${nm.padEnd(20)} ${pic}${val ? ` VALUE ${val}` : ''}.\n`;
+      const entry = { nm, lv, pic, val };
+      (lv === '77' ? _wsRows77 : _wsRowsRest).push(entry);
     }
+  });
+
+  // Emite 77 primeiro, depois o restante
+  [..._wsRows77, ..._wsRowsRest].forEach(({ nm, lv, pic, val }) => {
+    wsLines += `       ${lv} ${nm.padEnd(20)} ${pic}${val ? ` VALUE ${val}` : ''}.\n`;
+    // injeta condições 88 subordinadas a esta variável
+    _fl88.filter(c => c.parent.toUpperCase() === nm.toUpperCase()).forEach(c => {
+      const thruPart = c.thru ? ` THRU ${c.thru}` : '';
+      wsLines += `           88 ${c.name.padEnd(24)} VALUE ${c.value}${thruPart}.\n`;
+    });
   });
 
   // ── Working-Storage: variáveis de data automáticas ──────────────
@@ -4270,6 +4595,8 @@ function generateAllCode() {
     n.querySelectorAll('.node-field input').forEach(inp => {
       if (inp.value.trim()) fieldLines.push(inp.value.trim());
     });
+    // Se qualquer campo do nó contém "9999-ABEND", garante geração do parágrafo
+    if (!_hasOpenRead && fieldLines.some(l => l.includes('9999-ABEND'))) _hasOpenRead = true;
     // Substitui [WS-STATUS] pelo nome real da variável de FILE STATUS.
     // Detecta via nodeType OU pelo conteúdo da primeira linha (para nós sem data-node-type).
     if (fieldLines.length) {
@@ -4304,9 +4631,18 @@ function generateAllCode() {
         }
       }
     }
-    if (role === 'comment') {
-      // Só o nome do bloco vira comentário; as linhas saem como código normal
-      procLines += `\n      *> ── ${title.toUpperCase()} ──\n`;
+    if (role === 'pure-comment') {
+      // Todas as linhas são emitidas como comentários COBOL (coluna 7)
+      procLines += `\n`;
+      fieldLines.forEach(fl => {
+        const txt = fl.startsWith('*') ? fl : ('* ' + fl);
+        procLines += `      ${txt}\n`;
+      });
+    } else if (role === 'comment') {
+      // Cabeçalho no mesmo formato NOME SECTION. + separador
+      const paddedTitleC = title.toUpperCase().padEnd(19);
+      procLines += `\n       ${paddedTitleC} SECTION.\n`;
+      procLines += `      *------------- ---------------\n`;
       if (fieldLines.length) {
         procLines += _cobolProcIndent(fieldLines) + '\n';
       }
@@ -4316,8 +4652,10 @@ function generateAllCode() {
         procLines += _cobolProcIndent(fieldLines) + '\n';
       }
     } else {
-      // Padrão: parágrafo COBOL
-      procLines += `\n       ${title.toUpperCase()}.\n`;
+      // Padrão: parágrafo COBOL (cabeçalho no formato NOME SECTION. + separador)
+      const paddedTitle = title.toUpperCase().padEnd(19);
+      procLines += `\n       ${paddedTitle} SECTION.\n`;
+      procLines += `      *------------- ---------------\n`;
       if (fieldLines.length) {
         procLines += _cobolProcIndent(fieldLines) + '\n';
       } else {
@@ -4327,7 +4665,8 @@ function generateAllCode() {
   });
   // Parágrafo 9999-ABEND gerado automaticamente quando há OPEN/READ
   const abendBlock = _hasOpenRead
-    ? `\n       9999-ABEND SECTION.\n` +
+    ? `\n       ${'9999-ABEND'.padEnd(19)} SECTION.\n` +
+      `      *------------- ---------------\n` +
       `           DISPLAY "** ABEND - ENCERRANDO PROGRAMA POR ERRO **"\n` +
       `           MOVE 16 TO RETURN-CODE\n` +
       `           STOP RUN.\n`
@@ -4388,29 +4727,41 @@ function generateAllCode() {
 ${fileControlBlock}
        DATA DIVISION.
 ${fileSectionBlock}       WORKING-STORAGE SECTION.
-       01 WS-FIM                  PIC X(1)  VALUE "N".
-${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
-    // ── Linkage Section ──
+${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(1)  VALUE "N".\n' : ''}${wsLines}${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
+    // ── Linkage Section (linkage vars + DFHCOMMAREA) ──
     const lkVars = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
-    if (lkVars.length > 0) {
+    const _ca    = typeof _commareaVars !== 'undefined' ? _commareaVars : [];
+    if (lkVars.length > 0 || _ca.length > 0) {
       let lkBlock = '\n\n       LINKAGE SECTION.\n';
       lkVars.forEach(v => {
         const valPart = v.value ? ` VALUE ${v.value}` : '';
         lkBlock += `       ${v.level} ${v.name.padEnd(25)} ${v.pic}${valPart}.\n`;
       });
+      if (_ca.length > 0) {
+        lkBlock += `       01 DFHCOMMAREA.\n`;
+        _ca.forEach(v => {
+          const valPart = v.value ? ` VALUE ${v.value}` : '';
+          lkBlock += `           ${v.level} ${v.name.padEnd(21)} ${v.pic}${valPart}.\n`;
+        });
+      }
       preamble += lkBlock;
     }
   }
 
   // ── Detecta GOBACK e PROCEDURE DIVISION USING ──
   const lkVarsFinal = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
+  const _caFinal    = typeof _commareaVars !== 'undefined' ? _commareaVars : [];
   const hasGoback = /\bGO\s*BACK\b/i.test(procLines);
   // Se há GOBACK e linkage vazia, agenda criação automática (fora do codegen para evitar recursão)
   if (hasGoback && lkVarsFinal.length === 0 && !_importedPreamble) {
     setTimeout(() => { typeof _autoLinkageFromGoback === 'function' && _autoLinkageFromGoback(); }, 0);
   }
-  const usingClause = lkVarsFinal.length > 0
-    ? ' USING ' + lkVarsFinal.filter(v => v.level === '01').map(v => v.name).join('\n                      ')
+  const _usingParts = [
+    ...lkVarsFinal.filter(v => v.level === '01').map(v => v.name),
+    ...(_caFinal.length > 0 ? ['DFHCOMMAREA'] : [])
+  ];
+  const usingClause = _usingParts.length > 0
+    ? ' USING ' + _usingParts.join('\n                      ')
     : '';
 
   const db2Block = hasDB2 ? `\n       DB2-ERRO-RTN.\n           DISPLAY "SQLCODE: " SQLCODE\n           DISPLAY "SQLERRM: " SQLERRMC\n           PERFORM 9999-FIM.\n` : '';
@@ -4423,10 +4774,27 @@ ${procLines}${db2Block}${abendBlock}`
 : `       PROCEDURE DIVISION.\n`;
 
   const codeArea = document.getElementById('code-editor');
-  if (codeArea) { codeArea.value = code; codeArea.removeAttribute('readonly'); }
+  if (codeArea) { codeArea.value = _fixCobolComments(code); codeArea.removeAttribute('readonly'); }
   _saveToStorage();
   refreshProjectTree();
   return code;
+}
+
+/**
+ * Converte comentários inline *> para linha própria na coluna 7 (*).
+ * Qualquer linha com *> é dividida: código fica em uma linha, comentário em outra.
+ */
+function _fixCobolComments(src) {
+  return src.split('\n').map(line => {
+    const idx = line.indexOf('*>');
+    if (idx === -1) return line;
+    const code    = line.substring(0, idx).trimEnd();
+    const comment = line.substring(idx + 2).trim();
+    const result  = [];
+    if (code.trim()) result.push(code);
+    if (comment)     result.push(`*      ${comment}`);
+    return result.join('\n');
+  }).join('\n');
 }
 
 /* ── Gerenciamento de Tabelas Internas (OCCURS / WORKING-STORAGE) ── */
@@ -4659,6 +5027,151 @@ function _confirmAddTable() {
   showToast(`Tabela "${tblName}" registrada.`, 'success');
 }
 
+/* ── Gerenciamento de COMMAREA (CICS) ───────────────────────────── */
+/*
+ * _commareaVars: array de campos da COMMAREA CICS.
+ * Ex: { level:'03', name:'CA-CAMPO1', pic:'PIC X(10)', value:'' }
+ * Gerado como grupo 01 WS-COMMAREA na Working-Storage.
+ */
+let _commareaVars = [];
+
+function _renderCommareaList() {
+  const list = document.getElementById('commarea-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (_commareaVars.length === 0) {
+    list.innerHTML = '<div style="color:#888;font-size:10px;padding:4px 0;">— nenhum campo —</div>';
+    return;
+  }
+  _commareaVars.forEach((v, i) => list.appendChild(_makeCommareaCard(v, i)));
+}
+
+function _makeCommareaCard(v, i) {
+  const esc = s => (s||'').replace(/"/g,'&quot;');
+  const div = document.createElement('div');
+  div.id = `ca-card-${i}`;
+  div.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;font-size:11px;overflow:hidden;';
+  div.innerHTML = `
+    <div style="padding:5px 8px;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:10px;font-weight:700;color:#0e7490;min-width:20px;">${esc(v.level)}</span>
+      <span style="font-weight:600;color:#1a1a2e;flex:1;">${esc(v.name)}</span>
+      <span style="color:#555;font-size:10px;">${esc(v.pic)}</span>
+      <div style="display:flex;gap:2px;margin-left:4px;">
+        <button onclick="_toggleCommareaForm(${i})" title="Editar"
+          style="background:none;border:none;cursor:pointer;color:#0e7490;font-size:12px;padding:2px;">&#9998;</button>
+        <button onclick="_removeCommareaEntry(${i})" title="Remover"
+          style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+      </div>
+    </div>
+    <div id="ca-form-${i}" style="display:none;border-top:1px solid #e5e7eb;padding:8px;background:#f0f9ff;">
+      <div style="display:grid;grid-template-columns:50px 1fr;gap:4px 6px;align-items:center;">
+        <span style="color:#555;font-size:10px;">Nível</span>
+        <input id="ca-level-${i}" value="${esc(v.level)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:50px;" />
+        <span style="color:#555;font-size:10px;">Nome</span>
+        <input id="ca-name-${i}" value="${esc(v.name)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">PIC</span>
+        <input id="ca-pic-${i}" value="${esc(v.pic)}"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">VALUE</span>
+        <input id="ca-val-${i}" value="${esc(v.value||'')}" placeholder="(opcional)"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+      </div>
+      <div style="display:flex;gap:4px;margin-top:6px;">
+        <button onclick="_saveCommareaEntry(${i})"
+          style="flex:1;background:#0e7490;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Salvar</button>
+        <button onclick="_toggleCommareaForm(${i})"
+          style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function _toggleCommareaForm(i) {
+  const f = document.getElementById(`ca-form-${i}`);
+  if (f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function _saveCommareaEntry(i) {
+  const g = id => document.getElementById(id);
+  const v = _commareaVars[i];
+  v.level = (g(`ca-level-${i}`)?.value || v.level).trim();
+  v.name  = (g(`ca-name-${i}`)?.value  || v.name).trim().toUpperCase();
+  v.pic   = (g(`ca-pic-${i}`)?.value   || v.pic).trim().toUpperCase();
+  v.value = (g(`ca-val-${i}`)?.value   || '').trim();
+  _renderCommareaList();
+  generateAllCode();
+  showToast(`Campo "${v.name}" atualizado.`, 'success');
+}
+
+function _removeCommareaEntry(i) {
+  if (!confirm(`Remover "${_commareaVars[i].name}" da COMMAREA?`)) return;
+  _commareaVars.splice(i, 1);
+  _renderCommareaList();
+  generateAllCode();
+}
+
+function _showAddCommareaForm() {
+  const pg = document.getElementById('pg-commarea');
+  if (!pg) return;
+  if (document.getElementById('ca-add-form')) { document.getElementById('ca-add-form').remove(); return; }
+  const form = document.createElement('div');
+  form.id = 'ca-add-form';
+  form.style.cssText = 'background:#ecfeff;border:1px solid #67e8f9;border-radius:4px;padding:8px;font-size:11px;margin-top:4px;';
+  form.innerHTML = `
+    <div style="font-weight:700;color:#0e7490;margin-bottom:6px;">&#128193; Novo Campo COMMAREA</div>
+    <div style="display:grid;grid-template-columns:50px 1fr;gap:4px 6px;align-items:center;">
+      <span style="color:#555;font-size:10px;">Nível</span>
+      <input id="can-level" value="03"
+        style="font-size:11px;padding:2px 4px;border:1px solid #67e8f9;border-radius:3px;width:50px;" />
+      <span style="color:#555;font-size:10px;">Nome</span>
+      <input id="can-name" placeholder="CA-CAMPO"
+        style="font-size:11px;padding:2px 4px;border:1px solid #67e8f9;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">PIC</span>
+      <input id="can-pic" placeholder="PIC X(10)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #67e8f9;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">VALUE</span>
+      <input id="can-val" placeholder="(opcional)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #67e8f9;border-radius:3px;width:100%;box-sizing:border-box;" />
+    </div>
+    <div style="display:flex;gap:4px;margin-top:8px;">
+      <button onclick="_confirmAddCommarea()"
+        style="flex:1;background:#0e7490;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Adicionar</button>
+      <button onclick="document.getElementById('ca-add-form').remove()"
+        style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+    </div>`;
+  const btns = pg.querySelector('div:last-child');
+  btns ? pg.insertBefore(form, btns) : pg.appendChild(form);
+  document.getElementById('can-name')?.focus();
+}
+
+function _confirmAddCommarea() {
+  const g = id => document.getElementById(id);
+  const level = (g('can-level')?.value || '03').trim();
+  const name  = (g('can-name')?.value  || '').trim().toUpperCase() || 'CA-CAMPO';
+  const pic   = (g('can-pic')?.value   || '').trim().toUpperCase() || 'PIC X(10)';
+  const value = (g('can-val')?.value   || '').trim();
+  if (_commareaVars.some(v => v.name === name)) { showToast(`"${name}" já existe na COMMAREA.`, 'error'); return; }
+  _commareaVars.push({ level, name, pic, value });
+  document.getElementById('ca-add-form')?.remove();
+  _renderCommareaList();
+  generateAllCode();
+  showToast(`"${name}" adicionado à COMMAREA.`, 'success');
+}
+
+function _autoCommareaDefault() {
+  if (_commareaVars.length > 0) { showToast('COMMAREA já possui campos.', 'warn'); return; }
+  _commareaVars.push(
+    { level: '03', name: 'CA-FUNCAO',  pic: 'PIC X(01)', value: '' },
+    { level: '03', name: 'CA-RETORNO', pic: 'PIC X(01)', value: '' },
+    { level: '03', name: 'CA-DADOS',   pic: 'PIC X(72)', value: '' }
+  );
+  _renderCommareaList();
+  generateAllCode();
+  showToast('COMMAREA padrão criada.', 'success');
+}
+
 /* ── Gerenciamento de Linkage Section ───────────────────────────── */
 
 /**
@@ -4814,7 +5327,157 @@ function _autoLinkageFromGoback() {
   showToast('Linkage Section criada com parâmetros padrão.', 'success');
 }
 
-/* ── Gerenciamento de Arquivos (FILE-CONTROL / FILE SECTION) ─────── */
+/* ── Gerenciamento de Nível 88 (Condições) ──────────────────────── */
+
+/**
+ * Lista de condições nível 88.
+ * Cada entrada: { parent, name, value, thru }
+ * Ex: { parent:'WS-FLAG', name:'FLAG-ATIVO', value:'"S"', thru:'' }
+ */
+let _fl88Vars = [];
+
+function _renderFl88List() {
+  const list = document.getElementById('fl88-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (_fl88Vars.length === 0) {
+    list.innerHTML = '<div style="color:#888;font-size:10px;padding:4px 0;">— nenhuma condição —</div>';
+    return;
+  }
+  _fl88Vars.forEach((v, i) => list.appendChild(_makeFl88Card(v, i)));
+}
+
+function _makeFl88Card(v, i) {
+  const esc = s => (s||'').replace(/"/g,'&quot;');
+  const div = document.createElement('div');
+  div.id = `fl88-card-${i}`;
+  div.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:4px;font-size:11px;overflow:hidden;';
+  div.innerHTML = `
+    <div style="padding:5px 8px;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:10px;font-weight:700;color:#16a34a;min-width:18px;">88</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;color:#1a1a2e;">${esc(v.name)}</div>
+        <div style="color:#666;font-size:10px;">↳ ${esc(v.parent)}  VALUE ${esc(v.value)}${v.thru ? ' THRU ' + esc(v.thru) : ''}</div>
+      </div>
+      <div style="display:flex;gap:2px;">
+        <button onclick="_toggleFl88Form(${i})" title="Editar"
+          style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;padding:2px;">&#9998;</button>
+        <button onclick="_removeFl88Entry(${i})" title="Remover"
+          style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:12px;padding:2px;">&#x2715;</button>
+      </div>
+    </div>
+    <div id="fl88-form-${i}" style="display:none;border-top:1px solid #e5e7eb;padding:8px;background:#f0fdf4;">
+      <div style="display:grid;grid-template-columns:60px 1fr;gap:4px 6px;align-items:center;">
+        <span style="color:#555;font-size:10px;">Variável pai</span>
+        <input id="fl88-par-${i}" value="${esc(v.parent)}" placeholder="WS-FLAG"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">88 Nome</span>
+        <input id="fl88-nm-${i}" value="${esc(v.name)}" placeholder="FLAG-ATIVO"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">VALUE</span>
+        <input id="fl88-val-${i}" value="${esc(v.value)}" placeholder="&quot;S&quot;"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+        <span style="color:#555;font-size:10px;">THRU</span>
+        <input id="fl88-thr-${i}" value="${esc(v.thru||'')}" placeholder="(opcional)"
+          style="font-size:11px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;width:100%;box-sizing:border-box;" />
+      </div>
+      <div style="display:flex;gap:4px;margin-top:6px;">
+        <button onclick="_saveFl88Entry(${i})"
+          style="flex:1;background:#16a34a;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Salvar</button>
+        <button onclick="_toggleFl88Form(${i})"
+          style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function _toggleFl88Form(i) {
+  const f = document.getElementById(`fl88-form-${i}`);
+  if (f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function _saveFl88Entry(i) {
+  const g = id => document.getElementById(id);
+  const v = _fl88Vars[i];
+  const oldName = v.name;
+  v.parent = (g(`fl88-par-${i}`)?.value || v.parent).trim().toUpperCase();
+  const newName = (g(`fl88-nm-${i}`)?.value || v.name).trim().toUpperCase();
+  v.name   = newName;
+  v.value  = (g(`fl88-val-${i}`)?.value || v.value).trim();
+  v.thru   = (g(`fl88-thr-${i}`)?.value || '').trim();
+  // Propaga rename do nome da condição nos campos dos nós FL88 no canvas
+  if (oldName && newName && oldName !== newName) {
+    const re = new RegExp('\\b' + oldName.replace(/[-]/g,'\\$&') + '\\b', 'g');
+    document.querySelectorAll('#canvas .cf-node[data-node-type^="FL88"] .node-field input').forEach(inp => {
+      if (re.test(inp.value)) {
+        inp.value = inp.value.replace(re, newName);
+        _styleNodeFields(inp.closest('.cf-node'));
+      }
+    });
+  }
+  _renderFl88List();
+  generateAllCode();
+  showToast(`Condição "${newName}" atualizada.`, 'success');
+}
+
+function _removeFl88Entry(i) {
+  if (!confirm(`Remover condição "${_fl88Vars[i].name}"?`)) return;
+  _fl88Vars.splice(i, 1);
+  _renderFl88List();
+  generateAllCode();
+}
+
+function _showAddFl88Form() {
+  const pg = document.getElementById('pg-fl88');
+  if (!pg) return;
+  if (document.getElementById('fl88-add-form')) { document.getElementById('fl88-add-form').remove(); return; }
+  const form = document.createElement('div');
+  form.id = 'fl88-add-form';
+  form.style.cssText = 'background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:8px;font-size:11px;margin-top:4px;';
+  form.innerHTML = `
+    <div style="font-weight:700;color:#16a34a;margin-bottom:6px;">🚦 Nova Condição Nível 88</div>
+    <div style="display:grid;grid-template-columns:60px 1fr;gap:4px 6px;align-items:center;">
+      <span style="color:#555;font-size:10px;">Variável pai</span>
+      <input id="fl88n-par" placeholder="WS-FLAG"
+        style="font-size:11px;padding:2px 4px;border:1px solid #86efac;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">88 Nome</span>
+      <input id="fl88n-nm" placeholder="FLAG-ATIVO"
+        style="font-size:11px;padding:2px 4px;border:1px solid #86efac;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">VALUE</span>
+      <input id="fl88n-val" placeholder="&quot;S&quot;"
+        style="font-size:11px;padding:2px 4px;border:1px solid #86efac;border-radius:3px;width:100%;box-sizing:border-box;" />
+      <span style="color:#555;font-size:10px;">THRU</span>
+      <input id="fl88n-thr" placeholder="(opcional)"
+        style="font-size:11px;padding:2px 4px;border:1px solid #86efac;border-radius:3px;width:100%;box-sizing:border-box;" />
+    </div>
+    <div style="display:flex;gap:4px;margin-top:8px;">
+      <button onclick="_confirmAddFl88()"
+        style="flex:1;background:#16a34a;color:#fff;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;font-weight:600;">&#10004; Adicionar</button>
+      <button onclick="document.getElementById('fl88-add-form').remove()"
+        style="flex:1;background:#e5e7eb;color:#444;border:none;border-radius:3px;padding:4px;cursor:pointer;font-size:11px;">&#x2716; Cancelar</button>
+    </div>`;
+  pg.appendChild(form);
+  document.getElementById('fl88n-par')?.focus();
+}
+
+function _confirmAddFl88() {
+  const g = id => document.getElementById(id);
+  const parent = (g('fl88n-par')?.value || '').trim().toUpperCase();
+  const name   = (g('fl88n-nm')?.value  || '').trim().toUpperCase();
+  const value  = (g('fl88n-val')?.value || '').trim();
+  const thru   = (g('fl88n-thr')?.value || '').trim();
+  if (!parent) { showToast('Informe a variável pai.', 'error'); return; }
+  if (!name)   { showToast('Informe o nome da condição 88.', 'error'); return; }
+  if (!value)  { showToast('Informe o VALUE da condição.', 'error'); return; }
+  if (_fl88Vars.some(c => c.name === name)) { showToast(`"${name}" já existe.`, 'error'); return; }
+  _fl88Vars.push({ parent, name, value, thru });
+  document.getElementById('fl88-add-form')?.remove();
+  _renderFl88List();
+  generateAllCode();
+  showToast(`Condição "${name}" adicionada.`, 'success');
+}
+
+
 
 /**
  * Lista de arquivos registrados no programa.
@@ -5205,6 +5868,10 @@ function newProgram() {
   _includeRegistry  = [];
   _internalTables   = [];
   _linkageVars      = [];
+  _commareaVars     = [];
+  _renderCommareaList();
+  _fl88Vars         = [];
+  _renderFl88List();
   try { localStorage.removeItem(_LS_KEY); } catch(e) {}
   document.querySelectorAll('#canvas .cf-node:not(#node-start):not(#node-end-node)').forEach(n => n.remove());
   const tb = document.getElementById('args-tbody'); if (tb) tb.innerHTML = '';
@@ -5322,6 +5989,9 @@ function _buildProjectSnapshot() {
     wsRows.push(Array.from(r.querySelectorAll('input')).map(i => i.value));
   });
   project.workingStorage = wsRows;
+  project.linkageVars   = JSON.parse(JSON.stringify(typeof _linkageVars  !== 'undefined' ? _linkageVars  : []));
+  project.commareaVars  = JSON.parse(JSON.stringify(typeof _commareaVars !== 'undefined' ? _commareaVars : []));
+  project.fl88Vars      = JSON.parse(JSON.stringify(typeof _fl88Vars     !== 'undefined' ? _fl88Vars     : []));
   return project;
 }
 
@@ -5474,6 +6144,27 @@ function _importProjectJSON(text) {
       `<td><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:#dc2626">&#10005;</button></td>`;
       tbody.appendChild(tr);
     });
+  }
+
+  // ── Linkage Section ───────────────────────────────────────────────────
+  if (Array.isArray(project.linkageVars)) {
+    _linkageVars.length = 0;
+    project.linkageVars.forEach(v => _linkageVars.push(v));
+    _renderLinkageList();
+  }
+
+  // ── COMMAREA ──────────────────────────────────────────────────────────
+  if (Array.isArray(project.commareaVars)) {
+    _commareaVars.length = 0;
+    project.commareaVars.forEach(v => _commareaVars.push(v));
+    _renderCommareaList();
+  }
+
+  // ── Nível 88 ──────────────────────────────────────────────────────────
+  if (Array.isArray(project.fl88Vars)) {
+    _fl88Vars.length = 0;
+    project.fl88Vars.forEach(v => _fl88Vars.push(v));
+    _renderFl88List();
   }
 
   updateNodeCount();
@@ -6770,7 +7461,17 @@ function _addWsRow(name, level, pic, val) {
     <td><input value="${pic||'PIC X(10)'}" oninput="generateAllCode()" /></td>
     <td><input value="${val||'SPACES'}" oninput="generateAllCode()" /></td>
     <td><button class="args-row-del" onclick="this.closest('tr').remove();generateAllCode()" title="Remover">✕</button></td>`;
-  tbody.appendChild(tr);
+  // Nível 77 sempre antes dos 01: insere no início da tabela
+  const lv = (level || '01').toString().trim();
+  if (lv === '77') {
+    const firstNon77 = Array.from(tbody.querySelectorAll('tr')).find(r => {
+      const lvInp = r.querySelectorAll('input')[1];
+      return lvInp && lvInp.value.trim() !== '77';
+    });
+    firstNon77 ? tbody.insertBefore(tr, firstNon77) : tbody.appendChild(tr);
+  } else {
+    tbody.appendChild(tr);
+  }
   toggleBottomPanel('ws');
 }
 function _clearConsole() {

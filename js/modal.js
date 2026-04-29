@@ -1483,5 +1483,5 @@ Copie tudo para um arquivo `index.html` e abra no navegador:
     });
   </script>
 </body>
-</html>
+</html>A
 ```
