@@ -4802,8 +4802,85 @@ function generateAllCode() {
       wsDtLines += '       01 WS-CURRENT-DATE          PIC X(21) VALUE SPACES.\n';
   }
 
-  // DB2
-  const hasDB2 = document.querySelectorAll('#canvas .cf-node[id*="db2"]').length > 0
+  // ── Working-Storage: variáveis de relatório ─────────────────────
+  const _rptNodeTypes = Array.from(document.querySelectorAll('#canvas .cf-node[data-node-type]'))
+    .map(n => n.dataset.nodeType);
+  const _hasRpt = t => _rptNodeTypes.includes(t);
+  const _hasAnyRpt = ['RPT_HEADER','RPT_HEADER2','RPT_DETALHE','RPT_QUEBRA',
+                      'RPT_SUBTOTAL','RPT_TRAILER','RPT_LINHA_SEP',
+                      'RPT_NOVA_PAG','RPT_CONT_LIN'].some(t => _hasRpt(t));
+  let wsRptLines = '';
+  if (_hasAnyRpt) {
+    wsRptLines += '\n      * ── Controle de Relatorio ──────────────────────\n';
+    wsRptLines += '       01 WS-RPT-CONTROLE.\n';
+    wsRptLines += '           03 WS-NR-PAG              PIC 9(4)   VALUE 1.\n';
+    wsRptLines += '           03 WS-CONT-LIN            PIC 9(3)   VALUE 1.\n';
+    wsRptLines += '           03 WS-MAX-LIN             PIC 9(3)   VALUE 55.\n';
+    if (_hasRpt('RPT_DETALHE') || _hasRpt('RPT_TRAILER'))
+      wsRptLines += '           03 WS-TOT-REGISTROS       PIC 9(7)   VALUE ZEROS.\n';
+    if (_hasRpt('RPT_SUBTOTAL') || _hasRpt('RPT_TRAILER'))
+      wsRptLines += '           03 WS-TOT-GERAL           PIC 9(13)V99 VALUE ZEROS.\n';
+    if (_hasRpt('RPT_SUBTOTAL') || _hasRpt('RPT_QUEBRA'))
+      wsRptLines += '           03 WS-TOT-GRUPO           PIC 9(13)V99 VALUE ZEROS.\n';
+    if (_hasRpt('RPT_QUEBRA'))
+      wsRptLines += '           03 WS-CHAVE-ANT           PIC X(20)  VALUE SPACES.\n';
+    wsRptLines += '\n      * ── Linhas de impressao ──────────────────────────\n';
+    if (_hasRpt('RPT_HEADER')) {
+      wsRptLines += '       01 WS-LIN-CAB.\n';
+      wsRptLines += '           03 WS-CAB-NOME-PROG       PIC X(20)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(10)  VALUE SPACES.\n';
+      wsRptLines += '           03 WS-CAB-DATA            PIC X(10)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-CAB-HORA            PIC X(8)   VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(3)   VALUE "PAG".\n';
+      wsRptLines += '           03 WS-CAB-PAGINA          PIC Z(4)   VALUE ZEROS.\n';
+      wsRptLines += '       01 WS-LIN-CAB2                PIC X(133) VALUE SPACES.\n';
+    }
+    if (_hasRpt('RPT_HEADER2')) {
+      wsRptLines += '       01 WS-LIN-SUBCAB.\n';
+      wsRptLines += '           03 WS-SUB-COL1            PIC X(20)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-SUB-COL2            PIC X(40)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-SUB-COL3            PIC X(15)  VALUE SPACES.\n';
+    }
+    if (_hasRpt('RPT_DETALHE')) {
+      wsRptLines += '       01 WS-LIN-DET.\n';
+      wsRptLines += '           03 WS-DET-COL1            PIC X(20)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-DET-COL2            PIC X(40)  VALUE SPACES.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-DET-COL3            PIC ZZ,ZZZ,ZZ9.99 VALUE ZEROS.\n';
+    }
+    if (_hasRpt('RPT_SUBTOTAL') || _hasRpt('RPT_QUEBRA')) {
+      wsRptLines += '       01 WS-LIN-SUBTOT.\n';
+      wsRptLines += '           03 FILLER                 PIC X(25)  VALUE SPACES.\n';
+      wsRptLines += '           03 WS-STOT-LABEL          PIC X(15)  VALUE SPACES.\n';
+      wsRptLines += '           03 WS-STOT-VALOR          PIC ZZ,ZZZ,ZZ9.99 VALUE ZEROS.\n';
+    }
+    if (_hasRpt('RPT_TRAILER')) {
+      wsRptLines += '       01 WS-LIN-TOTFIN.\n';
+      wsRptLines += '           03 FILLER                 PIC X(25)  VALUE SPACES.\n';
+      wsRptLines += '           03 WS-TOTFIN-LABEL        PIC X(15)  VALUE SPACES.\n';
+      wsRptLines += '           03 WS-TOTFIN-VALOR        PIC ZZ,ZZZ,ZZ9.99 VALUE ZEROS.\n';
+      wsRptLines += '           03 FILLER                 PIC X(5)   VALUE SPACES.\n';
+      wsRptLines += '           03 WS-TOTFIN-QTDE         PIC ZZZ,ZZ9 VALUE ZEROS.\n';
+      wsRptLines += '       01 WS-LIN-RODAPE              PIC X(133) VALUE SPACES.\n';
+    }
+    if (_hasRpt('RPT_LINHA_SEP') || _hasRpt('RPT_HEADER2') || _hasRpt('RPT_SUBTOTAL')) {
+      wsRptLines += '       01 WS-LIN-SEP.\n';
+      wsRptLines += '           03 WS-SEP-TRACOS          PIC X(133) VALUE ALL "-".\n';
+    }
+    if (_hasRpt('RPT_NOVA_PAG'))
+      wsRptLines += '       01 WS-LIN-BRANC              PIC X(1)   VALUE SPACES.\n';
+    wsRptLines += '\n      * ── Variaveis auxiliares de relatorio ───────────\n';
+    wsRptLines += '       01 WS-PROGRAMA                PIC X(8)   VALUE SPACES.\n';
+    wsRptLines += '       01 WS-DATA-ATUAL              PIC X(10)  VALUE SPACES.\n';
+    wsRptLines += '       01 WS-HORA-ATUAL              PIC X(8)   VALUE SPACES.\n';
+  }
+
+  const _rptWsBlock = wsRptLines;
     || [...document.querySelectorAll('#canvas .node-card-header')].some(h => h.textContent.includes('DB2'));
   const sqlcaBlock = hasDB2 ? `\n      * SQL COMMUNICATION AREA\n       EXEC SQL\n         INCLUDE SQLCA\n       END-EXEC.\n` : '';
 
@@ -4993,7 +5070,7 @@ function generateAllCode() {
 ${fileControlBlock}
        DATA DIVISION.
 ${fileSectionBlock}       WORKING-STORAGE SECTION.
-${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(1)  VALUE "N".\n' : ''}${wsLines}${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsTableLines}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
+${/WS-FIM/.test(wsLines + procLines) ? '       77 WS-FIM                  PIC X(1)  VALUE "N".\n' : ''}${wsLines}${fileStatusWS}${sqlcaBlock}${wsDtLines}${wsTableLines}${_rptWsBlock}${_copybookRegistry.map(c => '\n       COPY ' + c.name + '.').join('')}${_includeRegistry.map(c => '\n       EXEC SQL INCLUDE ' + c.name + ' END-EXEC.').join('')}`;
     // ── Linkage Section (linkage vars + DFHCOMMAREA) ──
     const lkVars = typeof _linkageVars !== 'undefined' ? _linkageVars : [];
     const _ca    = typeof _commareaVars !== 'undefined' ? _commareaVars : [];
