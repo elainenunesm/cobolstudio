@@ -88,9 +88,10 @@
     transition: transform 0.1s;
   }
 
-  /* Botões de ribbon: área maior */
+  /* Botões de ribbon: toque confortável sem distorcer o layout */
   .rbtn {
-    min-height: 52px;
+    padding-top: 6px;
+    padding-bottom: 6px;
   }
 
   /* Bottom bar: labels mais espaçados para toque */
