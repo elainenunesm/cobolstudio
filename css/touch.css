@@ -1,0 +1,101 @@
+/* =================================================================
+   touch.css — Estilos para interações touch / mobile
+   ================================================================= */
+
+/* ── Ghost de drag (palette → canvas) ──────────────────────────── */
+#touch-drop-ghost {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 160px;
+  height: 56px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px dashed #4f8ef7;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(79, 142, 247, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f8ef7;
+  white-space: nowrap;
+}
+
+/* ── Área de toque mínima (Apple HIG / Material: 44–48 px) ─────── */
+@media (max-width: 768px) {
+  /* Itens da palette */
+  .activity-item {
+    padding: 9px 10px;
+    min-height: 44px;
+  }
+
+  /* Botões do canvas-toolbar */
+  .canvas-btn {
+    min-height: 36px;
+    padding: 5px 10px;
+  }
+
+  /* Botões pequenos dos nós */
+  .node-card-remove-btn,
+  .node-connect-btn,
+  .node-move-btn,
+  .node-field-more {
+    min-width: 36px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Inputs nos nós: ≥ 16 px previne zoom automático no iOS/Safari */
+  .node-field input {
+    font-size: 16px;
+  }
+
+  /* Handle de arrastar linha: área maior */
+  .node-field-drag {
+    padding: 0 12px;
+    font-size: 20px;
+  }
+
+  /* Header do nó vira handle de arraste — altura maior */
+  .node-card-header {
+    min-height: 42px;
+    padding: 6px 10px;
+    cursor: grab;
+  }
+
+  /* Scroll suave e nativo no canvas */
+  #canvas-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Evita seleção de texto durante gestos de drag */
+  #canvas {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Feedback visual: item da palette ao toque */
+  .activity-item:active {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    transform: scale(0.97);
+    transition: transform 0.1s;
+  }
+
+  /* Botões de ribbon: área maior */
+  .rbtn {
+    min-height: 52px;
+  }
+
+  /* Bottom bar: labels mais espaçados para toque */
+  .bottom-label {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}

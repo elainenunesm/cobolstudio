@@ -20,6 +20,8 @@
   <link rel="stylesheet" href="css/canvas.css" />
   <!-- Modal & toast -->
   <link rel="stylesheet" href="css/components.css" />
+  <!-- Touch / Mobile -->
+  <link rel="stylesheet" href="css/touch.css" />
   <!-- LEGACY INLINE STYLES (manter enquanto os arquivos CSS externos estiverem incompletos) -->
   <style>
     /* ─── Reset & Base ───────────────────────────────────────────── */
@@ -1261,20 +1263,143 @@
 
     /* Drag-over highlight */
     #canvas.drag-over { outline: 2px dashed var(--accent); outline-offset: -4px; }
+
+    /* ═══ RESPONSIVO ════════════════════════════════════════════════ */
+
+    /* Botões de painel (visíveis apenas em mobile) */
+    .panel-toggle-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 17px;
+      width: 30px;
+      height: 26px;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      transition: background 0.12s;
+    }
+    .panel-toggle-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* Backdrop semitransparente quando painel abre em overlay */
+    #panel-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      z-index: 499;
+    }
+    #panel-backdrop.active { display: block; }
+
+    /* ── Tablet (≤1024 px) ──────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      #left-panel  { width: 200px; min-width: 120px; }
+      #right-panel { width: 220px; min-width: 140px; }
+      #ribbon-content { overflow-x: auto; flex-wrap: nowrap; }
+      #ribbon-content::-webkit-scrollbar { height: 3px; }
+      #ribbon-content::-webkit-scrollbar-thumb { background: #c0c0c0; }
+      .rbtn        { min-width: 38px; }
+      .rbtn.large  { min-width: 44px; }
+    }
+
+    /* ── Mobile (≤768 px) ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      /* Header: compacto */
+      #header { padding: 0 8px; gap: 6px; }
+      #header .user-info { display: none; }
+      #header .project-tab { padding: 3px 8px; font-size: 11px; }
+      .panel-toggle-btn { display: flex; }
+
+      /* Ribbon: rolável horizontalmente */
+      #ribbon-content {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 2px;
+        scrollbar-width: thin;
+      }
+      #ribbon-content::-webkit-scrollbar { height: 3px; }
+      #ribbon-content::-webkit-scrollbar-thumb { background: #c0c0c0; }
+      .rbtn { min-width: 36px; }
+      .rbtn.large .rbtn-icon { font-size: 20px; }
+      .rbtn .rbtn-label { font-size: 9px; }
+
+      /* Painel esquerdo: drawer overlay */
+      #left-panel {
+        position: fixed !important;
+        top: 0; left: 0; bottom: 0;
+        z-index: 500;
+        width: 270px !important;
+        min-width: 0 !important;
+        max-width: 90vw !important;
+        transform: translateX(-100%);
+        transition: transform 0.24s ease;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.28);
+        resize: none !important;
+      }
+      #left-panel.panel-open  { transform: translateX(0); }
+
+      /* Painel direito: drawer overlay */
+      #right-panel {
+        position: fixed !important;
+        top: 0; right: 0; bottom: 0;
+        z-index: 500;
+        width: 290px !important;
+        min-width: 0 !important;
+        transform: translateX(100%);
+        transition: transform 0.24s ease;
+        box-shadow: -4px 0 20px rgba(0,0,0,0.28);
+      }
+      #right-panel.panel-open { transform: translateX(0); }
+
+      /* Canvas ocupa tudo */
+      #canvas-area { width: 100%; }
+
+      /* Toolbar do canvas: quebra em duas linhas se precisar */
+      #canvas-toolbar { flex-wrap: wrap; gap: 3px; padding: 4px 6px; }
+      #canvas-breadcrumb { min-width: 0; flex: 1; font-size: 11px; }
+      .bc-item { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      #view-tabs { overflow-x: auto; flex-wrap: nowrap; }
+
+      /* Bottom bar: espaçamento menor */
+      #bottom-bar { gap: 8px; padding: 0 8px; }
+    }
+
+
+      /* Botões da toolbar: só ícone/label curto */
+      #canvas-toolbar .canvas-btn-label { display: none; }
+    }
+
+    /* ── Extra-pequeno (≤480 px) ────────────────────────────────── */
+    @media (max-width: 480px) {
+      #header .logo span:not(.icon-logo) { display: none; }
+      #ribbon { display: none; }
+      #ribbon.ribbon-open { display: block; }
+      #ribbon-toggle-btn { display: flex !important; }
+      #view-tabs { padding: 0 4px; }
+      .canvas-btn { padding: 3px 6px; font-size: 10px; }
+    }
   </style>
 </head>
 <body autocomplete="off">
+<div id="panel-backdrop" onclick="closeAllPanels()"></div>
 <div id="app">
 
   <!-- ═══ HEADER ════════════════════════════════════════════════════ -->
   <div id="header">
+    <button class="panel-toggle-btn" id="toggle-left-btn"  onclick="togglePanel('left')"  title="Blocos">☰</button>
     <div class="logo">
       <div class="icon-logo">CB</div>
-      COBOL Dev Studio 2.0
+      <span>COBOL Dev Studio 2.0</span>
     </div>
     <div id="project-tab" class="project-tab" title="Projeto atual">📁 <span id="project-tab-name">MEUCOBOL</span></div>
     <div class="spacer"></div>
+    <button class="panel-toggle-btn" id="ribbon-toggle-btn" onclick="toggleRibbon()" title="Menu" style="display:none">⚡</button>
     <div class="user-info">dev@cobol-studio.local</div>
+    <button class="panel-toggle-btn" id="toggle-right-btn" onclick="togglePanel('right')" title="Propriedades / Código">⋮</button>
   </div>
 
   <!-- ═══ RIBBON ════════════════════════════════════════════════════ -->
@@ -2026,10 +2151,10 @@
           <span class="bc-item bc-current" id="bc-node" style="display:none"></span>
         </div>
         <div style="flex:1"></div>
-        <button class="canvas-btn" onclick="expandAll()">Expandir Tudo</button>
-        <button class="canvas-btn" onclick="collapseAll()">Reduzir Tudo</button>
-        <button class="canvas-btn" onclick="undoLastConnection()" title="Desfazer última seta criada" style="color:#dc2626;border-color:#fca5a5;">↩ Seta</button>
-        <button class="canvas-btn" onclick="clearAllConnections()" title="Remover todas as setas" style="color:#dc2626;border-color:#fca5a5;">× Setas</button>
+        <button class="canvas-btn" onclick="expandAll()" title="Expandir todos os nós">⊞ <span class="canvas-btn-label">Expandir</span></button>
+        <button class="canvas-btn" onclick="collapseAll()" title="Reduzir todos os nós">⊟ <span class="canvas-btn-label">Reduzir</span></button>
+        <button class="canvas-btn" onclick="undoLastConnection()" title="Desfazer última seta" style="color:#dc2626;border-color:#fca5a5;">↩ <span class="canvas-btn-label">Seta</span></button>
+        <button class="canvas-btn" onclick="clearAllConnections()" title="Remover todas as setas" style="color:#dc2626;border-color:#fca5a5;">× <span class="canvas-btn-label">Setas</span></button>
         <span style="color:#aaa;font-size:11px;margin-left:8px;" id="node-count">2 nós</span>
       </div>
       <div id="canvas-scroll">
@@ -2774,6 +2899,7 @@ function finishConnect(toId) {
   if (!connections.some(c => c.from === from && c.to === toId)) {
     connections.push({ from, to: toId });
     drawArrows();
+    generateAllCode();
     showToast('Seta criada! Clique direito na seta para remover.', 'success');
     setStatus('✓ Conexão adicionada');
   } else {
@@ -4339,6 +4465,7 @@ function drawArrows() {
       e.stopPropagation();
       connections.splice(idx, 1);
       drawArrows();
+      generateAllCode();
       showToast('Conexão removida.');
     };
 
@@ -4359,6 +4486,14 @@ function drawArrows() {
     svg.appendChild(fo);
   });
   scheduleTreeRefresh();
+  // Reagenda regeneração do código sempre que o fluxo muda
+  _scheduleCodegen();
+}
+
+let _codegenTimer = null;
+function _scheduleCodegen() {
+  if (_codegenTimer) clearTimeout(_codegenTimer);
+  _codegenTimer = setTimeout(() => { _codegenTimer = null; generateAllCode(); }, 120);
 }
 
 /* ─ Code Generation ────────────────────────────────────────────────── */
@@ -4568,20 +4703,26 @@ function generateAllCode() {
   const sqlcaBlock = hasDB2 ? `\n      * SQL COMMUNICATION AREA\n       EXEC SQL\n         INCLUDE SQLCA\n       END-EXEC.\n` : '';
 
   // ── Ordena nós seguindo a cadeia de setas a partir de node-start ──
+  // nextMap: para cada nó, guarda TODOS os destinos (para BFS completo)
   const nextMap = {};
-  connections.forEach(c => { nextMap[c.from] = c.to; });
+  connections.forEach(c => {
+    if (!nextMap[c.from]) nextMap[c.from] = [];
+    nextMap[c.from].push(c.to);
+  });
 
   const allCardEls = Array.from(document.querySelectorAll('#canvas .node-card'));
   const ordered = [];
   const visited = new Set();
 
-  // Percorre a cadeia de setas
-  let curId = nextMap['node-start'];
-  while (curId && !visited.has(curId)) {
+  // BFS a partir de node-start seguindo as setas em ordem de inserção
+  const queue = (nextMap['node-start'] || []).slice();
+  while (queue.length) {
+    const curId = queue.shift();
+    if (visited.has(curId)) continue;
     visited.add(curId);
     const el = document.getElementById(curId);
     if (el && el.classList.contains('node-card')) ordered.push(el);
-    curId = nextMap[curId];
+    (nextMap[curId] || []).forEach(nid => { if (!visited.has(nid)) queue.push(nid); });
   }
   // Nós sem setas (não visitados) ficam no final, em ordem DOM
   allCardEls.forEach(n => { if (!visited.has(n.id)) ordered.push(n); });
@@ -7410,6 +7551,25 @@ function setStatus(msg) {
   if (el) el.textContent = msg;
 }
 
+/* ─ Painéis responsivos (mobile overlay) ─────────────────────────── */
+function togglePanel(side) {
+  const panel    = document.getElementById(side + '-panel');
+  const backdrop = document.getElementById('panel-backdrop');
+  const other    = side === 'left' ? 'right' : 'left';
+  document.getElementById(other + '-panel').classList.remove('panel-open');
+  const isOpen   = panel.classList.toggle('panel-open');
+  backdrop.classList.toggle('active', isOpen);
+}
+function closeAllPanels() {
+  document.getElementById('left-panel').classList.remove('panel-open');
+  document.getElementById('right-panel').classList.remove('panel-open');
+  document.getElementById('panel-backdrop').classList.remove('active');
+}
+function toggleRibbon() {
+  const ribbon = document.getElementById('ribbon');
+  ribbon.classList.toggle('ribbon-open');
+}
+
 /* ─ Loading overlay ───────────────────────────────────────────────── */
 function _showLoading(title) {
   const ov = document.getElementById('loading-overlay');
@@ -7532,5 +7692,6 @@ function openFieldPicker(nodeId, fieldIdx) {
 
 </script>
 <script src="js/tree.js"></script>
+<script src="js/touch-support.js"></script>
 </body>
 </html>
