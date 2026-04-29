@@ -4881,6 +4881,9 @@ function generateAllCode() {
   }
 
   const _rptWsBlock = wsRptLines;
+
+  // DB2
+  const hasDB2 = document.querySelectorAll('#canvas .cf-node[id*="db2"]').length > 0
     || [...document.querySelectorAll('#canvas .node-card-header')].some(h => h.textContent.includes('DB2'));
   const sqlcaBlock = hasDB2 ? `\n      * SQL COMMUNICATION AREA\n       EXEC SQL\n         INCLUDE SQLCA\n       END-EXEC.\n` : '';
 
