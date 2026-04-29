@@ -3196,6 +3196,16 @@ function createNodeAt(type, x, y) {
   if (type === 'GO_BACK' || type === 'STOP_RUN') {
     div.dataset.codeRole = 'inline';
   }
+
+  // Nó SECTION explícito vira parágrafo com cabeçalho
+  if (type === 'SECTION') {
+    div.dataset.codeRole = 'paragraph';
+  }
+
+  // Blocos PERFORM são parágrafos COBOL
+  if (['PERFORM','PERFORM_UNTIL','PERFORM_VARYING','TBL_PERFORM'].includes(type)) {
+    div.dataset.codeRole = 'paragraph';
+  }
 }
 
 function updateNodeCount() {
@@ -4598,7 +4608,7 @@ function generateAllCode() {
     const hdr      = n.querySelector('.node-card-header');
     // Usa SEMPRE apenas o .node-label — nunca o textContent do header inteiro
     const title    = hdr?.querySelector('.node-label')?.textContent?.trim() || 'PARA';
-    const role     = n.dataset.codeRole || 'comment'; // 'paragraph' | 'comment' | 'inline'
+    const role     = n.dataset.codeRole || 'inline'; // 'paragraph' | 'comment' | 'inline' | 'pure-comment'
     const nodeType = n.dataset.nodeType || '';
     if (_OPEN_READ_TYPES.has(nodeType)) _hasOpenRead = true;
     const fieldLines = [];
