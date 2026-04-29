@@ -2126,6 +2126,40 @@
               </div>
             </div>
 
+            <div class="act-group-header" onclick="toggleActivityGroup(this,'ag-rpt')">
+              <span class="act-group-toggle">&#9658;</span>
+              <span class="act-group-icon">📋</span> COBOL.Relatorio
+            </div>
+            <div class="act-group-body" id="ag-rpt">
+              <div class="activity-item" draggable="true" data-type="RPT_HEADER" ondragstart="onDragStart(event,'RPT_HEADER')">
+                <span class="act-icon">📋</span> Cabeçalho Relatório
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_HEADER2" ondragstart="onDragStart(event,'RPT_HEADER2')">
+                <span class="act-icon">📄</span> Subtítulo / Colunas
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_DETALHE" ondragstart="onDragStart(event,'RPT_DETALHE')">
+                <span class="act-icon">📝</span> Linha de Detalhe
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_QUEBRA" ondragstart="onDragStart(event,'RPT_QUEBRA')">
+                <span class="act-icon">🔀</span> Quebra de Grupo
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_SUBTOTAL" ondragstart="onDragStart(event,'RPT_SUBTOTAL')">
+                <span class="act-icon">➕</span> Subtotal de Grupo
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_TRAILER" ondragstart="onDragStart(event,'RPT_TRAILER')">
+                <span class="act-icon">📊</span> Rodapé / Totalizador
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_LINHA_SEP" ondragstart="onDragStart(event,'RPT_LINHA_SEP')">
+                <span class="act-icon">➖</span> Linha Separadora
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_NOVA_PAG" ondragstart="onDragStart(event,'RPT_NOVA_PAG')">
+                <span class="act-icon">📃</span> Salto de Página
+              </div>
+              <div class="activity-item" draggable="true" data-type="RPT_CONT_LIN" ondragstart="onDragStart(event,'RPT_CONT_LIN')">
+                <span class="act-icon">🔢</span> Controle de Linhas
+              </div>
+            </div>
+
           </div><!-- /act-groups -->
         </div><!-- /activities-panel -->
 
@@ -3147,6 +3181,79 @@ const activityMeta = {
   TBL_LOAD:      { icon:'📥', label:'Carregar Tabela',  color:'sky',    fields:['SET IX-TB TO 0','PERFORM UNTIL WS-FIM = "S"','  READ ARQ-TABELA','    AT END MOVE "S" TO WS-FIM','  END-READ','  IF WS-FIM NOT = "S"','    SET IX-TB UP BY 1','    MOVE RE-CHAVE TO WS-TB-CHAVE(IX-TB)','    MOVE RE-VALOR TO WS-TB-VALOR(IX-TB)','  END-IF','END-PERFORM','MOVE IX-TB TO WS-TB-QTD'] },
   /* ── Utilitários ── */
   BLOCO_COMENTARIO: { icon:'💬', label:'Bloco Comentário', color:'gray', fields:['* ─────────────────────────────────','* Descrição do bloco','* ─────────────────────────────────'] },
+  /* ── Relatório ── */
+  RPT_HEADER:    { icon:'📋', label:'Cabeçalho Relatório', color:'indigo', fields:[
+    '*> ── CABEÇALHO DO RELATÓRIO ─────────────────────',
+    'MOVE SPACES          TO WS-LIN-CAB',
+    'MOVE WS-PROGRAMA     TO WS-CAB-NOME-PROG',
+    'MOVE WS-DATA-ATUAL   TO WS-CAB-DATA',
+    'MOVE WS-HORA-ATUAL   TO WS-CAB-HORA',
+    'MOVE WS-NR-PAG       TO WS-CAB-PAGINA',
+    'WRITE REG-RPT FROM WS-LIN-CAB',
+    'WRITE REG-RPT FROM WS-LIN-CAB2',
+    'ADD 2                TO WS-CONT-LIN'] },
+  RPT_HEADER2:   { icon:'📄', label:'Subtítulo / Coluna',  color:'indigo', fields:[
+    '*> ── SUBTÍTULO / CABEÇALHO DE COLUNAS ──────────',
+    'MOVE SPACES          TO WS-LIN-SUBCAB',
+    'MOVE "CODIGO"        TO WS-SUB-COL1',
+    'MOVE "DESCRICAO"     TO WS-SUB-COL2',
+    'MOVE "VALOR"         TO WS-SUB-COL3',
+    'WRITE REG-RPT FROM WS-LIN-SUBCAB',
+    'WRITE REG-RPT FROM WS-LIN-SEP',
+    'ADD 2                TO WS-CONT-LIN'] },
+  RPT_DETALHE:   { icon:'📝', label:'Linha de Detalhe',    color:'blue',   fields:[
+    '*> ── LINHA DE DETALHE ───────────────────────────',
+    'MOVE SPACES          TO WS-LIN-DET',
+    'MOVE [WS-CODIGO]     TO WS-DET-COL1',
+    'MOVE [WS-DESCRICAO]  TO WS-DET-COL2',
+    'MOVE [WS-VALOR]      TO WS-DET-COL3',
+    'WRITE REG-RPT FROM WS-LIN-DET',
+    'ADD 1                TO WS-CONT-LIN'] },
+  RPT_QUEBRA:    { icon:'🔀', label:'Quebra de Grupo',     color:'orange', fields:[
+    '*> ── CONTROLE DE QUEBRA ─────────────────────────',
+    'IF [WS-CHAVE-CTRL] NOT = [WS-CHAVE-ANT]',
+    '   PERFORM [RPT-SUBTOTAL-RTN]',
+    '   PERFORM [RPT-HEADER-GRUPO-RTN]',
+    '   MOVE [WS-CHAVE-CTRL] TO WS-CHAVE-ANT',
+    '   MOVE ZEROS TO WS-TOT-GRUPO',
+    'END-IF'] },
+  RPT_SUBTOTAL:  { icon:'➕', label:'Subtotal de Grupo',   color:'orange', fields:[
+    '*> ── SUBTOTAL DO GRUPO ──────────────────────────',
+    'MOVE SPACES          TO WS-LIN-SUBTOT',
+    'MOVE "SUBTOTAL:"     TO WS-STOT-LABEL',
+    'MOVE WS-TOT-GRUPO    TO WS-STOT-VALOR',
+    'WRITE REG-RPT FROM WS-LIN-SEP',
+    'WRITE REG-RPT FROM WS-LIN-SUBTOT',
+    'ADD 2                TO WS-CONT-LIN',
+    'ADD WS-TOT-GRUPO     TO WS-TOT-GERAL',
+    'MOVE ZEROS           TO WS-TOT-GRUPO'] },
+  RPT_TRAILER:   { icon:'📊', label:'Rodapé / Totalizador', color:'red',   fields:[
+    '*> ── RODAPÉ FINAL DO RELATÓRIO ─────────────────',
+    'MOVE SPACES          TO WS-LIN-TOTFIN',
+    'MOVE "TOTAL GERAL:"  TO WS-TOTFIN-LABEL',
+    'MOVE WS-TOT-GERAL    TO WS-TOTFIN-VALOR',
+    'MOVE WS-TOT-REGISTROS TO WS-TOTFIN-QTDE',
+    'WRITE REG-RPT FROM WS-LIN-SEP',
+    'WRITE REG-RPT FROM WS-LIN-TOTFIN',
+    'WRITE REG-RPT FROM WS-LIN-RODAPE',
+    'ADD 3                TO WS-CONT-LIN'] },
+  RPT_LINHA_SEP: { icon:'➖', label:'Linha Separadora',    color:'gray',   fields:[
+    '*> ── LINHA SEPARADORA ───────────────────────────',
+    'MOVE SPACES          TO WS-LIN-SEP',
+    'MOVE ALL "-"         TO WS-SEP-TRACOS',
+    'WRITE REG-RPT FROM WS-LIN-SEP',
+    'ADD 1                TO WS-CONT-LIN'] },
+  RPT_NOVA_PAG:  { icon:'📃', label:'Salto de Página',     color:'gray',   fields:[
+    '*> ── SALTO DE PÁGINA ────────────────────────────',
+    'WRITE REG-RPT FROM WS-LIN-BRANC AFTER PAGE',
+    'ADD 1                TO WS-NR-PAG',
+    'MOVE 1               TO WS-CONT-LIN',
+    'PERFORM [RPT-HEADER-RTN]'] },
+  RPT_CONT_LIN:  { icon:'🔢', label:'Controle de Linhas',  color:'gray',   fields:[
+    '*> ── CONTROLE DE LINHAS/PÁGINA ─────────────────',
+    'IF WS-CONT-LIN >= WS-MAX-LIN',
+    '   PERFORM [RPT-NOVA-PAG-RTN]',
+    'END-IF'] },
 };
 
 function createNodeAt(type, x, y) {
