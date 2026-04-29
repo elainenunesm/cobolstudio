@@ -194,11 +194,11 @@
       el.style.left = Math.max(0, sl + dx) + 'px';
       el.style.top  = Math.max(0, st + dy) + 'px';
 
-      // Detecta se o dedo está sobre o header de outro nó (nest target)
+      // No touch (mobile): aceita drop em qualquer parte do nó alvo, não só no header
       el.style.pointerEvents = 'none';
       const under = document.elementFromPoint(t.clientX, t.clientY);
       el.style.pointerEvents = '';
-      const candidate = under?.closest('.node-card-header')?.closest('.node-card');
+      const candidate = under?.closest('.node-card');
       const nestTarget = (candidate && candidate !== el) ? candidate : null;
       if (nestTarget !== _nestTarget) {
         if (_nestTarget) _nestTarget.classList.remove('drop-target');
