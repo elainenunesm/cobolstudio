@@ -151,6 +151,7 @@
 
   function _bindNodeCard(el) {
     let sx, sy, sl, st, dragging;
+    let _nestTarget = null;
 
     const header = el.querySelector('.node-card-header');
 
@@ -158,12 +159,13 @@
     const dragHandle = header || el;
     dragHandle.addEventListener('touchstart', (e) => {
       const tgt = e.target;
-      // Ignora elementos interativos dentro do cabeçalho
+      // Ignora botões interativos dentro do cabeçalho (incluindo ▲▼)
       if (
         tgt.tagName === 'INPUT'    || tgt.tagName === 'BUTTON' ||
         tgt.tagName === 'SELECT'   || tgt.tagName === 'TEXTAREA' ||
-        tgt.classList.contains('node-connect-btn')   ||
-        tgt.classList.contains('node-card-remove-btn')
+        tgt.classList.contains('node-connect-btn')    ||
+        tgt.classList.contains('node-card-remove-btn') ||
+        tgt.classList.contains('node-move-btn')        // ▲▼ não devem iniciar drag
       ) return;
 
       sx       = e.touches[0].clientX;
@@ -192,6 +194,18 @@
       el.style.left = Math.max(0, sl + dx) + 'px';
       el.style.top  = Math.max(0, st + dy) + 'px';
 
+      // Detecta se o dedo está sobre o header de outro nó (nest target)
+      el.style.pointerEvents = 'none';
+      const under = document.elementFromPoint(t.clientX, t.clientY);
+      el.style.pointerEvents = '';
+      const candidate = under?.closest('.node-card-header')?.closest('.node-card');
+      const nestTarget = (candidate && candidate !== el) ? candidate : null;
+      if (nestTarget !== _nestTarget) {
+        if (_nestTarget) _nestTarget.classList.remove('drop-target');
+        _nestTarget = nestTarget;
+        if (_nestTarget) _nestTarget.classList.add('drop-target');
+      }
+
       if (window.drawArrows) window.drawArrows();
     }, { passive: false });
 
@@ -200,7 +214,18 @@
         el.style.zIndex  = '';
         el.style.opacity = '';
         dragging = false;
-        if (window.drawArrows) window.drawArrows();
+
+        if (_nestTarget) {
+          // Solto sobre outro nó → encaixa como sub-bloco
+          _nestTarget.classList.remove('drop-target');
+          if (window.nestCardInto) window.nestCardInto(el, _nestTarget);
+          _nestTarget = null;
+        } else {
+          if (window.drawArrows) window.drawArrows();
+        }
+      } else if (_nestTarget) {
+        _nestTarget.classList.remove('drop-target');
+        _nestTarget = null;
       }
       sx = undefined;
     };
