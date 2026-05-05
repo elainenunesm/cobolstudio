@@ -1390,15 +1390,15 @@
     #layout-editor-overlay.open { display: flex; }
     #layout-editor-modal {
       background: #fff; border-radius: 10px;
-      width: 920px; max-width: 97vw; max-height: 94vh;
+      width: 1340px; max-width: 98vw; max-height: 97vh; height: 97vh;
       display: flex; flex-direction: column;
       box-shadow: 0 8px 40px rgba(0,0,0,0.38);
       overflow: hidden;
     }
     #layout-editor-header {
       background: #1e3a5f; color: #fff;
-      padding: 10px 16px; display: flex; align-items: center; gap: 8px;
-      font-weight: 700; font-size: 14px; flex-shrink: 0;
+      padding: 12px 20px; display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 16px; flex-shrink: 0;
     }
     #layout-editor-header .leh-close {
       margin-left: auto; background: rgba(255,255,255,0.18);
@@ -1423,8 +1423,8 @@
     }
     #layout-help {
       background: #fffbe6; border-bottom: 1px solid #ffe082;
-      padding: 6px 12px; font-size: 11px; color: #6b4f00;
-      flex-shrink: 0; line-height: 1.6;
+      padding: 8px 14px; font-size: 12px; color: #6b4f00;
+      flex-shrink: 0; line-height: 1.7;
     }
     #layout-help code { background: #fff3c4; border-radius: 2px; padding: 0 3px; font-family: monospace; }
     #layout-name-row {
@@ -1432,31 +1432,67 @@
       padding: 5px 12px; background: #f9f9f9; border-bottom: 1px solid #e8e8e8;
       flex-shrink: 0;
     }
-    #layout-name-row label { font-size: 11px; color: #555; white-space: nowrap; }
+    #layout-name-row label { font-size: 12px; color: #555; white-space: nowrap; }
     #layout-set-name {
-      flex: 1; font-size: 11px; padding: 3px 6px;
+      flex: 1; font-size: 12px; padding: 4px 8px;
       border: 1px solid #ccc; border-radius: 3px; font-family: monospace;
     }
     #layout-input {
       flex: 1; resize: none; border: none; outline: none;
-      font-family: 'Consolas', 'Courier New', monospace; font-size: 12px;
-      line-height: 1.6; padding: 10px 12px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 14px;
+      line-height: 1.7; padding: 12px 14px;
       background: #1e1e2e; color: #cdd6f4;
       min-height: 0;
     }
     #layout-input::placeholder { color: #555; }
     #layout-ws-preview {
-      flex: 1; overflow: auto; margin: 0; padding: 10px 12px;
-      font-family: 'Consolas', 'Courier New', monospace; font-size: 11px;
-      background: #1e1e2e; color: #a6e3a1; line-height: 1.6;
+      flex: 1; overflow: auto; margin: 0; padding: 12px 14px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 13px;
+      background: #1e1e2e; color: #a6e3a1; line-height: 1.7;
       white-space: pre; min-height: 0;
     }
+    #layout-line-totals {
+      flex-shrink: 0; max-height: 110px; overflow-y: auto;
+      display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 12px;
+    }
+    .llt-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: monospace; font-size: 11px;
+      padding: 2px 8px; border-radius: 10px; border: 1px solid;
+    }
+    .llt-ok   { background:#f0fdf4; border-color:#86efac; color:#166534; }
+    .llt-warn { background:#fffbeb; border-color:#fcd34d; color:#92400e; }
+    .llt-err  { background:#fef2f2; border-color:#fca5a5; color:#991b1b; }
+    .llt-sep  { background:#f0f9ff; border-color:#7dd3fc; color:#0369a1; }
+    #layout-estrutura-wrap {
+      flex-shrink: 0; max-height: 160px; overflow-y: auto;
+      border-top: 1px solid #e0e0e0;
+    }
+    #layout-estrutura-table {
+      width: 100%; border-collapse: collapse; font-size: 11px;
+    }
+    #layout-estrutura-table th {
+      background: #f0f0f0; padding: 3px 8px; text-align: left;
+      font-size: 10px; color: #555; border-bottom: 1px solid #ddd;
+      position: sticky; top: 0;
+    }
+    #layout-estrutura-table td { padding: 2px 6px; border-bottom: 1px solid #f5f5f5; }
+    #layout-estrutura-table tr:hover td { background: #f7f9ff; }
+    .le-type-sel {
+      font-size: 11px; border: 1px solid #ddd; border-radius: 3px;
+      padding: 1px 4px; cursor: pointer; font-family: monospace;
+    }
+    .le-type-sel.t-CAB { background:#eff6ff; color:#1e40af; border-color:#93c5fd; }
+    .le-type-sel.t-DET { background:#f0fdf4; color:#166534; border-color:#86efac; }
+    .le-type-sel.t-ROD { background:#faf5ff; color:#6b21a8; border-color:#d8b4fe; }
+    .le-type-sel.t-SEP { background:#f0f9ff; color:#0369a1; border-color:#7dd3fc; }
+    .le-type-sel.t-OUT { background:#f9fafb; color:#6b7280; border-color:#d1d5db; }
     #layout-fields-wrap {
       flex-shrink: 0; max-height: 180px; overflow-y: auto;
       border-top: 1px solid #e0e0e0;
     }
     #layout-fields-table {
-      width: 100%; border-collapse: collapse; font-size: 11px;
+      width: 100%; border-collapse: collapse; font-size: 12px;
     }
     #layout-fields-table thead tr { position: sticky; top: 0; }
     #layout-fields-table th {
@@ -1472,7 +1508,7 @@
     .layout-field-name-inp:focus { border-color: #2563eb; }
     #layout-sets-list {
       flex-shrink: 0; border-top: 1px solid #e0e0e0;
-      padding: 6px 12px; max-height: 90px; overflow-y: auto;
+      padding: 6px 12px; max-height: 120px; overflow-y: auto;
     }
     .layout-set-item {
       display: flex; align-items: center; gap: 6px;
@@ -1486,7 +1522,7 @@
       background: #f9f9f9; flex-shrink: 0;
     }
     #layout-editor-footer button {
-      padding: 5px 14px; border-radius: 4px; font-size: 12px;
+      padding: 7px 18px; border-radius: 4px; font-size: 13px;
       border: 1px solid #ccc; cursor: pointer;
     }
     #layout-editor-footer .le-btn-primary {
@@ -2601,9 +2637,9 @@
       <div id="layout-left-pane">
         <div class="layout-pane-title">📝 Maquete (desenhe o layout linha por linha)</div>
         <div id="layout-help">
-          Use <code>X</code> para alfanumérico · <code>9</code> para numérico · <code>ZZ,ZZ9.99</code> para editado<br>
-          Texto literal fica como <code>FILLER VALUE</code> · Linha só com <code>---</code> vira separador<br>
-          Prefixe uma linha com <code>&gt;&gt; NOME:</code> para nomear o registro (ex: <code>&gt;&gt; CABECALHO:</code>)
+          <code>xxxx</code> = variável alfanumérica PIC X(4) &nbsp;·&nbsp; <code>zzzz</code> = variável numérica PIC 9(4) &nbsp;·&nbsp; <code>9999</code> = numérico PIC 9(4)<br>
+          <code>zz,zz9.99</code> = editado com pontuação &nbsp;·&nbsp; texto literal vira <code>FILLER VALUE</code> &nbsp;·&nbsp; linha <code>----</code> vira separador<br>
+          Prefixe com <code>&gt;&gt; NOME:</code> para nomear o registro (ex: <code>&gt;&gt; CABECALHO:</code>)
         </div>
         <div id="layout-name-row">
           <label>Identificador do conjunto:</label>
@@ -2618,6 +2654,21 @@
       <div id="layout-right-pane">
         <div class="layout-pane-title">🗃️ Working-Storage gerada (preview)</div>
         <pre id="layout-ws-preview">(cole sua maquete à esquerda)</pre>
+        <div class="layout-pane-title" style="border-top:1px solid #e0e0e0;">📏 Tamanho das linhas <span style="font-weight:400;color:#888;font-size:10px;">(limite: 133 colunas)</span></div>
+        <div id="layout-line-totals"><span style="color:#aaa;font-size:11px;padding:6px 12px;display:block;">Nenhuma linha calculada ainda.</span></div>
+        <div class="layout-pane-title" style="border-top:1px solid #e0e0e0;">🗂️ Estrutura do relatório <span style="font-weight:400;color:#888;font-size:10px;">— classifique cada registro</span></div>
+        <div id="layout-estrutura-wrap">
+          <table id="layout-estrutura-table">
+            <thead><tr>
+              <th>Registro</th>
+              <th style="width:130px;">Tipo</th>
+              <th style="width:46px;text-align:center;">Linhas</th>
+            </tr></thead>
+            <tbody id="layout-estrutura-tbody">
+              <tr><td colspan="3" style="color:#aaa;text-align:center;padding:8px;">Nenhum registro ainda</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="layout-pane-title" style="border-top:1px solid #e0e0e0;">✏️ Renomear campos variáveis</div>
         <div id="layout-fields-wrap">
           <table id="layout-fields-table">
@@ -8070,6 +8121,7 @@ function openFieldPicker(nodeId, fieldIdx) {
    gerar automaticamente as variáveis da Working-Storage.
 ──────────────────────────────────────────────────────────────────── */
 window._rptCustomLayouts = [];   // [{ label, wsCode, records }]
+window._layoutRecordTypes = {};  // { wsName → 'CAB'|'DET'|'ROD'|'SEP'|'OUT' }
 window._layoutParsedRecords = [];
 window._layoutWsCode = '';
 window._layoutFieldsTable = [];
@@ -8091,17 +8143,41 @@ function _layoutTokenizeLine(line) {
   let i = 0;
   while (i < line.length) {
     const ch = line[i];
-    if (ch === 'X') {
+    // xxxx (minúsculo) → variável alfanumérica PIC X(n)
+    if (ch === 'x') {
+      let j = i;
+      while (j < line.length && line[j] === 'x') j++;
+      tokens.push({ type: 'ALPHA', len: j - i, raw: line.slice(i, j) });
+      i = j;
+    // zzzz ou zz,zz9.99 (minúsculo) → numérico ou editado
+    } else if (ch === 'z') {
+      let j = i;
+      while (j < line.length && /[z9,.\-+]/.test(line[j])) j++;
+      const raw = line.slice(i, j);
+      if (/^z+$/.test(raw)) {
+        // somente z's → numérico PIC 9(n)
+        tokens.push({ type: 'NUM', len: raw.length, raw });
+      } else {
+        // zz,zz9.99 → editado PIC ZEDIT (converter para maiúsculo para o PIC)
+        tokens.push({ type: 'ZEDIT', pic: raw.toUpperCase(), raw });
+      }
+      i = j;
+    // XXXX (maiúsculo) → variável alfanumérica PIC X(n)
+    } else if (ch === 'X') {
       let j = i;
       while (j < line.length && line[j] === 'X') j++;
       tokens.push({ type: 'ALPHA', len: j - i, raw: line.slice(i, j) });
       i = j;
+    // ZZZZ ou ZZ,ZZ9.99 (maiúsculo)
     } else if (ch === 'Z') {
-      // Z editado: ZZ,ZZZ,ZZ9.99 — consome Z,9,,,.,- enquanto continuar
       let j = i;
       while (j < line.length && /[Z9,.\-+]/.test(line[j])) j++;
       const raw = line.slice(i, j);
-      tokens.push({ type: 'ZEDIT', pic: raw, raw });
+      if (/^Z+$/.test(raw)) {
+        tokens.push({ type: 'NUM', len: raw.length, raw });
+      } else {
+        tokens.push({ type: 'ZEDIT', pic: raw, raw });
+      }
       i = j;
     } else if (ch === '9') {
       let j = i;
@@ -8121,28 +8197,102 @@ function _layoutTokenizeLine(line) {
   return tokens;
 }
 
+/* ── Força limite de 72 colunas COBOL, quebrando literais ──────────
+   Em COBOL fixed-format a área de código vai até a col 72.
+   Literais alfanuméricos podem ser continuados com:
+     - linha encerra em col 72 (sem fechar aspa)
+     - próxima linha tem '-' em col 7 e reabre a aspa em col 12
+──────────────────────────────────────────────────────────────────── */
+const _COBOL_MAX_COL   = 72;
+const _COBOL_CONT_PFX  = "      -    '"; // 6 esps + '-' + 4 esps + "'" = col 12
+
+function _cobolWsLine(base, valueClause) {
+  // base         : tudo antes do VALUE, ex: "           03 FILLER          PIC X(60)       "
+  // valueClause  : ex: " VALUE 'CODIGO  DESCRICAO   VALOR'" ou " VALUE SPACES"
+  const full = base + valueClause + '.';
+  if (full.length <= _COBOL_MAX_COL) return full + '\n';
+
+  // Só literais entre aspas podem ser quebrados
+  const m = valueClause.match(/^ VALUE '([\s\S]*)'$/);
+  if (!m) return full + '\n'; // não-literal: emite sem quebra (casos raros)
+
+  const litContent = m[1];
+  const lineStart  = base + " VALUE '";
+  const firstMax   = _COBOL_MAX_COL - lineStart.length; // chars disponíveis na 1ª linha
+
+  if (firstMax <= 0) return full + '\n'; // base já é grande demais, emite mesmo
+
+  let result    = lineStart + litContent.slice(0, firstMax) + '\n';
+  let remaining = litContent.slice(firstMax);
+
+  while (remaining.length > 0) {
+    // Area disponível em linha de continuação: col 12 a 72 → 61 chars após o "'"
+    const contMax = _COBOL_MAX_COL - _COBOL_CONT_PFX.length;
+    if (remaining.length <= contMax - 1) { // -1 para fechar aspas + ponto
+      result   += _COBOL_CONT_PFX + remaining + "'.\n";
+      remaining = '';
+    } else {
+      result   += _COBOL_CONT_PFX + remaining.slice(0, contMax) + '\n';
+      remaining = remaining.slice(contMax);
+    }
+  }
+  return result;
+}
+
 /* ── Constrói código WS a partir dos records ────────────────────── */
+const _LAYOUT_LINE_WIDTH = 133;
+const _LAYOUT_SEC_COMMENT = {
+  CAB: '      * ════════════ CABECALHO ════════════════════════════════════\n',
+  DET: '      * ════════════ DETALHE ══════════════════════════════════════\n',
+  ROD: '      * ════════════ RODAPE ════════════════════════════════════════\n',
+  SEP: '      * ──────────── SEPARADORES ───────────────────────────────────\n',
+  OUT: '',
+};
+
 function _layoutBuildWsCode(records) {
   let wsCode = '';
+  let lastSec = null;
   records.forEach(rec => {
+    // Comentário de seção quando muda
+    const sec = (window._layoutRecordTypes && window._layoutRecordTypes[rec.wsName]) || (rec.type === 'sep' ? 'SEP' : 'OUT');
+    if (sec !== lastSec && _LAYOUT_SEC_COMMENT[sec]) {
+      wsCode += _LAYOUT_SEC_COMMENT[sec];
+      lastSec = sec;
+    }
+
     if (rec.type === 'sep') {
       const sepVal = rec.sepChar === '=' ? 'ALL "="' : 'ALL "-"';
-      wsCode += `       01 ${rec.wsName}`.padEnd(36) + ` PIC X(${rec.len}) VALUE ${sepVal}.\n`;
+      const sepLen = rec.len >= _LAYOUT_LINE_WIDTH ? rec.len : _LAYOUT_LINE_WIDTH;
+      const base = `       01 ${rec.wsName}`.padEnd(36) + ` PIC X(${sepLen})`.padEnd(16);
+      wsCode += _cobolWsLine(base, ` VALUE ${sepVal}`);
     } else {
       wsCode += `       01 ${rec.wsName}.\n`;
       rec.tokens.forEach(tok => {
+        let base, valueClause;
         if (tok.type === 'LIT') {
-          const val = tok.raw;
+          const val    = tok.raw;
           const valStr = val.trim() === '' ? 'SPACES' : `'${val.replace(/'/g, "''")}'`;
-          wsCode += `           03 FILLER`.padEnd(38) + ` PIC X(${tok.raw.length})`.padEnd(16) + ` VALUE ${valStr}.\n`;
+          base         = `           03 FILLER`.padEnd(38) + ` PIC X(${tok.raw.length})`.padEnd(16);
+          valueClause  = ` VALUE ${valStr}`;
         } else if (tok.type === 'ALPHA') {
-          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC X(${tok.len})`.padEnd(16) + ` VALUE SPACES.\n`;
+          base        = `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC X(${tok.len})`.padEnd(16);
+          valueClause = ' VALUE SPACES';
         } else if (tok.type === 'NUM') {
-          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC 9(${tok.len})`.padEnd(16) + ` VALUE ZEROS.\n`;
+          base        = `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC 9(${tok.len})`.padEnd(16);
+          valueClause = ' VALUE ZEROS';
         } else if (tok.type === 'ZEDIT') {
-          wsCode += `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC ${tok.pic}`.padEnd(16) + ` VALUE ZEROS.\n`;
+          base        = `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC ${tok.pic}`.padEnd(16);
+          valueClause = ' VALUE ZEROS';
         }
+        wsCode += _cobolWsLine(base, valueClause);
       });
+      // Completa até 133 colunas com FILLER se necessário
+      const used  = rec.tokens.reduce((s, t) => s + _layoutTokLen(t), 0);
+      const resto = _LAYOUT_LINE_WIDTH - used;
+      if (resto > 0) {
+        const base = `           03 FILLER`.padEnd(38) + ` PIC X(${resto})`.padEnd(16);
+        wsCode += _cobolWsLine(base, ' VALUE SPACES');
+      }
     }
   });
   return wsCode;
@@ -8205,6 +8355,15 @@ function _layoutParse(text) {
 }
 
 /* ── Atualiza o preview ao digitar ──────────────────────────────── */
+/* ── Calcula o tamanho físico de um token ───────────────────────── */
+function _layoutTokLen(tok) {
+  if (tok.type === 'LIT')   return tok.raw.length;
+  if (tok.type === 'ALPHA') return tok.len;
+  if (tok.type === 'NUM')   return tok.len;
+  if (tok.type === 'ZEDIT') return tok.raw.length; // raw preserva o tamanho visual
+  return 0;
+}
+
 function _layoutUpdateAll() {
   const text = document.getElementById('layout-input').value;
   const { records, wsCode, fieldsTable } = _layoutParse(text);
@@ -8216,6 +8375,113 @@ function _layoutUpdateAll() {
   preview.textContent = wsCode || '(nenhum layout inserido)';
 
   _layoutBuildFieldsTable(fieldsTable);
+  _layoutRenderLineTotals(records);
+  _layoutRenderEstrutura(records);
+}
+
+/* ── Renderiza os chips de tamanho por linha ────────────────────── */
+function _layoutRenderLineTotals(records) {
+  const wrap = document.getElementById('layout-line-totals');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const LIMIT = 133;
+  if (!records || !records.length) {
+    wrap.innerHTML = '<span style="color:#aaa;font-size:11px;">Nenhuma linha calculada ainda.</span>';
+    return;
+  }
+  records.forEach(rec => {
+    const label = rec.wsName.replace(/^WS-LIN-/, '');
+    let total, cls;
+    if (rec.type === 'sep') {
+      total = Math.max(rec.len, 133);
+      cls = 'llt-sep';
+    } else {
+      total = rec.tokens.reduce((s, t) => s + _layoutTokLen(t), 0);
+      if (total === LIMIT)      cls = 'llt-ok';
+      else if (total < LIMIT)   cls = 'llt-warn';
+      else                      cls = 'llt-err';
+    }
+    const chip = document.createElement('span');
+    chip.className = 'llt-chip ' + cls;
+    chip.title = rec.wsName;
+    if (rec.type === 'sep') {
+      chip.textContent = `${label}: ${total}`;
+    } else if (cls === 'llt-ok') {
+      chip.textContent = `${label}: ${total} ✓`;
+    } else if (cls === 'llt-warn') {
+      chip.textContent = `${label}: ${total} (+FILLER ${LIMIT - total})`;
+    } else {
+      const diff = total - LIMIT;
+      chip.textContent = `${label}: ${total} (+${diff} excede!)`;
+    }
+    wrap.appendChild(chip);
+  });
+}
+
+/* ── Estrutura do relatório: classifica cada registro ───────────── */
+const _LAYOUT_TYPE_LABELS = { CAB: '📋 Cabeçalho', DET: '📄 Detalhe', ROD: '📊 Rodapé', SEP: '─── Separador', OUT: 'Outro' };
+const _LAYOUT_TYPE_OPTS = ['CAB','DET','ROD','SEP','OUT'];
+
+function _layoutRenderEstrutura(records) {
+  const tbody = document.getElementById('layout-estrutura-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!records || !records.length) {
+    tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa;text-align:center;padding:8px;">Nenhum registro ainda</td></tr>';
+    return;
+  }
+  // Auto-inicializa tipo pelo nome quando ainda não classificado
+  records.forEach(rec => {
+    if (!window._layoutRecordTypes[rec.wsName]) {
+      const nm = rec.wsName.toUpperCase();
+      if (rec.type === 'sep') window._layoutRecordTypes[rec.wsName] = 'SEP';
+      else if (/CAB|HEAD|TIT|TITULO/.test(nm))  window._layoutRecordTypes[rec.wsName] = 'CAB';
+      else if (/DET|DETALH|LINHA|ITEM/.test(nm)) window._layoutRecordTypes[rec.wsName] = 'DET';
+      else if (/ROD|TRAIL|TOTAL|RODAP|FOOTER/.test(nm)) window._layoutRecordTypes[rec.wsName] = 'ROD';
+      else window._layoutRecordTypes[rec.wsName] = 'OUT';
+    }
+  });
+
+  // Contar linhas por seção para exibição
+  const counts = { CAB:0, DET:0, ROD:0, SEP:0, OUT:0 };
+  records.forEach(rec => counts[window._layoutRecordTypes[rec.wsName] || 'OUT']++);
+
+  records.forEach(rec => {
+    const cur = window._layoutRecordTypes[rec.wsName] || 'OUT';
+    const label = rec.wsName.replace(/^WS-LIN-/, '');
+    const opts = _LAYOUT_TYPE_OPTS.map(t =>
+      `<option value="${t}" ${cur===t?'selected':''}>${_LAYOUT_TYPE_LABELS[t]}</option>`
+    ).join('');
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td style="font-family:monospace;font-size:11px;color:#333;">${label}</td>` +
+      `<td><select class="le-type-sel t-${cur}" data-wsname="${rec.wsName}" onchange="_layoutSetRecordType(this)">${opts}</select></td>` +
+      `<td style="text-align:center;font-size:10px;color:#888;">1</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Resumo no title da seção
+  const sumEl = document.querySelector('#layout-estrutura-table thead tr th:first-child');
+  if (sumEl) {
+    const parts = [];
+    if (counts.CAB) parts.push(`${counts.CAB} cab.`);
+    if (counts.DET) parts.push(`${counts.DET} det.`);
+    if (counts.ROD) parts.push(`${counts.ROD} rod.`);
+    sumEl.textContent = `Registro — ${parts.join(' · ') || 'nenhum classificado'}`;
+  }
+}
+
+function _layoutSetRecordType(sel) {
+  const wsName = sel.dataset.wsname;
+  window._layoutRecordTypes[wsName] = sel.value;
+  // Atualiza a cor do select
+  sel.className = `le-type-sel t-${sel.value}`;
+  // Reconstrói WS com novos comentários de seção
+  const newWs = _layoutBuildWsCode(window._layoutParsedRecords);
+  window._layoutWsCode = newWs;
+  document.getElementById('layout-ws-preview').textContent = newWs;
+  // Atualiza o resumo
+  _layoutRenderEstrutura(window._layoutParsedRecords);
 }
 
 /* ── Renderiza a tabela de renomeação de campos ─────────────────── */
@@ -8323,7 +8589,7 @@ function _layoutClearAll() {
 function _layoutLoadExample() {
   document.getElementById('layout-input').value =
 `>> CABECALHO:
-EMPRESA XXXXXXXXXXXXXXXXXXXX  DATA: 99/99/9999  PAG: ZZ9
+EMPRESA xxxxxxxxxxxxxxxxxxxx  DATA: 99/99/9999  PAG: zzz
 >> SEP1:
 --------------------------------------------------------------
 >> SUBCAB:
@@ -8331,11 +8597,11 @@ CODIGO  DESCRICAO                                      VALOR
 >> SEP2:
 --------------------------------------------------------------
 >> DETALHE:
-99999   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     ZZZ,ZZ9.99
+99999   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx     zz,zzz.99
 >> SEP3:
 --------------------------------------------------------------
 >> TOTAL:
-                            TOTAL GERAL:    ZZZ,ZZZ.99`;
+                            TOTAL GERAL:    zzz,zzz.99`;
   document.getElementById('layout-set-name').value = 'LAYOUT-PADRAO';
   _layoutUpdateAll();
 }
