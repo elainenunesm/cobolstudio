@@ -7673,10 +7673,6 @@ function _layoutFromCobolWs(text) {
   const out = [];
   records.forEach(rec => {
     const label = rec.name.toUpperCase();
-    if (/CAB|HEADER|TITULO|TITLE|LIN-1/.test(label)) out.push('>> CABECALHO:');
-    else if (/DET|DETL|ITEM|LINHA|LIN-2/.test(label)) out.push('>> DETALHE:');
-    else if (/ROD|TRAIL|TOTAL|SUBTOT|FOOTER|LIN-3/.test(label)) out.push('>> RODAPE:');
-    else if (/SEP|SEPAR|LIN-4/.test(label)) out.push('>> SEP:');
 
     if (!rec.fields.length) {
       // Registro sem campos subordinados
@@ -7684,7 +7680,6 @@ function _layoutFromCobolWs(text) {
         const line = _layoutTokenFromPic(rec.pic, rec.value);
         if (line) out.push(line);
       }
-      out.push('');
       return;
     }
 
@@ -7695,22 +7690,32 @@ function _layoutFromCobolWs(text) {
         return _layoutTokenFromField(field);
       })
       .filter(t => t)
-      .join('  ');
+      .join('');
     
     out.push(row);
-    out.push('');
   });
 
-  return out.join('\n').trim();
+  return out.join('\n');
 }
 function _layoutTokenFromField(field) {
   const width = _layoutPicLength(field.pic);
   if (width <= 0) return '';
-  const allMatch = field.value.match(/^ALL\s+["'](.+)["']$/i);
+  const value = (field.value || '').trim();
+  const normalized = value.toUpperCase();
+  const isVariable = field.name && field.name.toUpperCase() !== 'FILLER';
+  const allMatch = value.match(/^ALL\s+["'](.+)["']$/i);
   if (allMatch) return allMatch[1].repeat(width).slice(0, width);
-  const literal = _layoutExtractLiteral(field.value);
+  const literal = _layoutExtractLiteral(value);
   if (literal !== null) {
     return literal.padEnd(width, ' ').slice(0, width);
+  }
+  if (normalized === 'SPACES') {
+    return isVariable ? 'x'.repeat(width) : ' '.repeat(width);
+  }
+  if ((normalized === 'ZEROS' || normalized === 'ZERO')) {
+    if (/^Z/i.test(field.pic) || /^9/i.test(field.pic) || /^S/i.test(field.pic)) {
+      return isVariable ? 'z'.repeat(width) : '0'.repeat(width);
+    }
   }
   if (/^X/i.test(field.pic)) return 'x'.repeat(width);
   if (/^Z/i.test(field.pic) || /^9/i.test(field.pic) || /^S/i.test(field.pic)) return _layoutTokenFromPic(field.pic);
@@ -7718,8 +7723,13 @@ function _layoutTokenFromField(field) {
 }
 function _layoutExtractLiteral(value) {
   if (!value) return null;
-  const m = value.match(/^'([\s\S]*)'$/);
-  return m ? m[1].replace(/''/g, "'") : null;
+  const trimmed = value.trim();
+  if ((trimmed.startsWith("'") && trimmed.endsWith("'")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
+    const quote = trimmed[0];
+    return trimmed.slice(1, -1).replace(new RegExp(quote + quote, 'g'), quote);
+  }
+  if (/^(SPACES|ZEROS|ZERO|LOW-VALUE|HIGH-VALUE)$/i.test(trimmed)) return null;
+  return trimmed;
 }
 function _layoutTokenFromPic(pic, recordValue) {
   const allMatch = recordValue && recordValue.match(/^ALL\s+["'](.+)["']$/i);
