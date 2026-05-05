@@ -1592,7 +1592,7 @@
       <!-- Projeto -->
       <div class="ribbon-group">
         <div class="ribbon-buttons">
-          <button class="rbtn" onclick="exportCode()" title="Exportar .cbl">
+          <button class="rbtn" onclick="exportCode()" title="Exportar .txt (80 colunas)">
             <span class="rbtn-icon">📦</span>
             <span class="rbtn-label">Exportar</span>
           </button>
@@ -2641,9 +2641,10 @@
           <code>zz,zz9.99</code> = editado com pontuação &nbsp;·&nbsp; texto literal vira <code>FILLER VALUE</code> &nbsp;·&nbsp; linha <code>----</code> vira separador<br>
           Prefixe com <code>&gt;&gt; NOME:</code> para nomear o registro (ex: <code>&gt;&gt; CABECALHO:</code>)
         </div>
-        <div id="layout-name-row">
+        <div id="layout-name-row" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <label>Identificador do conjunto:</label>
           <input id="layout-set-name" value="Layout1" placeholder="ex: Layout-Relatorio-Vendas" />
+          <button type="button" class="le-btn-secondary" onclick="_layoutImportWs()" title="Importar variáveis COBOL e reconstruir o layout">📥 Importar WS</button>
         </div>
         <textarea id="layout-input" spellcheck="false"
           placeholder="Exemplo:&#10;&gt;&gt; CABECALHO:&#10;EMPRESA XXXXXXXXXXXXXXXXXXXX  DATA: 99/99/9999  PG: ZZ9&#10;&gt;&gt; SUBCAB:&#10;CODIGO  DESCRICAO                                  VALOR&#10;&gt;&gt; SEP:&#10;--------------------------------------------------------------&#10;&gt;&gt; DETALHE:&#10;99999   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ZZZ,ZZ9.99&#10;&gt;&gt; TOTAL:&#10;                              TOTAL GERAL:  ZZZ,ZZZ.99"
@@ -2718,6 +2719,7 @@
 <input type="file" id="include-file-input" accept=".inc,.cpy,.cbl,.txt" style="display:none" onchange="_onIncludeFileSelected(event)">
 <!-- Input oculto para importar variáveis Working-Storage -->
 <input type="file" id="ws-vars-input" accept=".ws,.cbl,.cpy,.txt" style="display:none" onchange="_onWsVarsFileSelected(event)">
+<input type="file" id="layout-ws-input" accept=".ws,.cbl,.cpy,.txt" style="display:none" onchange="_onLayoutWsFileSelected(event)">
 
 <!-- ═══ TOAST ════════════════════════════════════════════════════════ -->
 <div id="toast"></div>
@@ -6470,13 +6472,14 @@ function newProgram() {
 
 function saveProgram() {
   const code = generateAllCode();
-  const blob = new Blob([code], {type:'text/plain'});
+  const exportText = code.split(/\r?\n/).map(line => line.trimEnd() ? line.padEnd(80, ' ') : '').join('\n');
+  const blob = new Blob([exportText], {type:'text/plain'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (document.getElementById('prop-program-id')?.value || 'MEUCOBOL').toUpperCase() + '.CBL';
+  a.download = (document.getElementById('prop-program-id')?.value || 'MEUCOBOL').toUpperCase() + '.TXT';
   a.click();
   showToast('Código COBOL salvo!', 'success');
-  setStatus('Arquivo .CBL salvo');
+  setStatus('Arquivo .TXT salvo');
 }
 
 async function saveProgramAs() {
@@ -7577,6 +7580,200 @@ function _onWsVarsFileSelected(e) {
   reader.readAsText(file);
 }
 
+function _layoutImportWs() {
+  document.getElementById('layout-ws-input').value = '';
+  document.getElementById('layout-ws-input').click();
+}
+function _onLayoutWsFileSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const layout = _layoutFromCobolWs(ev.target.result);
+    if (layout) {
+      document.getElementById('layout-input').value = layout;
+      _layoutUpdateAll();
+      showToast('Layout reconstruído a partir das variáveis COBOL.', 'success');
+    } else {
+      showToast('Não foi possível reconstruir o layout a partir deste arquivo.', 'warn');
+    }
+  };
+  reader.readAsText(file);
+}
+function _layoutFromCobolWs(text) {
+  const match = text.match(/WORKING-STORAGE\s+SECTION\.[\s\S]*?(?=\n\s*(?:LINKAGE|LOCAL-STORAGE|PROCEDURE)\s+(?:SECTION|DIVISION)|$)/i);
+  const wsText = match ? match[0] : text;
+  const rawLines = wsText.split(/\r?\n/);
+
+  function _cobolHasOpenLiteral(line) {
+    let inLiteral = false;
+    let quoteChar = null;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === "'" || ch === '"') {
+        if (!inLiteral) {
+          inLiteral = true;
+          quoteChar = ch;
+        } else if (quoteChar === ch) {
+          if (line[i + 1] === ch) {
+            i += 1; // aspas duplas dentro da literal
+          } else {
+            inLiteral = false;
+            quoteChar = null;
+          }
+        }
+      }
+    }
+    return inLiteral ? quoteChar : null;
+  }
+
+  // Primeiro passo: consolidar linhas de continuação COBOL (marcadas com - na coluna 7)
+  const lines = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const line = rawLines[i];
+    const isContinuation = line.length >= 7 && line[6] === '-';
+    if (isContinuation) {
+      // Linha de continuação: concatena ao último registro
+      const content = line.slice(11);
+      if (lines.length > 0) {
+        const prev = lines[lines.length - 1];
+        const openQuote = _cobolHasOpenLiteral(prev);
+        lines[lines.length - 1] = prev + (openQuote && content.startsWith(openQuote) ? content.slice(1) : content);
+      }
+    } else {
+      lines.push(line);
+    }
+  }
+
+  const records = [];
+  let currentRecord = null;
+  const declRe = /^\s*(\d{1,2})\s+([A-Za-z0-9\-\$]+)(?:\s+PIC\s+([^\.\s]+)(?:\s+VALUE\s+(.+?))?)?\s*\.?\s*$/i;
+
+  lines.forEach(raw => {
+    const line = raw.replace(/\t/g, ' ').replace(/\u00A0/g, ' ').trim();
+    if (!line || line.startsWith('*')) return;
+    const decl = line.match(declRe);
+    if (!decl) return;
+    const level = decl[1];
+    const name = decl[2].toUpperCase();
+    const pic = decl[3] ? decl[3].toUpperCase() : null;
+    const value = decl[4] ? decl[4].trim() : '';
+
+    if (level === '01') {
+      if (currentRecord) records.push(currentRecord);
+      currentRecord = { name, pic, value, fields: [] };
+      return;
+    }
+    if (!currentRecord) return;
+    currentRecord.fields.push({ name, pic, value, level });
+  });
+  if (currentRecord) records.push(currentRecord);
+  if (!records.length) return null;
+
+  const out = [];
+  records.forEach(rec => {
+    const label = rec.name.toUpperCase();
+    if (/CAB|HEADER|TITULO|TITLE|LIN-1/.test(label)) out.push('>> CABECALHO:');
+    else if (/DET|DETL|ITEM|LINHA|LIN-2/.test(label)) out.push('>> DETALHE:');
+    else if (/ROD|TRAIL|TOTAL|SUBTOT|FOOTER|LIN-3/.test(label)) out.push('>> RODAPE:');
+    else if (/SEP|SEPAR|LIN-4/.test(label)) out.push('>> SEP:');
+
+    if (!rec.fields.length) {
+      // Registro sem campos subordinados
+      if (rec.pic) {
+        const line = _layoutTokenFromPic(rec.pic, rec.value);
+        if (line) out.push(line);
+      }
+      out.push('');
+      return;
+    }
+
+    // Processa campos subordinados (03)
+    const row = rec.fields
+      .map(field => {
+        if (!field.pic) return '';
+        return _layoutTokenFromField(field);
+      })
+      .filter(t => t)
+      .join('  ');
+    
+    out.push(row);
+    out.push('');
+  });
+
+  return out.join('\n').trim();
+}
+function _layoutTokenFromField(field) {
+  const width = _layoutPicLength(field.pic);
+  if (width <= 0) return '';
+  const allMatch = field.value.match(/^ALL\s+["'](.+)["']$/i);
+  if (allMatch) return allMatch[1].repeat(width).slice(0, width);
+  const literal = _layoutExtractLiteral(field.value);
+  if (literal !== null) {
+    return literal.padEnd(width, ' ').slice(0, width);
+  }
+  if (/^X/i.test(field.pic)) return 'x'.repeat(width);
+  if (/^Z/i.test(field.pic) || /^9/i.test(field.pic) || /^S/i.test(field.pic)) return _layoutTokenFromPic(field.pic);
+  return _layoutTokenFromPic(field.pic);
+}
+function _layoutExtractLiteral(value) {
+  if (!value) return null;
+  const m = value.match(/^'([\s\S]*)'$/);
+  return m ? m[1].replace(/''/g, "'") : null;
+}
+function _layoutTokenFromPic(pic, recordValue) {
+  const allMatch = recordValue && recordValue.match(/^ALL\s+["'](.+)["']$/i);
+  if (allMatch) {
+    const width = _layoutPicLength(pic);
+    return allMatch[1].repeat(width).slice(0, width);
+  }
+  let text = '';
+  let i = 0;
+  const src = pic.toUpperCase();
+  while (i < src.length) {
+    const ch = src[i];
+    if ((ch === 'X' || ch === 'Z' || ch === '9' || ch === 'S') && src[i + 1] === '(') {
+      const close = src.indexOf(')', i + 2);
+      const count = close > i ? parseInt(src.slice(i + 2, close), 10) : 1;
+      const pad = ch === 'X' ? 'x' : ch === 'S' ? 's' : 'z';
+      text += pad.repeat(isNaN(count) ? 1 : count);
+      i = close + 1;
+      continue;
+    }
+    if (ch === 'X') text += 'x';
+    else if (ch === 'Z' || ch === '9') text += 'z';
+    else if (ch === 'S') text += 's';
+    else if (ch === 'V') { /* implied decimal, não ocupa coluna */ }
+    else if (',.-+'.includes(ch)) text += ch;
+    i += 1;
+  }
+  if (!text && recordValue) {
+    const literal = _layoutExtractLiteral(recordValue);
+    if (literal !== null) return literal.padEnd(_layoutPicLength(pic), ' ');
+  }
+  return text;
+}
+function _layoutPicLength(pic) {
+  const src = pic.toUpperCase();
+  let len = 0;
+  let i = 0;
+  while (i < src.length) {
+    const ch = src[i];
+    if ((ch === 'X' || ch === 'Z' || ch === '9' || ch === 'S') && src[i + 1] === '(') {
+      const close = src.indexOf(')', i + 2);
+      const count = close > i ? parseInt(src.slice(i + 2, close), 10) : 1;
+      len += isNaN(count) ? 1 : count;
+      i = close + 1;
+      continue;
+    }
+    if ('XZ9S'.includes(ch)) len += 1;
+    else if (ch === 'V') { /* implied decimal */ }
+    else if (',.-+'.includes(ch)) len += 1;
+    i += 1;
+  }
+  return len;
+}
+
 function importIncludes() {
   document.getElementById('include-file-input').value = '';
   document.getElementById('include-file-input').click();
@@ -8185,13 +8382,24 @@ function _layoutTokenizeLine(line) {
       tokens.push({ type: 'NUM', len: j - i, raw: line.slice(i, j) });
       i = j;
     } else {
-      // literal
-      if (tokens.length > 0 && tokens[tokens.length - 1].type === 'LIT') {
-        tokens[tokens.length - 1].raw += ch;
+      // Literal: acumula até espaço, espaço, ou caractere especial
+      if (ch === ' ') {
+        // Espaço em branco → cria token de espaço
+        let j = i;
+        while (j < line.length && line[j] === ' ') j++;
+        tokens.push({ type: 'SPACE', len: j - i, raw: line.slice(i, j) });
+        i = j;
       } else {
-        tokens.push({ type: 'LIT', raw: ch });
+        // Palavra literal (não é espaço)
+        let j = i;
+        while (j < line.length && line[j] !== ' ' && !/^[xXzZ9]/.test(line[j])) j++;
+        if (j > i) {
+          tokens.push({ type: 'LIT', raw: line.slice(i, j) });
+          i = j;
+        } else {
+          i++;
+        }
       }
-      i++;
     }
   }
   return tokens;
@@ -8267,12 +8475,17 @@ function _layoutBuildWsCode(records) {
       wsCode += _cobolWsLine(base, ` VALUE ${sepVal}`);
     } else {
       wsCode += `       01 ${rec.wsName}.\n`;
-      rec.tokens.forEach(tok => {
+      rec.tokens.forEach((tok, tokIdx) => {
         let base, valueClause;
-        if (tok.type === 'LIT') {
+        if (tok.type === 'SPACE') {
+          // Espaços em branco viram FILLER com SPACES
+          base         = `           03 FILLER`.padEnd(38) + ` PIC X(${tok.len})`.padEnd(16);
+          valueClause  = ' VALUE SPACES';
+        } else if (tok.type === 'LIT') {
+          // Palavra literal vira campo com a palavra como valor
           const val    = tok.raw;
-          const valStr = val.trim() === '' ? 'SPACES' : `'${val.replace(/'/g, "''")}'`;
-          base         = `           03 FILLER`.padEnd(38) + ` PIC X(${tok.raw.length})`.padEnd(16);
+          const valStr = `'${val.replace(/'/g, "''")}'`;
+          base         = `           03 FILLER`.padEnd(38) + ` PIC X(${val.length})`.padEnd(16);
           valueClause  = ` VALUE ${valStr}`;
         } else if (tok.type === 'ALPHA') {
           base        = `           03 ${tok.fieldName || 'FILLER'}`.padEnd(38) + ` PIC X(${tok.len})`.padEnd(16);
@@ -8341,7 +8554,7 @@ function _layoutParse(text) {
     const shortBase = wsName.replace(/^WS-LIN-/, '').replace(/^WS-/, '');
     let fieldIdx = 1;
     tokens.forEach(tok => {
-      if (tok.type !== 'LIT') {
+      if (tok.type !== 'LIT' && tok.type !== 'SPACE') {
         tok.fieldName = `WS-${shortBase}-F${fieldIdx++}`;
         tok.originalFieldName = tok.fieldName;
         fieldsTable.push({ wsName, tok });
@@ -8358,6 +8571,7 @@ function _layoutParse(text) {
 /* ── Calcula o tamanho físico de um token ───────────────────────── */
 function _layoutTokLen(tok) {
   if (tok.type === 'LIT')   return tok.raw.length;
+  if (tok.type === 'SPACE') return tok.len;
   if (tok.type === 'ALPHA') return tok.len;
   if (tok.type === 'NUM')   return tok.len;
   if (tok.type === 'ZEDIT') return tok.raw.length; // raw preserva o tamanho visual
@@ -8589,20 +8803,14 @@ function _layoutClearAll() {
 function _layoutLoadExample() {
   document.getElementById('layout-input').value =
 `>> CABECALHO:
-EMPRESA xxxxxxxxxxxxxxxxxxxx  DATA: 99/99/9999  PAG: zzz
->> SEP1:
---------------------------------------------------------------
->> SUBCAB:
-CODIGO  DESCRICAO                                      VALOR
->> SEP2:
---------------------------------------------------------------
+elaine  mirella  pinheiro  nunes
 >> DETALHE:
-99999   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx     zz,zzz.99
->> SEP3:
+CODIGO  NOME                  VALOR
+>> SEP:
 --------------------------------------------------------------
 >> TOTAL:
-                            TOTAL GERAL:    zzz,zzz.99`;
-  document.getElementById('layout-set-name').value = 'LAYOUT-PADRAO';
+TOTAL:                     zzz,zzz.99`;
+  document.getElementById('layout-set-name').value = 'EXEMPLO-NOMES';
   _layoutUpdateAll();
 }
 
